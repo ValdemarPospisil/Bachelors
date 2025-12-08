@@ -1,0 +1,34 @@
+\chapter{Návrh řešení}
+\label{chap:navrh}
+
+V této kapitole je představen detailní technický návrh aplikace. Vychází z analytických požadavků a zvolené architektury tenkého klienta.
+
+\section{Celková architektura systému}
+% Zde:
+% - Popiš rozdělení na Client (Go) a Service (.NET).
+% - Zmiň, že Service běží jako daemon pod rootem, Client jako user.
+% - Odkaz na diagram (který si pak vygenerujeme v Mermaidu).
+
+\section{Návrh komunikace (IPC)}
+% Zde:
+% - Specifikace protokolu.
+% - Rozhodnutí pro Unix Domain Sockets (vs TCP).
+% - Struktura zpráv (Request/Response model).
+% - Příklad JSON payloadu pro příkaz "connect".
+
+\section{Návrh uživatelského rozhraní (CLI)}
+% Zde:
+% - Strom příkazů (ga login, ga connect, ga status).
+% - Návrh interaktivního režimu (TUI) vs. skriptovacího režimu (flags).
+% - Jak budou vypadat výstupy (barvičky pro lidi, JSON pro stroje).
+
+\section{Bezpečnostní model}
+% Zde:
+% - Ukládání tokenů (kde budou fyzicky na disku).
+% - Oprávnění k socketu (kdo smí poslat příkaz službě).
+% - Zabezpečení proti neoprávněné manipulaci.
+
+\section{Datový model a konfigurace}
+% Zde:
+% - Kde bude konfigurace (/etc/goodaccess vs ~/.config/goodaccess).
+% - Co všechno se musí ukládat (aliasy bran, poslední připojení).

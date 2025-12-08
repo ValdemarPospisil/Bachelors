@@ -1,0 +1,51 @@
+\chapter{Teoretická východiska}
+\label{chap:teorie}
+
+Tato kapitola shrnuje klíčové technologie a koncepty nezbytné pro návrh a implementaci systémového CLI nástroje pro Linux. Zaměřuje se na architekturu operačního systému, síťové protokoly a principy vývoje softwaru.
+
+\section{Architektura a správa OS Linux}
+Pro vývoj robustního systémového nástroje je nezbytné pochopení interakce mezi uživatelským prostorem (User Space) a jádrem (Kernel). Jak uvádí Ward \cite{ward_linux}, jádro operačního systému spravuje hardwarové prostředky a poskytuje abstrakci pro aplikace běžící v uživatelském prostoru.
+
+\subsection{Jádro vs. Uživatelský prostor}
+Zatímco vyvíjený CLI klient bude běžet v uživatelském prostoru, samotná síťová rozhraní (Network Interfaces) jsou spravována jádrem. Komunikace mezi těmito vrstvami probíhá prostřednictvím systémových volání (syscalls). Pro manipulaci se síťovým zásobníkem (networking stack) Linux využívá rodinu protokolů Netlink, kterou využívají i standardní nástroje jako \texttt{ip}.
+
+\subsection{Virtuální souborové systémy}
+Linux zpřístupňuje stav jádra a hardwaru prostřednictvím virtuálních souborových systémů \texttt{/proc} a \texttt{/sys}. Tyto adresáře neobsahují data na disku, ale slouží jako rozhraní k datovým strukturám jádra v paměti. Pro CLI klienta jsou tato místa klíčová pro získávání statistik o síťovém provozu a stavu tunelů.
+
+\subsection{Model oprávnění a Systemd}
+Správa VPN připojení vyžaduje privilegované operace, jako je úprava routovacích tabulek nebo konfigurace DNS. Linuxový bezpečnostní model striktně odděluje běžné uživatele od uživatele \texttt{root}. Aplikace bude využívat principu nejnižších privilegií (Least Privilege), kdy samotný CLI klient běží pod běžným uživatelem a komunikuje s privilegovanou službou (daemonem).
+
+Pro správu této služby na pozadí je v moderních distribucích (Debian, RHEL, Fedora) standardem init systém \textbf{systemd}. Ten umožňuje definovat závislosti (např. spuštění VPN až po \texttt{network-online.target}) a zajišťuje automatický start služby po restartu systému pomocí konfiguračních souborů zvaných \textit{Unit files}.
+
+\section{VPN Protokoly}
+GoodAccess podporuje více protokolů pro zajištění konektivity. Ačkoliv je moderním standardem WireGuard, je nutné brát v úvahu i existenci staršího protokolu OpenVPN.
+
+\subsection{WireGuard}
+WireGuard je moderní VPN protokol navržený s důrazem na jednoduchost, vysoký výkon a bezpečnost. Podle Donenfelda \cite{wireguard_paper} je jeho klíčovou vlastností běh přímo v prostoru jádra (Kernel Space), což eliminuje nákladné přepínání kontextu (context switching) typické pro starší řešení.
+
+\textbf{Cryptokey Routing:} Fundamentálním konceptem WireGuardu je směrování založené na kryptografických klíčích. Každý peer má asociovaný veřejný klíč a povolenou IP adresu. Toto statické provázání zjednodušuje konfiguraci a zvyšuje bezpečnost.
+
+\textbf{Vlastnost ticha (Silence Property):} WireGuard je navržen tak, aby neodpovídal na neautentizované pakety. Pokud klient nepošle platná data, server mlčí. To stěžuje detekci VPN endpointů pomocí skenování portů, ale zároveň klade nároky na implementaci klienta, který musí stav připojení odvozovat nepřímo (např. pomocí handshake timerů), nikoliv ze stavu TCP spojení.
+
+\subsection{OpenVPN}
+OpenVPN je zavedený, flexibilní protokol založený na SSL/TLS. Na rozdíl od WireGuardu běží tradičně v uživatelském prostoru (User Space) a využívá virtuální síťová rozhraní TUN/TAP.
+Ačkoliv je OpenVPN vysoce konfigurovatelný, jeho architektura přináší vyšší režii (overhead) způsobenou nutností kopírovat data mezi jádrem a uživatelským prostorem při každém paketu. V rámci této práce je OpenVPN zmíněn jako existující alternativa implementovaná v backendové službě, kterou musí CLI klient umět v případě potřeby aktivovat.
+
+\section{Meziprocesová komunikace (IPC)}
+Zvolená architektura odděleného klienta a služby vyžaduje efektivní komunikační kanál.
+
+\subsection{Unix Domain Sockets}
+Pro lokální komunikaci na Linuxu jsou standardem Unix Domain Sockets. Na rozdíl od TCP socketů nevyužívají síťový stack (loopback), ale souborový systém, což zvyšuje efektivitu přenosu. Klíčovou výhodou je bezpečnost – přístup k socketu lze řídit standardními souborovými oprávněními (např. `chmod 660`), což zamezuje přístupu neoprávněným uživatelům na stejném stroji.
+
+\subsection{Serializace dat}
+Data přenášená přes IPC musí být serializována.
+\begin{itemize}
+    \item \textbf{JSON:} Textový formát, snadno čitelný pro člověka, ideální pro ladění. Nevýhodou je nižší výkon a absence striktní typové kontroly.
+    \item \textbf{gRPC / Protocol Buffers:} Binární formát vyvíjený Googlem. Poskytuje silnou typovou kontrolu, definici kontraktu (interface definition) a vysoký výkon. Vzhledem ke kombinaci jazyků Go a C\# (.NET) je gRPC silným kandidátem pro zajištění typové bezpečnosti mezi procesy.
+\end{itemize}
+
+\section{Platforma .NET na Linuxu}
+Backendová služba GoodAccess je postavena na platformě .NET 8. Jak uvádí Price \cite{price_csharp}, moderní .NET (od verze Core) je plně multiplatformní. Pro účely této práce je klíčová schopnost .NET aplikací běžet jako nativní linuxoví démoni (Systemd Service) a využívat mechanismy P/Invoke pro volání nativních knihoven systému, což je nezbytné pro konfiguraci síťových rozhraní.
+
+\section{Metodika vývoje}
+Při vývoji jsou uplatňovány principy Extrémního programování (XP) podle Becka \cite{beck_xp}. Důraz je kladen na \textbf{jednoduchost} (návrh nejjednoduššího možného řešení, které funguje) a \textbf{zpětnou vazbu} (krátké iterace, okamžitá odezva CLI aplikace).

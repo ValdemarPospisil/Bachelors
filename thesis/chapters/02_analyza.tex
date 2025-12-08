@@ -1,0 +1,59 @@
+\chapter{Analýza a specifikace požadavků}
+\label{chap:analyza}
+
+Cílem této kapitoly je analyzovat potřeby cílové skupiny uživatelů a na jejich základě definovat funkční i nefunkční požadavky na výslednou aplikaci. Součástí je také analýza možných architektonických přístupů.
+
+\section{Identifikace zúčastněných stran}
+Primárními uživateli GoodAccess CLI pro Linux jsou technicky zdatní profesionálové:
+\begin{itemize}
+    \item \textbf{System Administrators:} Spravují servery a vyžadují stabilní nástroj pro vzdálenou správu přes SSH bez nutnosti grafického rozhraní.
+    \item \textbf{DevOps Inženýři:} Potřebují integrovat VPN připojení do automatizovaných skriptů a CI/CD pipelin. Vyžadují predikovatelné chování a strojově čitelný výstup.
+\end{itemize}
+
+\section{Funkční požadavky}
+Na základě analýzy potřeb byly stanoveny následující funkční požadavky:
+
+\subsection{Autentizace a správa relace}
+Aplikace musí umožnit přihlášení uživatele v prostředí bez webového prohlížeče.
+\begin{itemize}
+    \item \textbf{F1 -- Login:} Podpora pro autentizační toky vhodné pro terminál (např. Device Code Flow), kdy uživatel potvrdí přihlášení na jiném zařízení.
+    \item \textbf{F2 -- Logout:} Bezpečné ukončení relace a smazání lokálně uložených tokenů.
+\end{itemize}
+
+\subsection{Správa připojení}
+Jádrem aplikace je ovládání VPN tunelu.
+\begin{itemize}
+    \item \textbf{F3 -- Connect:} Navázání připojení k vybrané bráně. Aplikace musí podporovat výběr protokolu (WireGuard jako výchozí, OpenVPN jako záložní).
+    \item \textbf{F4 -- Disconnect:} Korektní ukončení VPN připojení a úklid routovacích pravidel.
+    \item \textbf{F5 -- Gateway Selection:} Uživatel musí mít možnost vybrat si, ke které VPN bráně (Gateway) se chce připojit.
+\end{itemize}
+
+\subsection{Monitoring a stav}
+\begin{itemize}
+    \item \textbf{F6 -- Status:} Zobrazení aktuálního stavu (Připojeno/Odpojeno, IP adresa, přenesená data).
+    \item \textbf{F7 -- JSON Output:} Možnost vyžádat si výstup příkazů (zejména status) ve formátu JSON pro snadné parsování v externích skriptech.
+\end{itemize}
+
+\section{Nefunkční požadavky}
+\begin{itemize}
+    \item \textbf{N1 -- Výkon:} Rychlý start aplikace (CLI). Jazyk Go byl zvolen právě pro svou rychlost spouštění a malou paměťovou náročnost.
+    \item \textbf{N2 -- Kompatibilita:} Aplikace musí být funkční na hlavních serverových distribucích Linuxu (Debian/Ubuntu, Fedora/RHEL, Arch Linux).
+    \item \textbf{N3 -- Bezpečnost:} Citlivá data (přístupové tokeny, privátní klíče) musí být uložena bezpečně a přístupná pouze oprávněné službě.
+\end{itemize}
+
+\section{Analýza architektury}
+Při návrhu řešení byly zvažovány dva přístupy k interakci s existující logikou GoodAccess:
+
+\subsection{Návrh A: Tenký klient (Wrapper)}
+V tomto modelu běží v systému jedna privilegovaná služba (.NET), která drží stav a vykonává operace. CLI aplikace (Go) slouží pouze jako dálkové ovládání, které posílá příkazy službě přes IPC.
+
+\subsection{Návrh B: Samostatná logika}
+CLI aplikace by obsahovala veškerou logiku pro připojení a správu WireGuardu a běžela by přímo pod uživatelem root, nezávisle na existující službě.
+
+\subsection{Zvolené řešení}
+Byl zvolen \textbf{Návrh A (Wrapper)} z následujících důvodů:
+\begin{enumerate}
+    \item \textbf{Single Source of Truth:} Služba drží jednotný stav aplikace. Nedochází k desynchronizaci mezi tím, co si myslí CLI, a tím, co je reálně nastaveno v síti.
+    \item \textbf{Bezpečnost:} Uživatel nemusí spouštět CLI pod \texttt{rootem}. Privilegované operace provádí pouze izolovaná služba na pozadí.
+    \item \textbf{Znovupoužitelnost:} Využívá se již otestovaná a existující logika v .NET backendu, což je v souladu s principy XP (Simplicity).
+\end{enumerate}
