@@ -1,18 +1,4 @@
-# LaTeX build artifacts
-*.aux
-*.bbl
-*.bcf
-*.blg
-*.fls
-*.fdb_latexmk
-*.lof
-*.log
-*.lot
-*.out
-*.run.xml
-*.synctex.gz
-*.toc
-*.xdv
+build/
 
 # Editor temporary files
 *.swp
