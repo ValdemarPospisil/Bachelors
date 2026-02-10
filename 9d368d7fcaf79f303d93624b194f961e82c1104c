@@ -1,0 +1,4 @@
+Task: Update thesis/chapters/01_teorie.tex structure
+Summary: Refactored the hierarchical structure of the theoretical chapter to include new sections for CLI automation, VPN/Zero Trust, and technical implementation details.
+Files: thesis/chapters/01_teorie.tex
+Why: To align the thesis structure with the approved outline and project goals.
