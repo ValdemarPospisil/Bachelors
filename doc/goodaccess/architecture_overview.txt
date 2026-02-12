@@ -1,0 +1,47 @@
+https://support.goodaccess.com/getting-started/2.-architecture-overview
+
+
+2. Architecture Overview
+
+The architecture overview outlines the GoodAccess product, its operation, and related entities.
+
+GoodAccess provides you with a Zero Trust Network Access (ZTNA) platform that allows you to create a secure Software-Defined Perimeter (SDP) around your enterprise systems (servers, applications, resources, networks) that can run anywhere (cloud, on-premises, public internet), and provides you with a simple way to control and monitor the secure access of your team members (employees) to your company systems.
+
+Simply put, GoodAccess securely connects your remote team Members with your corporate Systems while providing additional security features (Secure Shield) to cover the whole security landscape of your company.
+Team
+
+A Team (i.e. Secure Perimeter) is a top-level entity that is managed by the Admin from the Control Panel. It comprises all company assets that must be covered by the secure SDP, including:
+
+    Members
+
+    Gateways
+
+    Systems
+
+    Configuration
+
+Member
+
+A Member is a member of the company team, usually management, an employee, a colleague. The Member receives secure access to enterprise Systems specified by the Admin.
+Admin
+
+The Admin is a member of the company, usually CEO, CTO, CISO, IT Admin. The Admin's goal is to manage and monitor the company SDP using GoodAccess' intuitive ZTNA controls.
+Gateway
+
+The Gateway is a cloud-based server dedicated only to one team or company and serves as an entrance into the company's secure SDP where all the company's Systems are running. The Gateway's primary tasks include: 
+
+    Member authentication and authorization (firewall-based Zero Trust Network Access Control)
+
+    Monitoring and surveillance
+
+    Secure Shield - Threat Blocker, Anomaly Detection,  Security Policies, etc.  
+
+Client Application
+
+The Client Application (i.e. Agent) is an application running on a Member's device that allows them to access Systems (servers, applications, resources) within the company's secure SDP via the Gateway. 
+System
+
+The System is any network entity that is accessible by a Member of the company's Team. Systems are defined by the protocol (TCP / UDP), IP address, and port, and can run in the cloud, on premises, or elsewhere on the public Internet.  
+Cloud/Branch Connector
+
+The Cloud/Branch Connector allows the Admin to connect a private network (cloud or on premises) to the GoodAccess Gateway using the IKEv2 or IPsec protocol. This allows the Admin to define Systems from the connected subnet to allow secure remote access to these Systems for other Members.  
