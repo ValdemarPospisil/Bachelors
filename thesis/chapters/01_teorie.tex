@@ -3,11 +3,31 @@
 
 Tato kapitola analyzuje klíčové technologie, architektonické principy a bezpečnostní standardy nezbytné pro návrh moderního CLI nástroje v prostředí OS Linux. Text postupuje od obecné problematiky příkazové řádky přes síťové protokoly až po specifika implementačních platforem .NET a Go.
 
-\section{Rozhraní příkazové řádky a automatizace}
+\section{Rozhraní příkazové řádky}
+\label{sec:cli_teorie}
+Rozhraní příkazové řádky (CLI – Command Line Interface) představuje jeden z nejstarších, avšak stále nejvýkonnějších způsobů interakce uživatele s počítačem. Navzdory masivnímu rozšíření grafických uživatelských rozhraní (GUI) v 90. letech 20. století zůstává CLI nepostradatelným nástrojem pro systémové administrátory, vývojáře a pokročilé uživatele, zejména v prostředí operačních systémů typu Unix a Linux.
+
 \subsection{Role CLI v moderní správě systémů}
-\subsection{TUI a uživatelská zkušenost v terminálu}
-\subsection{Principy návrhu a idempotence}
-\subsection{Bezpečnost a autentizace v CLI}
+Hlavním důvodem preference příkazové řádky v profesionálním prostředí je efektivita, rychlost a snadná automatizace. Zatímco grafické rozhraní je navrženo pro intuitivní objevování funkcí pomocí vizuálních prvků, CLI se zaměřuje na precizní a opakovatelné provádění úkolů. Administrátor může pomocí jediného příkazu nebo krátkého skriptu provést operaci na stovkách serverů současně, což je v rámci GUI prakticky neproveditelné.
+
+Dalším kritickým faktorem je vzdálená správa. Protokol SSH (Secure Shell), který je de facto standardem pro správu linuxových serverů, je primárně textově orientovaný. Přenos textových příkazů a jejich výstupů vyžaduje minimální síťovou propustnost, což umožňuje spolehlivou správu systémů i přes nestabilní nebo pomalé připojení. V prostředí cloudu a kontejnerizace (např. Docker, Kubernetes), kde systémy často nemají žádné grafické výstupní zařízení (headless režim), je CLI jedinou možností interakce.
+
+\subsection{Principy návrhu a standardy CLI aplikací}
+Kvalitní CLI aplikace se řídí souborem ustálených principů, které zajišťují jejich předvídatelnost a vzájemnou spolupráci. Eric S. Raymond ve své knize \textit{The Art of Unix Programming} definuje tzv. „Unixovou filosofii“, jejímž základem je tvorba malých, jednoúčelových nástrojů, které spolu efektivně komunikují \cite{raymond_unix}. Tento přístup umožňuje skládat komplexní operace z jednoduchých komponent pomocí mechanismu rour (pipes).
+
+Základním stavebním kamenem interakce v CLI jsou standardní datové proudy:
+\begin{itemize}
+    \item \textbf{Standardní vstup (stdin):} Zdroj dat pro aplikaci, typicky klávesnice nebo výstup jiného programu.
+    \item \textbf{Standardní výstup (stdout):} Primární kanál pro výstup dat, typicky terminál.
+    \item \textbf{Standardní chybový výstup (stderr):} Oddělený kanál pro chybová hlášení a diagnostiku, což umožňuje uživateli přesměrovat data do souboru, zatímco chyby stále vidí na obrazovce.
+\end{itemize}
+
+Důležitou roli hraje také syntaxe příkazů. Moderní nástroje se snaží dodržovat standardy jako POSIX nebo GNU konvence pro argumenty a přepínače (flags). Krátké přepínače (např. \texttt{-v}) jsou určeny pro rychlé psaní, zatímco dlouhé varianty (např. \texttt{--verbose}) zvyšují čitelnost skriptů a dokumentace.
+
+\subsection{CLI versus TUI}
+V rámci terminálu se můžeme setkat také s textovým uživatelským rozhraním (TUI – Text User Interface). Na rozdíl od klasického CLI, které vypisuje řádky textu v sekvenčním pořadí, TUI využívá celou plochu terminálu k vykreslování vizuálních prvků, jako jsou okna, menu, tabulky nebo interaktivní grafy, často s využitím knihoven jako \texttt{ncurses} nebo moderních frameworků v jazyce Go (např. \texttt{Bubble Tea}).
+
+Hlavní rozdíl spočívá v komplexitě a způsobu interakce. CLI je ideální pro jednorázové příkazy a automatizaci v nekonečném proudu (batch processing). TUI je naproti tomu vhodnější pro interaktivní nástroje, kde uživatel potřebuje neustálý přehled o stavu systému nebo kde je navigace v datech pomocí klávesových zkratek efektivnější než vypisování parametrů (např. textové editory, správci souborů nebo dashboardy pro monitoring).
 \section{Architektura VPN a Zero Trust}
 \label{sec:vpn_zero_trust}
 Tradiční pojetí VPN, které propojuje sítě, je v moderním pojetí nahrazováno principy Zero Trust Network Access (ZTNA).
