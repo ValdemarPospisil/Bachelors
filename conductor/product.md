@@ -1,0 +1,2 @@
+# Initial Concept
+Tento projekt je zaměřen na sepsání bakalářské práce o vývoji nativního CLI klienta pro GoodAccess. Práce dokumentuje vývoj CLI v Go a backendu v .NET, jejich komunikaci přes Unix Domain Sockets a ukazuje kompletní proces vývoje softwaru od analýzy až po distribuci. Klient je navržen jako "hloupý" frontend, zatímco logika je v .NET modulu využívajícím existující infrastrukturu (např. VPN). Text je psán v češtině z pohledu 23letého studenta IT.
