@@ -13,24 +13,26 @@ Tato kapitola analyzuje klíčové technologie, architektonické principy a bezp
 Tradiční pojetí VPN, které propojuje sítě, je v moderním pojetí nahrazováno principy Zero Trust Network Access (ZTNA).
 
 \subsection{Koncept Zero Trust a GoodAccess}
-Produkt GoodAccess staví na principu, že žádné zařízení ani uživatel není důvěryhodný pouze na základě své pozice v síti.
+Produkt GoodAccess implementuje principy Zero Trust Network Access (ZTNA), které vycházejí z předpokladu, že žádné zařízení ani uživatel nesmí mít automatickou důvěru jen na základě své přítomnosti v síti (např. v rámci lokální sítě v kanceláři). Místo tradičního modelu "hrad a příkop" (perimetrová bezpečnost) se ZTNA zaměřuje na identitu uživatele a kontext zařízení (tzv. Device Posture).
 
-% Zde popiš GoodAccess cloud VPN, identitu, a rozdíl oproti klasické "site-to-site" VPN.
+V ekosystému GoodAccess slouží Cloud VPN jako brána, která dynamicky přiděluje přístup k podnikovým zdrojům na základě ověřené identity a politiky přístupu. Pro CLI klienta to znamená nutnost implementace nejen samotného tunelu, ale i procesů autentizace (např. pomocí SSO/OIDC) a periodického ověřování stavu zařízení (monitoring procesů, verze OS), což je v headless prostředí bez prohlížeče specifická výzva.
 
 \subsection{Protokol WireGuard}
-WireGuard představuje moderní standard pro VPN tunely. Jak uvádí Donenfeld \cite{wireguard_paper}, klíčovou vlastností je běh v prostoru jádra (Kernel Space).
+WireGuard představuje moderní komunikační protokol a software, který implementuje virtuální privátní síť (VPN) s důrazem na vysokorychlostní výkon a jednoduchou konfiguraci. Jak uvádí Donenfeld \cite{wireguard_paper}, klíčovou vlastností je běh v prostoru jádra (Kernel Space) a využití moderní kryptografie (např. ChaCha20, Curve25519). 
 
-% Zde použij svůj text o WireGuardu
+Oproti starším protokolům jako OpenVPN nebo IPsec se WireGuard vyznačuje výrazně menším rozsahem zdrojového kódu, což usnadňuje bezpečnostní audity a snižuje pravděpodobnost chyb. V prostředí Linuxu je WireGuard od verze jádra 5.6 integrován jako nativní síťové rozhraní. Pro účely této práce je podstatné, že ačkoliv existují nástroje jako \texttt{wg} nebo \texttt{wg-quick}, tyto nástroje jsou navrženy pro statickou konfiguraci a postrádají pokročilé mechanismy zpětné vazby a dynamické správy, které vyžaduje enterprise řešení typu GoodAccess. Implementace tunelu v rámci této práce se proto zaměřuje na programové řízení WireGuardu přímo ze systémové služby v .NET.
 
 \section{Architektura OS Linux a správa systému}
 \label{sec:linux_architektura}
 Pro pochopení interakce mezi CLI klientem a systémovými prostředky je nutné definovat hranice mezi uživatelským prostorem a jádrem.
 
 \subsection{Jádro, Netlink a virtuální FS}
-% Zde použij svůj text o Kernelu, /proc, /sys a Netlinku [cite: 3-9]
+Operační systém Linux striktně odděluje privilegovaný prostor jádra (Kernel Space) od uživatelského prostoru (User Space). Pro aplikace typu VPN klienta je klíčová schopnost konfigurovat síťové parametry, které spravuje právě jádro. K tomuto účelu Linux poskytuje několik rozhraní.
+
+Virtuální souborové systémy \texttt{/proc} a \texttt{/sys} umožňují aplikacím číst stav systému a měnit některé parametry pouhým zápisem do souboru (např. povolení IP forwardingu). Nicméně pro komplexnější operace, jako je vytváření síťových rozhraní nebo správa směrovacích tabulek, se využívá rozhraní \texttt{Netlink}. Jak uvádí Ward \cite{ward_linux}, \texttt{Netlink} je socketové rozhraní sloužící ke komunikaci mezi jádrem a uživatelskými procesy. V této práci je \texttt{Netlink} využíván nepřímo skrze systémové nástroje nebo knihovny v .NET, které zajišťují nízkoúrovňovou konfiguraci WireGuard rozhraní.
 
 \subsection{Správa služeb a Systemd}
-% Zde použij svůj text o Systemd
+Moderní linuxové distribuce využívají jako inicializační systém a správce služeb \texttt{systemd}. Pro aplikaci GoodAccess CLI je \texttt{systemd} zásadní, protože zajižduje běh backendové služby (\texttt{CLIService}) jako systémového démona, který je spouštěn při startu systému a automaticky restartován v případě chyby. \texttt{systemd} také umožňuje definovat závislosti služeb, což zaručuje, že se VPN služba pokusí o navázání spojení až ve chvíli, kdy je dostupné síťové rozhraní. V rámci této práce jsou vytvořeny \textit{unit} soubory, které definují životní cyklus služby a její integraci do systému.
 
 \subsection{Bezpečné ukládání tajemství (Secure Storage)}
 Kritickým aspektem VPN klienta je ochrana privátních klíčů a tokenů. Linux standardně využívá \textit{Secret Service API} komunikující přes DBus, což umožňuje aplikacím ukládat tajemství do klíčenky (Keyring) spravované systémem, nikoliv do prostých textových souborů.
@@ -40,14 +42,17 @@ Kritickým aspektem VPN klienta je ochrana privátních klíčů a tokenů. Linu
 Architektura řešení je rozdělena na privilegovanou službu (Daemon) a uživatelské rozhraní (Client).
 
 \subsection{Backend: Platforma .NET}
-% Zde použij svůj text o .NETu
+Pro implementaci systémové služby (Daemon) byla zvolena platforma .NET 8. Tato volba vychází především z potřeby kontinuity s existující infrastrukturou GoodAccess, která je na technologiích Microsoft .NET postavena. .NET na Linuxu dnes nabízí vysoký výkon a plnou podporu pro systémové programování, včetně nativní interakce s nízkoúrovňovými API systému přes P/Invoke nebo knihovny typu Microsoft.Extensions.Hosting pro běh služeb. Modul \texttt{CLIService} tak může sdílet klíčovou logiku pro správu tokenů, certifikátů a stavu tunelu se stávajícím grafickým klientem, což zaručuje konzistentní chování aplikace napříč různými rozhraními.
 
 \subsection{Frontend: Jazyk Go a TUI}
-Pro klientskou část byl zvolen jazyk Go. Jeho výhodou je kompilace do statické binárky bez externích závislostí a silná podpora pro tvorbu CLI aplikací (knihovny Cobra, Viper). Pro interaktivní prvky je využita knihovna BubbleTea.
+Pro klientskou část (CLI frontend) byl zvolen jazyk Go. Go se v posledních letech stal de facto standardem pro vývoj cloud-native a systémových nástrojů v ekosystému Linux (např. Docker, Kubernetes, Terraform). Hlavní výhodou je schopnost kompilace do jediné staticky linkované binárky bez nutnosti instalace runtime prostředí, což je pro nástroj příkazové řádky ideální. Go nabízí vynikající knihovny pro tvorbu moderních terminálových rozhraní – v této práci je využita knihovna \texttt{Cobra} pro definici struktury příkazů a framework \texttt{Bubble Tea} pro reaktivní zobrazení stavu a interaktivní prvky.
 
 \subsection{Meziprocesová komunikace (IPC)}
-Komunikace mezi Go klientem a .NET službou probíhá přes Unix Domain Sockets.
-% Zde použij svůj text o IPC a gRPC [cite: 26-32]
+V architektuře, kde je logika aplikace oddělena od uživatelského rozhraní do samostatných procesů, hraje klíčovou roli meziprocesová komunikace (IPC – Inter-Process Communication). Pro potřeby této práce byla zvolena technologie Unix Domain Sockets (UDS).
+
+Unix Domain Sockets představují datový komunikační koncový bod pro výměnu dat mezi procesy běžícími na stejném hostitelském operačním systému. Na rozdíl od síťových socketů (TCP/IP), které jsou určeny pro komunikaci přes síť, UDS nevyužívají síťový zásobník (network stack), což výrazně snižuje režii a zvyšuje propustnost komunikace.
+
+Z pohledu bezpečnosti, která je u VPN klienta kritická, nabízejí UDS zásadní výhodu v podobě využití standardních souborových oprávnění systému Linux. Přístup k socketu lze omezit na konkrétního uživatele nebo skupinu, čímž se zamezí neoprávněným aplikacím v komunikaci se systémovou službou. V navržené architektuře slouží UDS jako transportní vrstva pro protokol gRPC, který zajišťuje silně typované rozhraní pro příkazy jako autentizace, připojení nebo monitoring stavu.
 
 \section{Distribuce softwaru}
 \label{sec:distribuce}

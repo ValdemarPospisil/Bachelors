@@ -9,14 +9,14 @@ Platforma GoodAccess v současné době nabízí řešení primárně prostředn
 V serverovém prostředí Linux, které je dominantní platformou pro cloudovou infrastrukturu, často není grafické rozhraní dostupné (tzv. headless servery). Administrátoři a DevOps inženýři vyžadují nástroje, které lze ovládat z příkazové řádky, snadno skriptovat a integrovat do CI/CD pipelin. Absence nativního CLI (Command Line Interface) klienta pro Linux představuje pro GoodAccess značné omezení v možnosti nasazení v těchto scénářích.
 
 \section*{Cíle práce}
-Hlavním cílem této bakalářské práce je navrhnout a implementovat funkční prototyp CLI aplikace pro správu GoodAccess VPN připojení na Linux distribucích. Aplikace bude navržena s důrazem na bezpečnost, modularitu a soulad se stávající infrastrukturou GoodAccess.
+Hlavním cílem této bakalářské práce je navrhnout a implementovat funkční prototyp CLI aplikace pro správu GoodAccess VPN připojení na Linux distribucích. Důraz je kladen na vytvoření "lehkého" a nativního uživatelského rozhraní, které efektivně komunikuje se systémovou službou a využívá stávající podnikovou logiku pro správu VPN tunelů. Práce má ambici ukázat kompletní inženýrský proces vývoje softwaru od analýzy požadavků až po distribuci finálních balíčků.
 
 Dílčí cíle práce zahrnují:
 \begin{itemize}
-    \item Analýzu specifik operačního systému Linux s ohledem na správu síťových rozhraní a systémových služeb.
-    \item Návrh architektury řešení, která odděluje privilegovanou logiku služby od uživatelského rozhraní.
-    \item Implementaci komunikace mezi klientem (Go) a backendovou službou (.NET) pomocí IPC.
-    \item Integraci podpory pro protokol WireGuard a zajištění zpětné kompatibility.
+    \item Analýzu a návrh architektury založené na principu oddělení logiky od prezentace (tzv. "stupid frontend" přístup).
+    \item Implementaci meziprocesní komunikace (IPC) mezi uživatelským rozhraním v jazyce Go a systémovým modulem v .NET prostřednictvím Unix Domain Sockets.
+    \item Vytvoření modulu v .NET pro bezpečné řízení VPN tunelů (OpenVPN, WireGuard) s využitím existujících komponent platformy GoodAccess.
+    \item Návrh a realizaci automatizovaného testování a balíčkování aplikace pro distribuce Debian a Fedora.
 \end{itemize}
 
 \section*{Struktura práce}
