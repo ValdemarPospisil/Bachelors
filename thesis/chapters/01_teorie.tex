@@ -28,19 +28,27 @@ Důležitou roli hraje také syntaxe příkazů. Moderní nástroje se snaží d
 V rámci terminálu se můžeme setkat také s textovým uživatelským rozhraním (TUI – Text User Interface). Na rozdíl od klasického CLI, které vypisuje řádky textu v sekvenčním pořadí, TUI využívá celou plochu terminálu k vykreslování vizuálních prvků, jako jsou okna, menu, tabulky nebo interaktivní grafy, často s využitím knihoven jako \texttt{ncurses} nebo moderních frameworků v jazyce Go (např. \texttt{Bubble Tea}).
 
 Hlavní rozdíl spočívá v komplexitě a způsobu interakce. CLI je ideální pro jednorázové příkazy a automatizaci v nekonečném proudu (batch processing). TUI je naproti tomu vhodnější pro interaktivní nástroje, kde uživatel potřebuje neustálý přehled o stavu systému nebo kde je navigace v datech pomocí klávesových zkratek efektivnější než vypisování parametrů (např. textové editory, správci souborů nebo dashboardy pro monitoring).
-\section{Architektura VPN a Zero Trust}
+
+\section{Architektura VPN a principy Zero Trust}
 \label{sec:vpn_zero_trust}
-Tradiční pojetí VPN, které propojuje sítě, je v moderním pojetí nahrazováno principy Zero Trust Network Access (ZTNA).
+Tradiční pojetí zabezpečení sítě, založené na ochraně perimetru, prochází v posledních letech zásadní transformací. Tato sekce popisuje evoluci od klasických VPN tunelů k moderní architektuře Zero Trust Network Access (ZTNA).
 
-\subsection{Koncept Zero Trust a GoodAccess}
-Produkt GoodAccess implementuje principy Zero Trust Network Access (ZTNA), které vycházejí z předpokladu, že žádné zařízení ani uživatel nesmí mít automatickou důvěru jen na základě své přítomnosti v síti (např. v rámci lokální sítě v kanceláři). Místo tradičního modelu "hrad a příkop" (perimetrová bezpečnost) se ZTNA zaměřuje na identitu uživatele a kontext zařízení (tzv. Device Posture).
+\subsection{Tradiční VPN a perimetrová bezpečnost}
+Virtuální privátní síť (VPN) je technologie, která umožňuje vytvořit bezpečné, šifrované spojení (tunel) mezi dvěma body v rámci nezabezpečené sítě, jako je internet. Princip tunelování spočívá v zapouzdření (enkapsulaci) síťových paketů do jiného protokolu, který zajišťuje integritu a důvěrnost přenášených dat.
 
-V ekosystému GoodAccess slouží Cloud VPN jako brána, která dynamicky přiděluje přístup k podnikovým zdrojům na základě ověřené identity a politiky přístupu. Pro CLI klienta to znamená nutnost implementace nejen samotného tunelu, ale i procesů autentizace (např. pomocí SSO/OIDC) a periodického ověřování stavu zařízení (monitoring procesů, verze OS), což je v headless prostředí bez prohlížeče specifická výzva.
+Historicky se organizace spoléhaly na model „hrad a příkop“ (Castle-and-Moat). V tomto modelu je vnitřní síť považována za důvěryhodnou zónu, která je od vnějšího světa oddělena firewallem (příkopem). VPN v tomto kontextu slouží jako „padací most“, který umožňuje vzdáleným uživatelům vstoupit do vnitřní sítě. Jakmile však uživatel získá přístup, má často široký dosah k mnoha zdrojům v rámci sítě. Tento přístup trpí kritickou slabinou: pokud útočník kompromituje jediné zařízení uvnitř perimetru, může se v síti volně pohybovat (laterální pohyb) a napadat další systémy, protože vnitřní síť mu implicitně důvěřuje.
 
-\subsection{Protokol WireGuard}
-WireGuard představuje moderní komunikační protokol a software, který implementuje virtuální privátní síť (VPN) s důrazem na vysokorychlostní výkon a jednoduchou konfiguraci. Jak uvádí Donenfeld \cite{wireguard_paper}, klíčovou vlastností je běh v prostoru jádra (Kernel Space) a využití moderní kryptografie (např. ChaCha20, Curve25519). 
+\subsection{Zero Trust Network Access (ZTNA) a GoodAccess}
+Filozofie Zero Trust (nulová důvěra) tento model opouští a vychází z principu „nikdy nedůvěřuj, vždy prověřuj“ (Never trust, always verify). V architektuře ZTNA není důvěra nikdy udělena na základě fyzického umístění uživatele nebo jeho IP adresy. Každý pokus o přístup k jakémukoliv zdroji musí být individuálně autentizován, autorizován a šifrován.
 
-Oproti starším protokolům jako OpenVPN nebo IPsec se WireGuard vyznačuje výrazně menším rozsahem zdrojového kódu, což usnadňuje bezpečnostní audity a snižuje pravděpodobnost chyb. V prostředí Linuxu je WireGuard od verze jádra 5.6 integrován jako nativní síťové rozhraní. Pro účely této práce je podstatné, že ačkoliv existují nástroje jako \texttt{wg} nebo \texttt{wg-quick}, tyto nástroje jsou navrženy pro statickou konfiguraci a postrádají pokročilé mechanismy zpětné vazby a dynamické správy, které vyžaduje enterprise řešení typu GoodAccess. Implementace tunelu v rámci této práce se proto zaměřuje na programové řízení WireGuardu přímo ze systémové služby v .NET.
+Klíčovým prvkem ZTNA je Software Defined Perimeter (SDP). SDP vytváří dynamickou, virtuální hranici kolem aplikací a služeb, čímž je činí „neviditelnými“ pro veřejný internet i pro neautorizované uživatele v lokální síti. GoodAccess implementuje tyto principy formou cloudové platformy, která nahrazuje tradiční VPN brány \cite{goodaccess_doc}. Místo statických IP adres využívá identitu uživatele (často propojenou s SSO/OIDC) a kontext zařízení (tzv. Device Posture) k dynamickému přidělování přístupových práv k jednotlivým systémům \cite{goodaccess_architecture}. Tím se radikálně snižuje plocha možného útoku, protože uživatel vidí pouze ty zdroje, ke kterým má explicitní oprávnění.
+
+\subsection{Srovnání protokolů WireGuard a OpenVPN}
+Pro realizaci samotného šifrovaného spojení využívá GoodAccess dva dominantní protokoly: OpenVPN a WireGuard. Každý z nich představuje jinou generaci technologií a liší se především architekturou a flexibilitou správy.
+
+OpenVPN je dlouholetým standardem v oblasti VPN. Je postaven na knihovně OpenSSL a nabízí extrémně široké možnosti konfigurace, včetně podpory různých šifrovacích algoritmů a transportních protokolů (UDP i TCP). Tato univerzalita je však vykoupena vysokou komplexitou zdrojového kódu (stovky tisíc řádků), což ztěžuje bezpečnostní audity a vede k vyšší režii při zpracování paketů, zejména v uživatelském prostoru.
+
+Naproti tomu WireGuard je moderní protokol navržený s důrazem na jednoduchost, rychlost a moderní kryptografii \cite{wireguard_paper}. S rozsahem přibližně 4 000 řádků kódu je WireGuard snadno auditovatelný a díky implementaci přímo v jádře Linuxu dosahuje výrazně vyšší propustnosti a nižší latence než OpenVPN. Z pohledu správy systému se WireGuard chová jako standardní síťové rozhraní, což zjednodušuje konfiguraci směrování a integraci do systémových nástrojů. Pro dynamické enterprise prostředí, které GoodAccess obsluhuje, je WireGuard ideální volbou díky rychlému navazování spojení (handshake) a vysoké odolnosti vůči změnám síťového prostředí.
 
 \section{Architektura OS Linux a správa systému}
 \label{sec:linux_architektura}
