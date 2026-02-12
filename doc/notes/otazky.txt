@@ -1,0 +1,20 @@
+
+    - rozdělení do složek?
+    - ověřování každého kroku?
+    - helper soubor?
+    - nabalování testů?
+    - jak na severity?
+    - správné rozdělení do it sekcí?
+    - správně veřešený onboarding?
+    - Všechny různé scénáře?
+    - Přidat ověření změny IP adresy?
+    - Horizontální smoke testy?
+    - Sepsat scénáře ke všemu co testuji?
+    - 
+
+- přidat UI ověření změny 
+- nejsou tam ID u delete PIN (Warning this action will delete your pin, btn_pin_biometrics_delete_pin_ok, btn_pin_biometrics_delete_pin_cancel)
+- vyřešit PIN zadávání (ted se kliká na android klávesnici <- ne vždy se otevře -> přidat klik na ten input pro focus)
+
+
+

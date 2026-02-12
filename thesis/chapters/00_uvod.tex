@@ -1,0 +1,23 @@
+\addchap{Úvod}
+\label{chap:uvod}
+
+V posledních letech došlo k zásadnímu posunu v organizaci práce a správě síťové infrastruktury. S masivním přechodem na práci na dálku a distribuované týmy se tradiční modely zabezpečení sítě ukazují jako nedostatečné. Organizace stále častěji adoptují architektury typu Zero Trust Network Access (ZTNA), kde je bezpečné VPN připojení klíčovým prvkem nejen pro koncové uživatele, ale i pro serverovou infrastrukturu.
+
+Platforma GoodAccess v současné době nabízí řešení primárně prostřednictvím grafického uživatelského rozhraní (GUI). Toto řešení je vhodné pro běžné uživatele na osobních počítačích, avšak naráží na limity v prostředí serverů, automatizovaných systémů a DevOps pracovních postupů.
+
+\section*{Motivace}
+V serverovém prostředí Linux, které je dominantní platformou pro cloudovou infrastrukturu, často není grafické rozhraní dostupné (tzv. headless servery). Administrátoři a DevOps inženýři vyžadují nástroje, které lze ovládat z příkazové řádky, snadno skriptovat a integrovat do CI/CD pipelin. Absence nativního CLI (Command Line Interface) klienta pro Linux představuje pro GoodAccess značné omezení v možnosti nasazení v těchto scénářích.
+
+\section*{Cíle práce}
+Hlavním cílem této bakalářské práce je navrhnout a implementovat funkční prototyp CLI aplikace pro správu GoodAccess VPN připojení na Linux distribucích. Aplikace bude navržena s důrazem na bezpečnost, modularitu a soulad se stávající infrastrukturou GoodAccess.
+
+Dílčí cíle práce zahrnují:
+\begin{itemize}
+    \item Analýzu specifik operačního systému Linux s ohledem na správu síťových rozhraní a systémových služeb.
+    \item Návrh architektury řešení, která odděluje privilegovanou logiku služby od uživatelského rozhraní.
+    \item Implementaci komunikace mezi klientem (Go) a backendovou službou (.NET) pomocí IPC.
+    \item Integraci podpory pro protokol WireGuard a zajištění zpětné kompatibility.
+\end{itemize}
+
+\section*{Struktura práce}
+Práce je rozdělena do několika logických celků. Kapitola \ref{chap:teorie} se věnuje teoretickým východiskům, popisuje architekturu Linuxu, použité VPN protokoly a metody meziprocesové komunikace. Kapitola \ref{chap:analyza} definuje požadavky na systém a analyzuje možné architektonické přístupy. Následující kapitoly se poté věnují samotnému návrhu, implementaci a testování výsledného řešení.

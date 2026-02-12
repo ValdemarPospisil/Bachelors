@@ -1,0 +1,26 @@
+2 části a půl:
+
+Service - .NET 8 (per device)
+|
+
+
+UI klient - electron + React, js, ts (per user)
+
+
+.sln solution
+
+GoodAcces.Shared -
+GoodAccessService -
+ - client messenger (zpracovavá příkazy od ui klient)
+      - protoservice (connect, disconnect, persisnet) --IAgent
+      - clientservice (dpc (posture check), di (device invenotry (device posture)), login token, certificate (jen windows)) - IDevicePosture 
+      - authservice (issuetoken) --jediné co dělá
+
+
+service se podívat: ClientMessenger.cs --Listenting
+
+
+
+
+
+

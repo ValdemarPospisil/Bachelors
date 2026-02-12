@@ -1,0 +1,96 @@
+\chapter{Teoretická východiska}
+\label{chap:teorie}
+
+Tato kapitola analyzuje klíčové technologie, architektonické principy a bezpečnostní standardy nezbytné pro návrh moderního CLI nástroje v prostředí OS Linux. Text postupuje od obecné problematiky příkazové řádky přes síťové protokoly až po specifika implementačních platforem .NET a Go.
+
+\section{Rozhraní příkazové řádky a automatizace}
+\label{sec:cli_automatizace}
+V prostředí správy serverů, cloudové infrastruktury a moderních DevOps procesů hraje rozhraní příkazové řádky (CLI – Command Line Interface) nezastupitelnou roli. Na rozdíl od grafických uživatelských rozhraní (GUI), která jsou primárně orientována na interaktivní práci koncového uživatele a vizuální prezentaci informací, CLI se zaměřuje na efektivitu, přesnost a snadnou reprodukovatelnost úkonů.
+
+\subsection{Role CLI v moderní správě systémů}
+Základní výhodou CLI je jeho textová povaha. Text je univerzální médium, které lze snadno ukládat, verzovat, přenášet a hlavně řetězit. V prostředí Linuxu je tento koncept ztělesněn filozofií malých, jednoúčelových nástrojů, které spolu komunikují přes standardní proudy (stdin, stdout, stderr). Administrátor headless serveru – tedy stroje bez připojeného monitoru a grafického subsystému – je na CLI plně závislý. Vzdálená správa přes protokol SSH (Secure Shell) je standardem, který vyžaduje minimální šířku pásma a poskytuje maximální kontrolu nad systémem.
+
+V kontextu DevOps a automatizace se CLI stává stavebním kamenem CI/CD (Continuous Integration / Continuous Deployment) pipelin. Nástroje jako \texttt{kubectl} pro správu Kubernetes, \texttt{terraform} pro definici infrastruktury jako kódu nebo \texttt{ansible} pro konfiguraci systémů, jsou primárně navrženy jako CLI aplikace. Možnost spustit konfiguraci VPN připojení jednoduchým příkazem v rámci skriptu umožňuje automatizovat testování v izolovaných sítích nebo dynamické připojování build-serverů k privátním zdrojům.
+
+\subsection{TUI a uživatelská zkušenost v terminálu}
+Ačkoliv je CLI často vnímáno jako strohé textové rozhraní, moderní přístupy k návrhu terminálových aplikací přinášejí koncept TUI (Terminal User Interface). TUI využívá pokročilé formátování, ANSI únikové sekvence pro barvy a pseudografické prvky k vytvoření interaktivního prostředí v rámci terminálu.
+
+Při návrhu CLI nástroje pro správu VPN je uživatelská zkušenost (UX) kritickým faktorem. Administrátor potřebuje jasnou a okamžitou zpětnou vazbu o stavu připojení. Tradiční CLI přístup (vstup -> zpracování -> výstup -> konec) je v případě interaktivních operací, jako je výběr gatewaye nebo zadávání MFA (Multi-Factor Authentication) kódu, doplňován o prvky jako:
+\begin{itemize}
+    \item \textbf{Interaktivní selektory:} Možnost vybrat položku ze seznamu pomocí šipek místo ručního vypisování ID.
+    \text{Progresivní indikátory (spinners):} Vizuální potvrzení, že aplikace nezamrzla během čekání na síťovou odpověď nebo navazování handshake.
+    \item \textbf{Stavové panely:} Dynamicky se aktualizující části obrazovky zobrazující aktuální přenosovou rychlost nebo čas od připojení.
+\end{itemize}
+
+Použití knihoven jako \textbf{Bubble Tea}, která implementuje architekturu inspirovanou jazykem Elm (Model-View-Update), umožňuje vývojářům vytvářet komplexní a testovatelné interaktivní aplikace. Tento přístup řeší jeden z hlavních nedostatků starších CLI nástrojů – nepřehlednost při provádění vícestupňových operací. Dobře navržené CLI by mělo být intuitivní pro člověka, ale zároveň parseovatelné pro stroj (např. pomocí přepínače pro JSON výstup), čímž se uzavírá kruh mezi interaktivitou a automatizací.
+
+\subsection{Principy návrhu a idempotence}
+Při tvorbě systémových nástrojů, jako je klient pro VPN, je nezbytné dodržovat zavedené standardy návrhu (např. \textit{The Art of Unix Programming} od Erica S. Raymonda). Mezi klíčové principy patří:
+\begin{itemize}
+    \item \textbf{Pravidlo ticha:} Pokud nástroj nemá co říct (operace proběhla úspěšně a není vyžadován výstup), neměl by vypisovat nic. To usnadňuje použití v tichých skriptech.
+    \item \textbf{Idempotence:} Opakované spuštění stejného příkazu se stejnými parametry by mělo vést ke stejnému výslednému stavu systému bez vyvolání chyb. Například příkaz pro připojení k VPN by neměl selhat, pokud je uživatel již připojen, ale pouze potvrdit aktuální stav.
+    \item \textbf{Hierarchická struktura příkazů:} Použití vzoru \texttt{nástroj verb noun} (např. \texttt{goodaccess connect gateway-1}) zvyšuje čitelnost a rozšiřitelnost. Frameworky jako \textbf{Cobra} v jazyce Go tento vzor přímo podporují a automaticky generují dokumentaci a našeptávání (autocompletion).
+\end{itemize}
+Správná implementace těchto principů zajišťuje, že nástroj bude spolehlivý v automatizovaných prostředích, kde nelze očekávat zásah člověka při výskytu neočekávaného (ale predikovatelného) stavu.
+
+\subsection{Bezpečnost a autentizace v CLI}
+Specifickou výzvou pro CLI aplikace je správa citlivých údajů. V grafických rozhraních je běžné využívat interaktivní dialogy pro zadávání hesel, které nejsou ukládány do historie. V CLI je nutné předcházet praktikám, kdy uživatelé zadávají hesla přímo jako argumenty příkazů (např. \texttt{--password mysecret}), protože tyto údaje zůstávají viditelné v seznamu běžících procesů (\texttt{ps aux}) a v historii shellu (\texttt{.bash\_history}).
+
+Moderní CLI nástroje tento problém řeší několika způsoby:
+\begin{enumerate}
+    \item \textbf{Token-based autentizace:} Místo trvalých hesel se využívají krátkodobé přístupové tokeny nebo API klíče.
+    \item \textbf{Interaktivní vstup se skrytím znaků:} Pokud je vyžadováno heslo, aplikace jej načte ze standardního vstupu bez vypisování znaků na obrazovku.
+    \item \textbf{Integrace se systémovou klíčenkou:} Využití Secret Service API na Linuxu pro bezpečné uložení přihlášené session, což bude podrobněji rozebráno v sekci věnované správě systému.
+\end{enumerate}
+Zajištění bezpečnosti již v návrhu CLI rozhraní je klíčové pro ochranu firemní sítě, do které VPN klient přistupuje, zejména v prostředí sdílených serverů.
+
+
+\section{Architektura VPN a Zero Trust}
+\label{sec:vpn_zero_trust}
+Tradiční pojetí VPN, které propojuje sítě, je v moderním pojetí nahrazováno principy Zero Trust Network Access (ZTNA).
+
+\subsection{Koncept Zero Trust a GoodAccess}
+Produkt GoodAccess staví na principu, že žádné zařízení ani uživatel není důvěryhodný pouze na základě své pozice v síti.
+
+% Zde popiš GoodAccess cloud VPN, identitu, a rozdíl oproti klasické "site-to-site" VPN.
+
+\subsection{Protokol WireGuard}
+WireGuard představuje moderní standard pro VPN tunely. Jak uvádí Donenfeld \cite{wireguard_paper}, klíčovou vlastností je běh v prostoru jádra (Kernel Space).
+
+% Zde použij svůj text o WireGuardu
+
+\section{Architektura OS Linux a správa systému}
+\label{sec:linux_architektura}
+Pro pochopení interakce mezi CLI klientem a systémovými prostředky je nutné definovat hranice mezi uživatelským prostorem a jádrem.
+
+\subsection{Jádro, Netlink a virtuální FS}
+% Zde použij svůj text o Kernelu, /proc, /sys a Netlinku [cite: 3-9]
+
+\subsection{Správa služeb a Systemd}
+% Zde použij svůj text o Systemd
+
+\subsection{Bezpečné ukládání tajemství (Secure Storage)}
+Kritickým aspektem VPN klienta je ochrana privátních klíčů a tokenů. Linux standardně využívá \textit{Secret Service API} komunikující přes DBus, což umožňuje aplikacím ukládat tajemství do klíčenky (Keyring) spravované systémem, nikoliv do prostých textových souborů.
+
+\section{Implementační technologie}
+\label{sec:technologie}
+Architektura řešení je rozdělena na privilegovanou službu (Daemon) a uživatelské rozhraní (Client).
+
+\subsection{Backend: Platforma .NET}
+% Zde použij svůj text o .NETu
+
+\subsection{Frontend: Jazyk Go a TUI}
+Pro klientskou část byl zvolen jazyk Go. Jeho výhodou je kompilace do statické binárky bez externích závislostí a silná podpora pro tvorbu CLI aplikací (knihovny Cobra, Viper). Pro interaktivní prvky je využita knihovna BubbleTea.
+
+\subsection{Meziprocesová komunikace (IPC)}
+Komunikace mezi Go klientem a .NET službou probíhá přes Unix Domain Sockets.
+% Zde použij svůj text o IPC a gRPC [cite: 26-32]
+
+\section{Distribuce softwaru}
+\label{sec:distribuce}
+Zadání práce vyžaduje přípravu balíčků pro distribuce Debian a Fedora.
+% Zde popiš .deb a .rpm formáty
+
+\section{Metodika vývoje}
+\label{sec:metodika}
+% Zde použij svůj text o XP a Beckovi

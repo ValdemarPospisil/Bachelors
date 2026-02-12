@@ -1,0 +1,34 @@
+\chapter{Implementace}
+\label{chap:implementace}
+
+Kapitola popisuje proces vývoje, použitou strukturu projektu a klíčové implementační detaily jednotlivých komponent.
+
+\section{Struktura projektu a nástroje}
+% Zde:
+% - Popis Clean Architecture v Go (adresáře cmd, internal, pkg).
+% - Použité knihovny (Cobra, Viper, BubbleTea).
+% - Verzování a build proces (Makefiles).
+
+\section{Implementace klienta (Frontend)}
+% Zde:
+% - Jak funguje parsování příkazů (Cobra).
+% - Implementace TUI (BubbleTea model-update-view cyklus).
+% - Komunikační vrstva (odesílání dat do socketu).
+
+\section{Úpravy backendové služby}
+% Zde:
+% - Jak jsi upravil .NET službu, aby naslouchala na Unix Socketu.
+% - Zpracování příkazů a volání WireGuard/OpenVPN logiky.
+% - Handling signálů (SIGTERM, SIGINT).
+
+\section{Integrace WireGuardu}
+% Zde:
+% - Jak služba reálně nastavuje síť (volání 'ip link', 'wg' nebo nativní knihovny).
+% - Řešení DNS a routování.
+
+\section{Distribuční balíčky a Systemd}
+% Zde:
+% - Tvorba .deb / .rpm balíčku.
+% - Unit file pro systemd (jak zajistit start po rebootu).
+
+
