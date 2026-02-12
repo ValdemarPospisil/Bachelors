@@ -1,0 +1,52 @@
+Ing. Jiří Hromádka
+Aplikovaná informatika (Bc.)
+Název tématu v češtině
+GoodAccess CLI klient pro Linux
+Název tématu v angličtině
+GoodAccess CLI client for Linux
+Anotace tématu
+V současné době nabízí GoodAccess VPN řešení především prostřednictvím grafického uživatelského rozhraní, což nevyhovuje všem uživatelským scénářům. Zejména v prostředí serverů, automatizovaných systémů a DevOps pracovních postupů preferují administrátoři a pokročilí uživatelé řešení příkazové řádky pro snadnější automatizaci, skriptování a vzdálenou správu. Absence CLI aplikace pro Linux tak představuje značné omezení pro část zákaznické základny, která vyžaduje flexibilnější a lépe integrovatelné řešení.
+Hlavním cílem této práce je navrhnout a implementovat funkční prototyp CLI aplikace pro správu GoodAccess VPN připojení na Linux distribucích (Debian, Fedora/RHEL) s využitím WireGuard protokolu.
+Dílčí cíle práce zahrnují:
+návrh a implementaci autentizačního mechanismu pro přihlášení uživatelů,
+vytvoření architektury aplikace s důrazem na bezpečnost a modularitu,
+implementaci bezpečného úložiště pro správu citlivých dat (secure storage),
+realizaci funkcí pro správu VPN připojení (navazování, odpojování, monitoring stavu), 
+návrh a implementaci systému aktualizací aplikace, 
+vytvoření komplexní testovací sady pro ověření funkčnosti a bezpečnosti,
+přípravu distribučních balíčků pro cílové Linux distribuce.
+Výstupy práce budou zahrnovat:
+CLI aplikaci s minimální funkcionalitou pokrývající autentizaci uživatele, navázání a odpojení VPN spojení, zobrazení stavu připojení a základní správu konfigurace,
+integraci s WireGuard protokolem pro nastavení VPN tunelů,
+implementaci secure storage mechanismu pro bezpečné uložení přihlašovacích údajů a klíčů,
+distribuční balíčky pro Debian (.deb) a Fedora (.rpm) včetně instalačních skriptů,
+automatizované testy pokrývající minimálně kritické funkce (autentizace, připojení, bezpečnost úložiště),
+technickou dokumentaci popisující architekturu aplikace, API rozhraní a návod pro vývojáře.
+Osnova:
+Teoretická část
+charakteristika problematiky CLI aplikací a jejich návrhu
+architektura VPN řešení a WireGuard protokol
+architektura a principy produktu GoodAccess
+platforma .NET a vývoj systémových aplikací v prostředí Linux
+bezpečnostní aspekty ukládání citlivých dat v Linuxu
+metodologie agilního vývoje software
+distribuce softwarových balíčků v Linux ekosystému
+Praktická část
+analýza požadavků
+návrh architektury aplikace
+implementace autentizace a API komunikace
+implementace správy VPN připojení
+implementace secure storage
+správa konfigurace a příkazová struktura
+systém aktualizací a distribuce
+testování aplikace
+nasazení a dokumentace
+Literatura
+BECK, Kent a Cynthia ANDRES. Extreme Programming Explained: Embrace Change. 2nd ed. Boston: Addison-Wesley, 2004. ISBN 978-0-321-27865-4.
+Debian Policy Manual [online]. Debian Project, 2024 [cit. 2024-11-07]. Dostupné z: https://www.debian.org/doc/debian-policy/
+DONENFELD, Jason A. WireGuard: Next Generation Kernel Network Tunnel. In: NDSS 2017: Network and Distributed System Security Symposium. San Diego, 2017. Dostupné z: https://www.wireguard.com/papers/wireguard.pdf
+GoodAccess Documentation [online]. GoodAccess, 2024 [cit. 2024-11-07]. Dostupné z: https://support.goodaccess.com/
+PRICE, Mark J. C# 12 and .NET 8 – Modern Cross-Platform Development Fundamentals. 8th ed. Birmingham: Packt Publishing, 2023. ISBN 978-1-80461-713-8.
+WARD, Brian. How Linux Works: What Every Superuser Should Know. 3rd ed. San Francisco: No Starch Press, 2021. ISBN 978-1-7185-0040-2.
+
+
