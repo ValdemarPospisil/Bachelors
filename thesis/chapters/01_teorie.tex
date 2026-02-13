@@ -59,7 +59,16 @@ Linux dělí paměťový prostor na dvě privilegovaně odlišné části. Toto 
     \item \textbf{User Space (Uživatelský prostor):} Zde běží běžné aplikace, včetně námi vyvíjeného CLI klienta a backendové služby.
 \end{itemize}
 
-Aplikace v uživatelském prostoru nemohou přímo přistupovat k hardwaru. Musí využívat tzv. \textit{systémová volání} (syscalls) pro komunikaci s jádrem. V kontextu VPN klienta je typickým příkladem požadavek na vytvoření virtuálního síťového rozhraní.
+Toto oddělení, často označované jako \textit{privilege separation}, zajišťuje, že chybný nebo škodlivý kód v uživatelské aplikaci nemůže přímo ohrozit integritu celého systému. Brian Ward ve své knize \textit{How Linux Works} zdůrazňuje, že zatímco uživatelský prostor je místem, kde probíhá většina „reálné akce“ aplikací, jádro slouží jako arbitr a správce všech hardwarových prostředků \cite{ward_linux}.
+
+Aplikace v uživatelském prostoru nemohou přímo přistupovat k hardwaru. Musí využívat tzv. \textit{systémová volání} (syscalls) pro komunikaci s jádrem. Přechod mezi těmito prostory vyžaduje tzv. \textit{přepnutí kontextu} (context switch), což je operace s nenulovou režií. V kontextu VPN řešení je toto kritické při zpracování síťového provozu – například standardní OpenVPN běží v uživatelském prostoru a musí každý paket kopírovat mezi prostory přes virtuální síťové rozhraní (TUN/TAP), což může omezovat propustnost při vysokém zatížení. Naopak WireGuard, díky své implementaci přímo v prostoru jádra, tuto režii minimalizuje a umožňuje efektivnější zpracování datových toků \cite{wireguard_paper}.
+
+\subsection{Správa procesů a životní cyklus služeb}
+Proces je v Linuxu definován jako instance běžícího programu v paměti. Každý proces má svůj unikátní identifikátor (PID) a je spravován jádrem, které mu přiděluje procesorový čas a paměťové prostředky.
+
+Vytváření nových procesů probíhá pomocí dvojice systémových volání \texttt{fork()} a \texttt{exec()}. Volání \texttt{fork()} vytvoří identickou kopii rodičovského procesu, zatímco \texttt{exec()} nahradí kód běžícího procesu novým programem. Tento mechanismus je základem pro spouštění všech aplikací v systému \cite{ward_linux}.
+
+Specifickou kategorií procesů jsou \textit{daemony} (démoni). Jedná se o procesy, které běží na pozadí, nejsou přímo spojeny s žádným terminálem a typicky čekají na určité události nebo poskytují systémové služby. V navržené architektuře je backend implementován právě jako daemon, který udržuje stav VPN spojení nezávisle na tom, zda je CLI klient zrovna spuštěn. Tento přístup zajišťuje persistenci spojení a umožňuje bezpečné provádění privilegovaných operací (např. manipulaci se síťovými rozhraními) pod identitou uživatele s dostatečnými právy, zatímco samotné CLI rozhraní může běžet v kontextu běžného uživatele.
 
 \subsection{Konfigurace síťového subsystému (Netlink)}
 Tradiční unixové nástroje (`ifconfig`) byly v Linuxu nahrazeny modernějším balíkem `iproute2`. Na pozadí těchto nástrojů stojí rozhraní \textbf{Netlink}.
