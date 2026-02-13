@@ -9,7 +9,7 @@ Tento projekt je zaměřen na vývoj nativního CLI klienta pro službu GoodAcce
 - **VPN Protokoly:** WireGuard a OpenVPN.
 
 ## Dokumentace a Výstupy
-- 📄 [Bakalářská práce (PDF)](./thesis/thesis.pdf)
+- 📄 [Bakalářská práce (PDF)](./thesis/build/thesis.pdf)
 - 📊 [Prezentace (PDF)](./presentations/SKKI1/build/prezentace.pdf)
 
 ---
