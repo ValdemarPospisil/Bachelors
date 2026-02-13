@@ -1,7 +1,20 @@
-build/
 
 # Editor temporary files
 *.swp
 *~
 
-conductor/
+
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+*.xdv
+*.nav
+*.snm
