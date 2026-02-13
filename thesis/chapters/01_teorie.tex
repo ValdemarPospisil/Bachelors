@@ -70,6 +70,13 @@ Vytváření nových procesů probíhá pomocí dvojice systémových volání \
 
 Specifickou kategorií procesů jsou \textit{daemony} (démoni). Jedná se o procesy, které běží na pozadí, nejsou přímo spojeny s žádným terminálem a typicky čekají na určité události nebo poskytují systémové služby. V navržené architektuře je backend implementován právě jako daemon, který udržuje stav VPN spojení nezávisle na tom, zda je CLI klient zrovna spuštěn. Tento přístup zajišťuje persistenci spojení a umožňuje bezpečné provádění privilegovaných operací (např. manipulaci se síťovými rozhraními) pod identitou uživatele s dostatečnými právy, zatímco samotné CLI rozhraní může běžet v kontextu běžného uživatele.
 
+\subsection{Správa služeb a systémová inicializace (systemd)}
+Moderní linuxové distribuce využívají pro správu systému a služeb inicializační systém \texttt{systemd}. Ten v posledním desetiletí nahradil starší standardy jako \texttt{sysvinit} a přinesl zásadní změny v tom, jak jsou procesy na pozadí spouštěny, monitorovány a hierarchicky organizovány.
+
+Zatímco starší systémy spouštěly služby sekvenčně pomocí shell skriptů, což prodlužovalo start systému, \texttt{systemd} využívá agresivní paralelizaci a spouštění služeb na základě požadavků (on-demand), například skrze socketovou aktivaci. Brian Ward vysvětluje, že \texttt{systemd} není pouhým inicializačním procesem s PID 1, ale komplexním ekosystémem pro správu uživatelského prostoru, který integruje logování (\texttt{journald}), správu zařízení (\texttt{udev}) i konfiguraci sítě \cite{ward_linux}.
+
+Z pohledu vývoje VPN klienta jsou klíčové tzv. \textit{Unit files} (jednotky), konkrétně \texttt{.service} soubory. Tyto deklarativní konfigurační soubory definují parametry spuštění služby, její závislosti na síťové konektivitě a bezpečnostní kontext. Díky integraci s mechanismem \textit{cgroups} (Control Groups) má \texttt{systemd} absolutní kontrolu nad všemi procesy patřícími k dané službě, což umožňuje jejich spolehlivé ukončení nebo automatický restart v případě havárie. V navržené architektuře hraje \texttt{systemd} roli garanta běhu backendové služby, zajišťuje její spuštění po startu systému a poskytuje standardizované rozhraní pro monitoring stavu skrze nástroj \texttt{systemctl}.
+
 \subsection{Konfigurace síťového subsystému (Netlink)}
 Tradiční unixové nástroje (`ifconfig`) byly v Linuxu nahrazeny modernějším balíkem `iproute2`. Na pozadí těchto nástrojů stojí rozhraní \textbf{Netlink}.
 
