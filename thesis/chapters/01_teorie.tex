@@ -44,18 +44,14 @@ Filozofie Zero Trust (nulová důvěra) tento model opouští a vychází z prin
 Klíčovým prvkem ZTNA je Software Defined Perimeter (SDP). SDP vytváří dynamickou, virtuální hranici kolem aplikací a služeb, čímž je činí „neviditelnými“ pro veřejný internet i pro neautorizované uživatele v lokální síti. GoodAccess implementuje tyto principy formou cloudové platformy, která nahrazuje tradiční VPN brány \cite{goodaccess_doc}. Místo statických IP adres využívá identitu uživatele (často propojenou s SSO/OIDC) a kontext zařízení (tzv. Device Posture) k dynamickému přidělování přístupových práv k jednotlivým systémům \cite{goodaccess_architecture}. Tím se radikálně snižuje plocha možného útoku, protože uživatel vidí pouze ty zdroje, ke kterým má explicitní oprávnění.
 
 \subsection{Srovnání protokolů WireGuard a OpenVPN}
-Pro realizaci samotného šifrovaného spojení na platformě Linux využívá GoodAccess dva dominantní protokoly: OpenVPN a WireGuard. Každý z nich představuje jinou generaci technologií a liší se především architekturou a flexibilitou správy.
-
-OpenVPN je dlouholetým standardem v oblasti VPN. Je postaven na knihovně OpenSSL a nabízí extrémně široké možnosti konfigurace, včetně podpory různých šifrovacích algoritmů a transportních protokolů (UDP i TCP). Tato univerzalita je však vykoupena vysokou komplexitou zdrojového kódu (stovky tisíc řádků), což ztěžuje bezpečnostní audity a vede k vyšší režii při zpracování paketů, zejména v uživatelském prostoru.
-
 Naproti tomu WireGuard je moderní protokol navržený s důrazem na jednoduchost, rychlost a moderní kryptografii \cite{wireguard_paper}. S rozsahem přibližně 4 000 řádků kódu je WireGuard snadno auditovatelný a díky implementaci přímo v jádře Linuxu dosahuje výrazně vyšší propustnosti a nižší latence než OpenVPN. Z pohledu správy systému se WireGuard chová jako standardní síťové rozhraní, což zjednodušuje konfiguraci směrování a integraci do systémových nástrojů. Pro dynamické enterprise prostředí, které GoodAccess obsluhuje, je WireGuard ideální volbou díky rychlému navazování spojení (handshake) a vysoké odolnosti vůči změnám síťového prostředí.
 
-\chapter{Architektura operačního systému Linux}
-\label{chap:linux_arch}
+\section{Architektura operačního systému Linux}
+\label{sec:linux_arch}
 
-Tato kapitola analyzuje klíčové mechanismy operačního systému Linux, které jsou nezbytné pro běh systémových služeb a správu síťových rozhraní.
+Tato sekce analyzuje klíčové mechanismy operačního systému Linux, které jsou nezbytné pro běh systémových služeb a správu síťových rozhraní.
 
-\section{Struktura systému: User Space a Kernel Space}
+\subsection{Struktura systému: User Space a Kernel Space}
 Linux dělí paměťový prostor na dvě privilegovaně odlišné části. Toto rozdělení je kritické pro stabilitu a bezpečnost systému.
 
 \begin{itemize}
@@ -65,33 +61,35 @@ Linux dělí paměťový prostor na dvě privilegovaně odlišné části. Toto 
 
 Aplikace v uživatelském prostoru nemohou přímo přistupovat k hardwaru. Musí využívat tzv. \textit{systémová volání} (syscalls) pro komunikaci s jádrem. V kontextu VPN klienta je typickým příkladem požadavek na vytvoření virtuálního síťového rozhraní.
 
-\section{Konfigurace síťového subsystému (Netlink)}
+\subsection{Konfigurace síťového subsystému (Netlink)}
 Tradiční unixové nástroje (`ifconfig`) byly v Linuxu nahrazeny modernějším balíkem `iproute2`. Na pozadí těchto nástrojů stojí rozhraní \textbf{Netlink}.
 
 Netlink slouží jako komunikační sběrnice mezi jádrem a uživatelským prostorem. Na rozdíl od `ioctl` volání, Netlink používá standardní mechanismus socketů pro předávání zpráv o konfiguraci sítě (např. přiřazení IP adresy, změna routovací tabulky).
 % Tímto jsi splnil povinnost - víš, že to existuje, aniž bys musel tvrdit, že to programuješ ručně.
 
-\section{Meziprocesová komunikace (IPC) v Linuxu}
+\subsection{Meziprocesová komunikace (IPC) v Linuxu}
 Jelikož je aplikace rozdělena na dvě části (privilegovaná služba a neprivilegovaný klient), je nutné zajistit efektivní přenos dat mezi nimi. V prostředí Linuxu je standardem pro lokální komunikaci využití \textbf{Unix Domain Sockets (UDS)}.
 
-\subsection{Unix Domain Sockets}
+\subsubsection{Unix Domain Sockets}
 Na rozdíl od TCP/IP socketů, které využívají síťová rozhraní a IP adresy, UDS využívají souborový systém. Socket je reprezentován speciálním souborem na disku.
 Hlavní výhody pro systémové služby jsou:
 \begin{enumerate}
     \item \textbf{Výkon:} Data se nekopírují přes síťový zásobník, ale zůstávají v paměti OS.
-    \item \textbf{Bezpečnost a řízení přístupu:} Přístup k socketu lze omezit standardními linuxovými oprávněními souborů (viz sekce \ref{sec:permissions}). To umožňuje, aby se k backendové službě mohl připojit pouze uživatel s příslušným oprávněním.
+    \item \textbf{Bezpečnost a řízení přístupu:} Přístup k socketu lze omezit standardními linuxovými oprávněními souborů. To umožňuje, aby se k backendové službě mohl připojit pouze uživatel s příslušným oprávněním.
 \end{enumerate}
 
-\section{Správa oprávnění a souborový systém}
+\subsection{Správa oprávnění a souborový systém}
 Linux využívá standard \textbf{FHS (Filesystem Hierarchy Standard)}, který definuje, kam mají aplikace ukládat svá data.
 % Tady obhájíš to svoje /opt a configy
 
-\subsection{Model oprávnění DAC}
+\subsubsection{Model oprávnění DAC}
 Linux využívá model Discretionary Access Control (DAC). Každý soubor má vlastníka (User), skupinu (Group) a sadu práv pro čtení, zápis a spuštění (`rwx`).
-Tento mechanismus je klíčový pro uložení citlivých dat (např. konfiguračních souborů s klíči). Pokud je konfigurační soubor nastaven s právy `600` (čtení/zápis pouze pro vlastníka) a vlastníkem je `root`, žádný jiný uživatel v systému nemůže tato data přečíst.
+Tento mechanismus je klíčový pro uložení citlivých dat (např. konfiguračních souborů s klíči). Pokud je konfigurační soubor nastaven s právy \texttt{600} (čtení/zápis pouze pro vlastníka) a vlastníkem je \texttt{root}, žádný jiný uživatel v systému nemůže tato data přečíst.
 
-\subsection{Umístění aplikace}
-Pro software třetích stran, který není součástí oficiální distribuce, vyhrazuje FHS adresář \texttt{/opt}. Konfigurační soubory a logy jsou standardně umisťovány do \texttt{/etc}, respektive \texttt{/var/log}.\section{Implementační technologie}
+\subsubsection{Umístění aplikace}
+Pro software třetích stran, který není součástí oficiální distribuce, vyhrazuje FHS adresář \texttt{/opt}. Konfigurační soubory a logy jsou standardně umisťovány do \texttt{/etc}, respektive \texttt{/var/log}.
+
+\section{Implementační technologie}
 \label{sec:technologie}
 Architektura řešení je rozdělena na privilegovanou službu (Daemon) a uživatelské rozhraní (Client).
 
