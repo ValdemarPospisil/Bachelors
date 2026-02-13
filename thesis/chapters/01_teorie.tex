@@ -99,7 +99,22 @@ Linux využívá standard \textbf{FHS (Filesystem Hierarchy Standard)}, který d
 % Tady obhájíš to svoje /opt a configy
 
 \subsubsection{Model oprávnění DAC}
-Linux využívá model Discretionary Access Control (DAC). Každý soubor má vlastníka (User), skupinu (Group) a sadu práv pro čtení, zápis a spuštění (\texttt{rwx}). Tento mechanismus je základem pro bezpečnost souboro\subsection{Backend: Platforma .NET}
+Linux využívá model Discretionary Access Control (DAC). Každý soubor má vlastníka (User), skupinu (Group) a sadu práv pro čtení, zápis a spuštění (\texttt{rwx}). Tento mechanismus je základem pro bezpečnost souborového systému, kde vlastník může rozhodnout, komu udělí přístup ke svým datům \cite{ward_linux}.
+
+Pro systémové služby, jako je VPN klient, je však tradiční model DAC často nedostačující. Operace jako vytváření virtuálních síťových rozhraní (\texttt{tun/tap}), modifikace směrovacích tabulek nebo konfigurace pravidel firewallu vyžadují nejvyšší úroveň oprávnění – identitu superuživatele \texttt{root}. V prostředí Linuxu je tato moc tradičně binární: proces buď disponuje plnými právy (UID 0), nebo je omezen jako běžný uživatel.
+
+Program \texttt{sudo} (superuser do) představuje standardní nástroj pro bezpečné delegování těchto oprávnění běžným uživatelům. V navržené architektuře běží backendová služba (daemon) právě pod identitou \texttt{root} (typicky spouštěná jako systemd služba s příslušnými právy), což jí umožňuje přímou manipulaci se síťovým zásobníkem jádra. Bezpečnostní bariéru zde tvoří meziprocesová komunikace: CLI frontend, běžící s právy běžného uživatele, komunikuje se službou přes Unix Domain Socket. Právě na úrovni tohoto socketu se model DAC znovu uplatňuje – přístup k souboru socketu je omezen na konkrétní uživatelskou skupinu, čímž je zaručeno, že pouze autorizovaní uživatelé mohou iniciovat VPN spojení.
+
+Moderní Linux dále rozšiřuje tento model o tzv. \textit{Capabilities} (schopnosti). Tento mechanismus umožňuje rozdělit absolutní moc uživatele \texttt{root} na menší, specificky zaměřené celky. Příkladem je schopnost \texttt{CAP\_NET\_ADMIN}, která procesu dovoluje spravovat síťová rozhraní a směrování, aniž by mu musela být udělena plná práva nad celým systémem \cite{ward_linux}. Využití Capabilities tak představuje implementaci principu nejmenších privilegií (Principle of Least Privilege), což výrazně zvyšuje odolnost systému proti potenciálnímu zneužití v případě kompromitace služby.
+
+\subsubsection{Umístění aplikace}
+Pro software třetích stran, který není součástí oficiální distribuce, vyhrazuje FHS adresář \texttt{/opt}. Konfigurační soubory a logy jsou standardně umisťovány do \texttt{/etc}, respektive \texttt{/var/log}.
+
+\section{Implementační technologie}
+\label{sec:technologie}
+Architektura řešení je rozdělena na privilegovanou službu (Daemon) a uživatelské rozhraní (Client).
+
+\subsection{Backend: Platforma .NET}
 Pro implementaci systémové služby (Daemon) byla zvolena platforma .NET 8. Tato volba vychází především z potřeby kontinuity s existující infrastrukturou GoodAccess, která je na technologiích Microsoft .NET postavena. .NET na Linuxu dnes nabízí vysoký výkon a plnou podporu pro systémové programování, včetně nativní interakce s nízkoúrovňovými API systému přes P/Invoke nebo knihovny typu Microsoft.Extensions.Hosting pro běh služeb. Modul \texttt{CLIService} tak může sdílet klíčovou logiku pro správu tokenů, certifikátů a stavu tunelu se stávajícím grafickým klientem, což zaručuje konzistentní chování aplikace napříč různými rozhraními.
 
 \subsection{Frontend: Jazyk Go a TUI}
@@ -110,7 +125,7 @@ V architektuře, kde je logika aplikace oddělena od uživatelského rozhraní d
 
 Unix Domain Sockets představují datový komunikační koncový bod pro výměnu dat mezi procesy běžícími na stejném hostitelském operačním systému. Na rozdíl od síťových socketů (TCP/IP), které jsou určeny pro komunikaci přes síť, UDS nevyužívají síťový zásobník (network stack), což výrazně snižuje režii a zvyšuje propustnost komunikace.
 
-Z pohledu bezpečnosti, která je u VPN klienta kritická, nabízejí UDS zásadní výhodu v podobě využití standardních souborových oprávnění systému Linux. Přístup k socketu lze omezit na konkrétního uživatele nebo skupinu, čímž se zamezí neoprávněným aplikacím v komunikaci se systémovou službou. V navržené architektuře slouží UDS jako transportní vrstva pro protokol gRPC, který zajišťuje silně typované rozhraní pro příkazy jako autentizace, připojení nebo monitoring stavu.
+Z pohledu bezpečnosti, která je u VPN klienta kritická, nabízejí UDS zásadní výhodu v podobě využití standardních souborových oprávnění systému Linux. Přístup k socketu lze omezit na konkrétního uživatele nebo skupinu, čímž se zamezí neoprávněným aplikím v komunikaci se systémovou službou. V navržené architektuře slouží UDS jako transportní vrstva pro protokol gRPC, který zajišťuje silně typované rozhraní pro příkazy jako autentizace, připojení nebo monitoring stavu.
 
 \section{Distribuce softwaru}
 \label{sec:distribuce}
