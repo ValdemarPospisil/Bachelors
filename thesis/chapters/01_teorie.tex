@@ -50,22 +50,48 @@ OpenVPN je dlouholetým standardem v oblasti VPN. Je postaven na knihovně OpenS
 
 Naproti tomu WireGuard je moderní protokol navržený s důrazem na jednoduchost, rychlost a moderní kryptografii \cite{wireguard_paper}. S rozsahem přibližně 4 000 řádků kódu je WireGuard snadno auditovatelný a díky implementaci přímo v jádře Linuxu dosahuje výrazně vyšší propustnosti a nižší latence než OpenVPN. Z pohledu správy systému se WireGuard chová jako standardní síťové rozhraní, což zjednodušuje konfiguraci směrování a integraci do systémových nástrojů. Pro dynamické enterprise prostředí, které GoodAccess obsluhuje, je WireGuard ideální volbou díky rychlému navazování spojení (handshake) a vysoké odolnosti vůči změnám síťového prostředí.
 
-\section{Architektura OS Linux a správa systému}
-\label{sec:linux_architektura}
-Pro pochopení interakce mezi CLI klientem a systémovými prostředky je nutné definovat hranice mezi uživatelským prostorem a jádrem.
+\chapter{Architektura operačního systému Linux}
+\label{chap:linux_arch}
 
-\subsection{Jádro, Netlink a virtuální FS}
-Operační systém Linux striktně odděluje privilegovaný prostor jádra (Kernel Space) od uživatelského prostoru (User Space). Pro aplikace typu VPN klienta je klíčová schopnost konfigurovat síťové parametry, které spravuje právě jádro. K tomuto účelu Linux poskytuje několik rozhraní.
+Tato kapitola analyzuje klíčové mechanismy operačního systému Linux, které jsou nezbytné pro běh systémových služeb a správu síťových rozhraní.
 
-Virtuální souborové systémy \texttt{/proc} a \texttt{/sys} umožňují aplikacím číst stav systému a měnit některé parametry pouhým zápisem do souboru (např. povolení IP forwardingu). Nicméně pro komplexnější operace, jako je vytváření síťových rozhraní nebo správa směrovacích tabulek, se využívá rozhraní \texttt{Netlink}. Jak uvádí Ward \cite{ward_linux}, \texttt{Netlink} je socketové rozhraní sloužící ke komunikaci mezi jádrem a uživatelskými procesy. V této práci je \texttt{Netlink} využíván nepřímo skrze systémové nástroje nebo knihovny v .NET, které zajišťují nízkoúrovňovou konfiguraci WireGuard rozhraní.
+\section{Struktura systému: User Space a Kernel Space}
+Linux dělí paměťový prostor na dvě privilegovaně odlišné části. Toto rozdělení je kritické pro stabilitu a bezpečnost systému.
 
-\subsection{Správa služeb a Systemd}
-Moderní linuxové distribuce využívají jako inicializační systém a správce služeb \texttt{systemd}. Pro aplikaci GoodAccess CLI je \texttt{systemd} zásadní, protože zajižduje běh backendové služby (\texttt{CLIService}) jako systémového démona, který je spouštěn při startu systému a automaticky restartován v případě chyby. \texttt{systemd} také umožňuje definovat závislosti služeb, což zaručuje, že se VPN služba pokusí o navázání spojení až ve chvíli, kdy je dostupné síťové rozhraní. V rámci této práce jsou vytvořeny \textit{unit} soubory, které definují životní cyklus služby a její integraci do systému.
+\begin{itemize}
+    \item \textbf{Kernel Space (Prostor jádra):} Zde běží jádro operačního systému, ovladače zařízení a kritické síťové moduly, včetně implementace protokolu WireGuard. Kód v tomto prostoru má plný přístup k hardwaru.
+    \item \textbf{User Space (Uživatelský prostor):} Zde běží běžné aplikace, včetně námi vyvíjeného CLI klienta a backendové služby.
+\end{itemize}
 
-\subsection{Bezpečné ukládání tajemství (Secure Storage)}
-Kritickým aspektem VPN klienta je ochrana privátních klíčů a tokenů. Linux standardně využívá \textit{Secret Service API} komunikující přes DBus, což umožňuje aplikacím ukládat tajemství do klíčenky (Keyring) spravované systémem, nikoliv do prostých textových souborů.
+Aplikace v uživatelském prostoru nemohou přímo přistupovat k hardwaru. Musí využívat tzv. \textit{systémová volání} (syscalls) pro komunikaci s jádrem. V kontextu VPN klienta je typickým příkladem požadavek na vytvoření virtuálního síťového rozhraní.
 
-\section{Implementační technologie}
+\section{Konfigurace síťového subsystému (Netlink)}
+Tradiční unixové nástroje (`ifconfig`) byly v Linuxu nahrazeny modernějším balíkem `iproute2`. Na pozadí těchto nástrojů stojí rozhraní \textbf{Netlink}.
+
+Netlink slouží jako komunikační sběrnice mezi jádrem a uživatelským prostorem. Na rozdíl od `ioctl` volání, Netlink používá standardní mechanismus socketů pro předávání zpráv o konfiguraci sítě (např. přiřazení IP adresy, změna routovací tabulky).
+% Tímto jsi splnil povinnost - víš, že to existuje, aniž bys musel tvrdit, že to programuješ ručně.
+
+\section{Meziprocesová komunikace (IPC) v Linuxu}
+Jelikož je aplikace rozdělena na dvě části (privilegovaná služba a neprivilegovaný klient), je nutné zajistit efektivní přenos dat mezi nimi. V prostředí Linuxu je standardem pro lokální komunikaci využití \textbf{Unix Domain Sockets (UDS)}.
+
+\subsection{Unix Domain Sockets}
+Na rozdíl od TCP/IP socketů, které využívají síťová rozhraní a IP adresy, UDS využívají souborový systém. Socket je reprezentován speciálním souborem na disku.
+Hlavní výhody pro systémové služby jsou:
+\begin{enumerate}
+    \item \textbf{Výkon:} Data se nekopírují přes síťový zásobník, ale zůstávají v paměti OS.
+    \item \textbf{Bezpečnost a řízení přístupu:} Přístup k socketu lze omezit standardními linuxovými oprávněními souborů (viz sekce \ref{sec:permissions}). To umožňuje, aby se k backendové službě mohl připojit pouze uživatel s příslušným oprávněním.
+\end{enumerate}
+
+\section{Správa oprávnění a souborový systém}
+Linux využívá standard \textbf{FHS (Filesystem Hierarchy Standard)}, který definuje, kam mají aplikace ukládat svá data.
+% Tady obhájíš to svoje /opt a configy
+
+\subsection{Model oprávnění DAC}
+Linux využívá model Discretionary Access Control (DAC). Každý soubor má vlastníka (User), skupinu (Group) a sadu práv pro čtení, zápis a spuštění (`rwx`).
+Tento mechanismus je klíčový pro uložení citlivých dat (např. konfiguračních souborů s klíči). Pokud je konfigurační soubor nastaven s právy `600` (čtení/zápis pouze pro vlastníka) a vlastníkem je `root`, žádný jiný uživatel v systému nemůže tato data přečíst.
+
+\subsection{Umístění aplikace}
+Pro software třetích stran, který není součástí oficiální distribuce, vyhrazuje FHS adresář \texttt{/opt}. Konfigurační soubory a logy jsou standardně umisťovány do \texttt{/etc}, respektive \texttt{/var/log}.\section{Implementační technologie}
 \label{sec:technologie}
 Architektura řešení je rozdělena na privilegovanou službu (Daemon) a uživatelské rozhraní (Client).
 
