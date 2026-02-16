@@ -15,5 +15,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Kapitola 1.4: Technologie a nástroje (Teoretická část)**
+- [~] **Track: Kapitola 1.4: Technologie a nástroje (Teoretická část)**
 *Link: [./tracks/thesis_tech_tools_20260216/](./tracks/thesis_tech_tools_20260216/)*
