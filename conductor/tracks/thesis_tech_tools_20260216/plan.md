@@ -10,8 +10,8 @@ This plan covers the creation of Section 1.4 "Použité technologie a nástroje"
 
 ## Phase 2: Drafting Section Content
 - [x] Task: Write sub-section for .NET 8 Platform (Generic Host, Systemd, Data Protection) in Czech. d4f3c6c
-- [~] Task: Write sub-section for Go Language (Cobra, Bubble Tea, Elm Architecture) in Czech.
-- [ ] Task: Write sub-section for Data Serialization (JSON vs. gRPC comparison) in Czech.
+- [x] Task: Write sub-section for Go Language (Cobra, Bubble Tea, Elm Architecture) in Czech. 58c2e0c
+- [~] Task: Write sub-section for Data Serialization (JSON vs. gRPC comparison) in Czech.
 - [ ] Task: Conductor - User Manual Verification 'Drafting Section Content' (Protocol in workflow.md)
 
 ## Phase 3: LaTeX Integration and Formatting
