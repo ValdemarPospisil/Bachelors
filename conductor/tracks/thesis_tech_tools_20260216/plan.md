@@ -11,17 +11,17 @@ This plan covers the creation of Section 1.4 "Použité technologie a nástroje"
 ## Phase 2: Drafting Section Content
 - [x] Task: Write sub-section for .NET 8 Platform (Generic Host, Systemd, Data Protection) in Czech. d4f3c6c
 - [x] Task: Write sub-section for Go Language (Cobra, Bubble Tea, Elm Architecture) in Czech. 58c2e0c
-- [~] Task: Write sub-section for Data Serialization (JSON vs. gRPC comparison) in Czech.
-- [ ] Task: Conductor - User Manual Verification 'Drafting Section Content' (Protocol in workflow.md)
+- [x] Task: Write sub-section for Data Serialization (JSON vs. gRPC comparison) in Czech. c24e0fd
+- [x] Task: Conductor - User Manual Verification 'Drafting Section Content' (Protocol in workflow.md)
 
 ## Phase 3: LaTeX Integration and Formatting
-- [ ] Task: Insert drafted content into `thesis/chapters/01_teorie.tex` as Section 1.4.
-- [ ] Task: Apply LaTeX formatting (sections, subsections, itemize, citations).
-- [ ] Task: Verify that no first-person language is used (passive voice check).
-- [ ] Task: Conductor - User Manual Verification 'LaTeX Integration and Formatting' (Protocol in workflow.md)
+- [x] Task: Insert drafted content into `thesis/chapters/01_teorie.tex` as Section 1.4. c417ecf
+- [x] Task: Apply LaTeX formatting (sections, subsections, itemize, citations).
+- [x] Task: Verify that no first-person language is used (passive voice check).
+- [x] Task: Conductor - User Manual Verification 'LaTeX Integration and Formatting' (Protocol in workflow.md)
 
 ## Phase 4: Verification and Checkpoint
-- [ ] Task: Run LaTeX build command to verify PDF generation.
+- [~] Task: Run LaTeX build command to verify PDF generation.
 - [ ] Task: Check length (approx. 3 standard pages) and adjust detail if necessary.
 - [ ] Task: Verify citation links in the generated PDF.
 - [ ] Task: Conductor - User Manual Verification 'Verification and Checkpoint' (Protocol in workflow.md)
