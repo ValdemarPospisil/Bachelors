@@ -20,7 +20,7 @@ Tento projekt je zaměřen na vývoj nativního CLI klienta pro službu GoodAcce
 - [x] 1.1 Rozhraní příkazové řádky
 - [x] 1.2 Architektura VPN a principy Zero Trust
 - [x] 1.3 Architektura operačního systému Linux
-- [ ] 1.4 Implementační technologie
+- [x] 1.4 Implementační technologie
 - [ ] 1.5 Distribuce softwaru
 - [ ] 1.6 Metodika vývoje
 
