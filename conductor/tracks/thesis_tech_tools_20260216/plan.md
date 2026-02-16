@@ -21,7 +21,7 @@ This plan covers the creation of Section 1.4 "Použité technologie a nástroje"
 - [x] Task: Conductor - User Manual Verification 'LaTeX Integration and Formatting' (Protocol in workflow.md)
 
 ## Phase 4: Verification and Checkpoint
-- [~] Task: Run LaTeX build command to verify PDF generation.
-- [ ] Task: Check length (approx. 3 standard pages) and adjust detail if necessary.
-- [ ] Task: Verify citation links in the generated PDF.
-- [ ] Task: Conductor - User Manual Verification 'Verification and Checkpoint' (Protocol in workflow.md)
+- [x] Task: Run LaTeX build command to verify PDF generation.
+- [x] Task: Check length (approx. 3 standard pages) and adjust detail if necessary.
+- [x] Task: Verify citation links in the generated PDF.
+- [x] Task: Conductor - User Manual Verification 'Verification and Checkpoint' (Protocol in workflow.md)
