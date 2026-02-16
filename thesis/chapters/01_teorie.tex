@@ -117,27 +117,52 @@ V rámci teoretického základu pro vývoj moderních systémových nástrojů j
 \subsection{Platforma .NET 8}
 Platforma .NET 8 (dříve .NET Core) představuje moderní, multiplatformní vývojový ekosystém navržený pro vysoký výkon a škálovatelnost. Jedním z klíčových aspektů této platformy je její schopnost nativního běhu v prostředí OS Linux, což z ní činí vhodný nástroj pro vývoj serverových aplikací a systémových služeb \cite{price_csharp}.
 
-Základním architektonickým prvkem pro běh aplikací na pozadí je tzv. \textbf{Generic Host}. Tento vzor poskytuje standardizované rozhraní pro správu životního cyklu aplikace, konfiguraci, logování a delegování úloh (dependency injection). Generic Host umožňuje efektivní implementaci dlouhoběžících procesů, které vyžadují precizní řízení startu a ukončení v souladu se signály operačního systému.
+\subsubsection{Generic Host a životní cyklus služeb}
+Základním architektonickým prvkem pro běh aplikací na pozadí je tzv. \textbf{Generic Host}. Tento vzor poskytuje standardizované rozhraní pro správu životního cyklu aplikace, konfiguraci, logování a delegování úloh skrze mechanismus \textit{Dependency Injection} (DI). Generic Host sjednocuje způsob, jakým jsou spravovány různé typy služeb, od webových serverů až po jednoduché úlohy běžící na pozadí. V kontextu systémových služeb umožňuje precizní řízení tzv. „graceful shutdown“ procesu, kdy aplikace při přijetí signálu k ukončení (např. SIGTERM) korektně uvolní prostředky a ukončí běžící operace, čímž předchází nekonzistenci dat.
 
-Pro integraci s linuxovým inicializačním systémem \texttt{systemd} poskytuje platforma specializovaný modul \texttt{Microsoft.Extensions.Hosting.Systemd}. Tento modul zajišťuje obousměrnou komunikaci mezi běžící aplikací a správcem systému (PID 1). Aplikace tak může transparentně odesílat notifikace o svém stavu (např. \textit{READY}, \textit{STOPPING}), což je nezbytné pro spolehlivou automatizaci a monitoring systémových služeb.
+\subsubsection{Integrace se systémem systemd}
+Pro hlubší integraci s linuxovým inicializačním systémem \texttt{systemd} poskytuje platforma specializovaný modul \texttt{Microsoft.Extensions.Hosting.Systemd}. Tato komponenta umožňuje .NET aplikaci nativně komunikovat s inicializačním systémem \texttt{systemd}. Díky této integraci může služba odesílat stavová hlášení (např. o úspěšném spuštění) přímo do \texttt{systemd} a využívat pokročilé funkce správy služeb, jako je automatické obnovení po havárii nebo logování skrze systémový žurnál (\texttt{journald}).
 
-Kritickou součástí moderních systémů je ochrana dat, kterou v ekosystému .NET zajišťuje stack \textbf{ASP.NET Core Data Protection}. Tento mechanismus je navržen k šifrování dat „v klidu“ (encryption at rest) a k bezpečné správě kryptografických klíčů bez nutnosti přímého zásahu vývojáře do nízkoúrovňových operací. Stack podporuje automatickou rotaci klíčů a jejich perzistenci do souborového systému, přičemž na Linuxu využívá standardní kryptografické knihovny pro zajištění integrity a důvěrnosti uložených informací.
+\subsubsection{ASP.NET Core Data Protection}
+Kritickou součástí moderních systémů je ochrana citlivých dat, kterou v ekosystému .NET zajišťuje stack \textbf{ASP.NET Core Data Protection}. Tento mechanismus je navržen k šifrování dat „v klidu“ (encryption at rest) a k bezpečné správě kryptografických klíčů. Architektura stacku je založena na hierarchickém systému klíčů, kde je každý datový prvek šifrován unikátním klíčem odvozeným z hlavního klíče (master key).
+
+Bezpečnostní stack řeší několik klíčových problémů automatizovaně:
+\begin{itemize}
+    \item \textbf{Izolace:} Klíče jsou vázány na konkrétní aplikaci, což zabraňuje dešifrování dat jiným procesem i na stejném systému.
+    \item \textbf{Rotace:} Systém automaticky generuje nové klíče a zneplatňuje staré, čímž omezuje dopad případného úniku klíče.
+    \item \textbf{Perzistence:} Na systému Linux stack podporuje ukládání klíčů ve formátu XML do souborového systému, přičemž je možné využít šifrování klíčů pomocí certifikátů nebo systémových úložišť.
+\end{itemize}
+Díky této abstrakci může vývojář pracovat s jednoduchým rozhraním \texttt{IDataProtector}, zatímco platforma transparentně zajišťuje kryptografickou integritu a důvěrnosti uložených dat.
 
 \subsection{Programovací jazyk Go}
-Jazyk Go, vyvinutý společností Google, se stal standardem pro systémové programování a cloud-native nástroje. Jeho hlavní předností je statická typová kontrola kombinovaná s jednoduchou syntaxí a schopností kompilace do jediného staticky linkovaného binárního souboru. Tato vlastnost je zásadní pro distribuci nástrojů v prostředí Linuxu, neboť eliminuje závislosti na externích knihovnách či runtime prostředích \cite{donovan_go}.
+Jazyk Go, vyvinutý společností Google, se stal standardem pro systémové programování a cloud-native nástroje. Jeho filozofie je založena na minimalismu, efektivitě a bezpečnosti. Go kombinuje výkon kompilovaných jazyků (jako C++) s produktivitou jazyků s dynamickou typovou kontrolou.
 
-Pro tvorbu rozhraní příkazové řádky (CLI) se v ekosystému Go prosadil framework \textbf{Cobra}. Ten definuje standardizovanou strukturu příkazů a přepínačů, zajišťuje automatickou validaci vstupů a generování dokumentace. Architektura frameworku Cobra umožňuje budovat komplexní hierarchie příkazů, které jsou předvídatelné a snadno ovladatelné pro uživatele terminálu.
+\subsubsection{Charakteristika jazyka a systémové programování}
+Hlavní předností Go v oblasti systémových nástrojů je jeho schopnost statické kompilace. Výsledkem procesu sestavení je jediný binární soubor, který v sobě obsahuje všechny nezbytné knihovny (včetně runtime prostředí). To je v prostředí Linuxu zásadní výhoda, neboť uživatel nemusí instalovat žádné závislosti, což radikálně zjednodušuje distribuci softwaru \cite{donovan_go}. Go dále disponuje pokročilým modelem souběžnosti založeným na \textit{gorutinách} a kanálech (\textit{channels}), což umožňuje efektivní asynchronní zpracování síťových operací a událostí bez složitosti tradičních vláken.
 
-V oblasti interaktivních rozhraní terminálu (TUI) vyniká framework \textbf{Bubble Tea}, který implementuje vzor \textbf{The Elm Architecture}. Tento přístup je založen na striktním oddělení modelu (stavu), pohledu (vykreslení) a aktualizace (logiky). Díky reaktivnímu zpracování událostí a preciznímu řízení stavu terminálu umožňuje Bubble Tea vytvářet dynamická a vizuálně bohatá rozhraní, která si zachovávají stabilitu i při zpracování asynchronních datových toků.
+\subsubsection{Framework Cobra}
+Pro tvorbu rozhraní příkazové řádky (CLI) se v ekosystému Go prosadil framework \textbf{Cobra}. Ten definuje standardizované strukturu pro definici příkazů, podřízených příkazů a jejich parametrů (včetně rozlišení mezi globálními a lokálními přepínači). Cobra je de facto standardem, na kterém staví nástroje jako Docker či Kubernetes. Framework automatizuje generování nápovědy, validaci argumentů a poskytuje rozhraní pro generování manuálových stránek nebo skriptů pro automatické doplňování v shellu, čímž zajišťuje konzistentní uživatelský zážitek.
+
+\subsubsection{Architektura Elm a framework Bubble Tea}
+V oblasti interaktivních textových rozhraní (TUI) představuje špičku framework \textbf{Bubble Tea}. Ten je unikátní tím, že do terminálového prostředí přináší principy funkcionálního programování skrze vzor \textbf{The Elm Architecture}. Tato architektura definuje tři základní komponenty:
+\begin{enumerate}
+    \item \textbf{Model:} Datová struktura reprezentující aktuální stav aplikace.
+    \item \textbf{Update:} Čistá funkce, která přijímá zprávu (\textit{Message}) a aktuální model a vrací model nový společně s případnými příkazy (\textit{Commands}).
+    \item \textbf{View:} Funkce, která na základě modelu vygeneruje textovou reprezentaci rozhraní pro terminál.
+\end{enumerate}
+Zásadním přínosem tohoto přístupu je determinismus a snadná testovatelnost. Veškeré změny stavu probíhají asynchronně skrze zasílání zpráv, což zabraňuje vzniku \textit{race conditions}. Framework Bubble Tea se stará o efektivní překreslování terminálu (tzv. \textit{diffing}), kdy jsou aktualizovány pouze ty části obrazovky, které se skutečně změnily. To umožňuje vytvářet plynulá a reaktivní rozhraní, která uživateli poskytují okamžitou zpětnou vazbu bez problikávání či zpoždění.
 
 \subsection{Serializace dat a transportní formáty}
-Efektivní výměna dat mezi procesy (IPC) vyžaduje volbu vhodného formátu pro serializaci. V současné praxi dominují dva přístupy: textový formát JSON a binární protokol gRPC.
+Efektivní výměna dat mezi procesy (IPC) vyžaduje volbu vhodného formátu pro serializaci, který balancuje mezi výkonem, čitelností a snadnou údržbou.
 
-\textbf{JSON} (JavaScript Object Notation) je široce rozšířený, textově orientovaný formát, který vyniká čitelností a snadnou integrací. Jeho hlavními výhodami jsou čitelnost pro člověka, snadné ladění a široká podpora napříč všemi programovacími jazyky bez nutnosti generování složitých kódů.
+\subsubsection{Formát JSON}
+\textbf{JSON} (JavaScript Object Notation) je široce rozšířený, textově orientovaný formát. Jeho hlavní výhodou je transparentnost – přenášená data lze snadno monitorovat a analyzovat běžnými systémovými nástroji. JSON nevyžaduje definici schématu předem, což usnadňuje agilní vývoj a integraci s webovými API. Navzdory textové povaze je parsování moderními knihovnami extrémně rychlé a pro většinu IPC scénářů na jednom hostiteli je režie zanedbalelná.
 
-Naproti tomu \textbf{gRPC} je binární framework využívající Protocol Buffers. Je navržen pro maximální propustnost a minimální režii, čehož dosahuje díky silně typovaným zprávám a binárnímu kódování. gRPC je ideální pro distribuované systémy s vysokým zatížením, kde hraje roli každý bajt přenesený po síti.
+\subsubsection{Protokol gRPC a Protocol Buffers}
+Naproti tomu \textbf{gRPC} je binární framework využívající \textbf{Protocol Buffers} jako mechanismus pro definici dat (\textit{Interface Definition Language}). Je navržen pro maximální propustnost a minimální režii, čehož dosahuje díky binárnímu kódování a generování silně typovaného kódu pro různé programovací jazyky. gRPC vyniká v systémech s vysokým zatížením a v prostředí mikroslužeb, kde redukce velikosti zpráv vede k úspoře síťových prostředků.
 
-Srovnání těchto formátů ukazuje, že zatímco gRPC dominuje v oblasti výkonu, JSON zůstává preferovanou volbou pro lokální komunikaci v systémech, kde je kladen důraz na inspectabilitu, snadnou údržbu a jednoduchost implementace transportní vrstvy bez nutnosti generování složitých rozhraní.
+\subsubsection{Srovnání a volba transportní vrstvy}
+Srovnání těchto technologií ukazuje na odlišné priority. gRPC dominuje v oblasti čistého výkonu a typové bezpečnosti, vyžaduje však složitější proces sestavení aplikace a ztěžuje manuální inspekci dat. JSON naopak zůstává preferovanou volbou pro systémy, kde je kladen důraz na diagnostiku a jednoduchost implementace. V rámci lokální komunikace mezi systémovými nástroji, kde je důležitá možnost nahlédnout do komunikace mezi klientem a službou bez nutnosti binární dešifrace, představuje JSON optimální kompromis mezi technickou efektivitou a vývojovou udržitelností.
 
 \section{Distribuce softwaru}
 \label{sec:distribuce}
