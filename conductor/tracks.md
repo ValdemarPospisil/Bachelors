@@ -12,3 +12,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] **Track: Expand Linux Architecture Theory & Project README**
 *Link: [./tracks/linux_theory_readme_20260213/](./tracks/linux_theory_readme_20260213/)*
+
+---
+
+- [ ] **Track: Add subchapter 'Zajištění kvality a testování softwaru' to thesis/chapters/01_teorie.tex**
+*Link: [./tracks/thesis_qa_theory_20260217/](./tracks/thesis_qa_theory_20260217/)*
