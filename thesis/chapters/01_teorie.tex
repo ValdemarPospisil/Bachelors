@@ -164,6 +164,42 @@ Naproti tomu \textbf{gRPC} je binární framework využívající \textbf{Protoc
 \subsubsection{Srovnání a volba transportní vrstvy}
 Srovnání těchto technologií ukazuje na odlišné priority. gRPC dominuje v oblasti čistého výkonu a typové bezpečnosti, vyžaduje však složitější proces sestavení aplikace a ztěžuje manuální inspekci dat. JSON naopak zůstává preferovanou volbou pro systémy, kde je kladen důraz na diagnostiku a jednoduchost implementace. V rámci lokální komunikace mezi systémovými nástroji, kde je důležitá možnost nahlédnout do komunikace mezi klientem a službou bez nutnosti binární dešifrace, představuje JSON optimální kompromis mezi technickou efektivitou a vývojovou udržitelností.
 
+\section{Zajištění kvality a testování softwaru}
+\label{sec:testovani_teorie}
+Kvalita softwaru není náhodným výsledkem, ale důsledkem systematického procesu, který doprovází celý životní cyklus vývoje (SDLC – Software Development Life Cycle). V moderním inženýrství, zejména u systémových nástrojů, které manipulují se síťovým nastavením a vyžadují vysoká oprávnění, je verifikace správnosti klíčovým prvkem pro zajištění stability a bezpečnosti systému.
+
+\subsection{Kvalita softwaru v SDLC}
+Tradiční pohled na testování jako na oddělenou fázi na konci vývoje je v agilním prostředí nahrazen integrací testů přímo do procesu tvorby kódu. Zajištění kvality (QA – Quality Assurance) zahrnuje nejen detekci chyb, ale především prevenci jejich vzniku skrze statickou analýzu, code review a automatizované testování. V kontextu bakalářské práce je kladen důraz na automatizaci, která umožňuje rychlou regresní analýzu při změnách v Go CLI nebo .NET backendu.
+
+\subsection{Testovací pyramida}
+Koncept testovací pyramidy, který poprvé popularizoval Mike Cohn v knize \textit{Succeeding with Agile}, definuje ideální distribuci různých typů automatizovaných testů \cite{cohn_succeeding}. Cílem je vytvořit robustní základnu rychlých a levných testů, které jsou doplněny menším množstvím komplexnějších a pomalejších scénářů.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{doc/images/tests.jpg}
+    \caption{Testovací pyramida (převzato a upraveno podle Mikea Cohna \cite{cohn_succeeding})}
+    \label{fig:test_pyramid}
+\end{figure}
+
+Pyramida se skládá ze tří hlavních úrovní:
+\begin{itemize}
+    \item \textbf{Jednotkové testy (Unit Tests):} Tvoří základnu pyramidy. Testují jednotlivé funkce nebo třídy v izolaci od okolního prostředí (např. pomocí mockování). Jsou extrémně rychlé a poskytují vývojáři okamžitou zpětnou vazbu.
+    \item \textbf{Integrační testy (Integration Tests):} Zaměřují se na interakci mezi různými moduly nebo externími službami. V našem případě jde zejména o komunikaci mezi Go klientem a .NET službou přes Unix Domain Sockety.
+    \item \textbf{End-to-End testy (E2E):} Vrchol pyramidy. Simulují reálné chování uživatele a testují systém jako celek od vstupu v CLI až po vytvoření VPN tunelu v jádře. Jsou nejpomalejší a nejvíce náchylné k chybám v konfiguraci prostředí (tzv. flakiness).
+\end{itemize}
+
+\subsection{Behavior-Driven Development (BDD) a Gherkin}
+Vývoj řízený chováním (BDD – Behavior-Driven Development) je metodika, která rozšiřuje principy TDD o zaměření na uživatelský pohled a čitelnost scénářů pro netechnické členy týmu. Specifikace jsou psány v přirozeném jazyce pomocí syntaxe \textbf{Gherkin}.
+
+Scénáře v Gherkinu využívají klíčová slova:
+\begin{itemize}
+    \item \textbf{Given (Za předpokladu):} Definice výchozího stavu systému.
+    \item \textbf{When (Když):} Akce, kterou uživatel nebo systém provede.
+    \item \textbf{Then (Pak):} Očekávaný výsledek operace.
+\end{itemize}
+
+Tento přístup umožňuje vytvořit tzv. „živou dokumentaci“, která je zároveň spustitelným testem. V rámci této práce jsou Gherkin scénáře využity pro definici požadavků na CLI rozhraní (např. přihlášení, stav spojení), což zajišťuje, že implementace přesně odpovídá navržené specifikaci.
+
 \section{Distribuce softwaru}
 \label{sec:distribuce}
 Zadání práce vyžaduje přípravu balíčků pro distribuce Debian a Fedora.
