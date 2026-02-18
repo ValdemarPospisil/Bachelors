@@ -15,3 +15,6 @@
 - **Sazba textu:** LaTeX (využití šablony `kitheses.cls`).
 - **Analýza požadavků:** Gherkin (Cucumber) scénáře pro definici chování aplikace a testování.
 - **Verzování a správa:** Git.
+
+## Metodika vývoje
+- **Extreme Programming (XP):** Aplikace agilních praktik (TDD, CI, Refaktoring) v kontextu samostatného vývojáře.
