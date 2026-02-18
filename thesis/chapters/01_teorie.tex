@@ -200,10 +200,51 @@ Scénáře v Gherkinu využívají klíčová slova:
 
 Tento přístup umožňuje vytvořit tzv. „živou dokumentaci“, která je zároveň spustitelným testem. V rámci moderního inženýrství jsou Gherkin scénáře často využity pro precizní definici požadavků na rozhraní a chování systému, což zajišťuje, že implementace přesně odpovídá navržené specifikaci.
 
-\section{Distribuce softwaru}
+\section{Distribuce softwaru a balíčkovací systémy}
 \label{sec:distribuce}
-Zadání práce vyžaduje přípravu balíčků pro distribuce Debian a Fedora.
-% Zde popiš .deb a .rpm formáty
+Správa a distribuce softwaru v ekosystému Linuxu představuje komplexní proces, který zajišťuje integritu, bezpečnost a snadnou údržbu systému. Na rozdíl od monolitických operačních systémů, kde je instalace softwaru často v režii jednotlivých aplikací, Linux využívá centralizované balíčkovací systémy, které spravují software jako soubor vzájemně propojených komponent.
+
+\subsection{Hierarchie distribucí a model Upstream/Downstream}
+Linuxový ekosystém je charakteristický svou fragmentací, která je však organizována do logických struktur. Základem jsou tzv. foundational distributions (např. Debian, Fedora, Arch Linux, Slackware), ze kterých se odvozují stovky dalších variant.
+
+Vztah mezi vývojáři a uživateli je definován modelem Upstream/Downstream:
+\begin{itemize}
+    \item \textbf{Upstream (Horní proud):} Představuje autory původního zdrojového kódu (např. projekt Linux kernel, GNOME, nebo samotný vývojář aplikace). Zde probíhá primární vývoj a opravy chyb.
+    \item \textbf{Downstream (Dolní proud):} Představuje linuxové distribuce, které přebírají kód z upstreamu, upravují jej pro své potřeby (např. aplikací specifických patchů), kompilují a balí do binárních balíčků.
+\end{itemize}
+
+Příkladem hierarchie je rodina Debian: Debian (foundational) $\rightarrow$ Ubuntu (downstream vůči Debianu) $\rightarrow$ Linux Mint (downstream vůči Ubuntu). Tato hierarchie umožňuje efektivní sdílení oprav a inovací – oprava v upstreamu postupně „proteče“ všemi downstream distribucemi k uživatelům.
+
+\subsection{Koncepty správy balíčků}
+Moderní správa balíčků je založena na třech pilířích:
+\begin{enumerate}
+    \item \textbf{Metadata:} Každý balíček obsahuje podrobné informace o své verzi, architektuře, popisu a především o svých závislostech.
+    \item \textbf{Závislosti (Dependencies):} Schopnost systému automaticky identifikovat a doinstalovat knihovny nebo jiné programy, které balíček vyžaduje ke svému běhu. Tím se předchází tzv. „dependency hell“, kdy uživatel musel ručně dohledávat potřebné komponenty.
+    \item \textbf{Repozitáře:} Centralizovaná úložiště spravovaná distribucí, která slouží jako jediný důvěryhodný zdroj softwaru. To radikálně zvyšuje bezpečnost oproti stahování instalátorů z neznámých webových stránek.
+\end{enumerate}
+
+\subsection{Ekosystém Debian (.deb)}
+Formát balíčků \texttt{.deb} je standardem pro rodinu Debian. Teoretický základ Debian packagingu definuje Debian Policy Manual \cite{debian_policy}. Balíček se skládá ze dvou hlavních částí: datového archivu (obsahujícího samotné binární soubory a dokumentaci) a kontrolního archivu.
+
+Klíčovým prvkem je adresář \texttt{debian/}, který obsahuje:
+\begin{itemize}
+    \item \texttt{control}: Definuje metadata jako název, verzi, sekci a pole \texttt{Depends} pro runtime závislosti a \texttt{Build-Depends} pro nástroje potřebné ke kompilaci.
+    \item \texttt{rules}: Prováděcí skript (typicky Makefile), který definuje, jak se má software kompilovat a instalovat do dočasného adresáře před zabalením.
+    \item \textit{Maintainer scripts}: Skripty (\texttt{preinst}, \texttt{postinst}, \texttt{prerm}, \texttt{postrm}), které jádro systému spouští před instalací nebo po ní pro konfiguraci systémových služeb.
+\end{itemize}
+
+\subsection{Ekosystém Red Hat a Fedora (.rpm)}
+Ecosystem založený na RPM (Red Hat Package Manager) je de facto standardem pro podnikovou sféru (RHEL) a komunitní distribuci Fedora. Standardy pro tuto rodinu definují Fedora Packaging Guidelines \cite{fedora_packaging}.
+
+Zatímco Debian využívá sadu souborů v adresáři \texttt{debian/}, RPM staví na konceptu jediného Spec souboru (\texttt{.spec}). Tento soubor je deklarativním popisem celého životního cyklu balíčku:
+\begin{itemize}
+    \item \textbf{\%prep:} Sekce pro rozbalení zdrojového kódu a aplikaci záplat.
+    \item \textbf{\%build:} Instrukce pro kompilaci.
+    \item \textbf{\%install:} Definice instalace do virtuálního kořene (BuildRoot).
+    \item \textbf{\%files:} Explicitní seznam souborů, které má finální balíček obsahovat. Jakýkoliv soubor vytvořený v sekci \%install, který není uveden v \%files, způsobí chybu buildu, což zajišťuje vysokou úroveň kontroly nad obsahem balíčku.
+\end{itemize}
+
+Významným rozdílem je také práce se závislostmi. Zatímco rodina Debian využívá nástroj \texttt{APT}, RPM systémy přešly od \texttt{YUM} k modernímu nástroji \texttt{DNF}, který využívá pokročilé algoritmy (SAT solver) pro řešení konfliktů mezi balíčky.
 
 \section{Metodika vývoje}
 \label{sec:metodika}
