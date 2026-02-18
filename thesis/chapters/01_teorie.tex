@@ -169,22 +169,22 @@ Srovnání těchto technologií ukazuje na odlišné priority. gRPC dominuje v o
 Kvalita softwaru není náhodným výsledkem, ale důsledkem systematického procesu, který doprovází celý životní cyklus vývoje (SDLC – Software Development Life Cycle). V moderním inženýrství, zejména u systémových nástrojů, které manipulují se síťovým nastavením a vyžadují vysoká oprávnění, je verifikace správnosti klíčovým prvkem pro zajištění stability a bezpečnosti systému.
 
 \subsection{Kvalita softwaru v SDLC}
-Tradiční pohled na testování jako na oddělenou fázi na konci vývoje je v agilním prostředí nahrazen integrací testů přímo do procesu tvorby kódu. Zajištění kvality (QA – Quality Assurance) zahrnuje nejen detekci chyb, ale především prevenci jejich vzniku skrze statickou analýzu, code review a automatizované testování. V kontextu bakalářské práce je kladen důraz na automatizaci, která umožňuje rychlou regresní analýzu při změnách v Go CLI nebo .NET backendu.
+Tradiční pohled na testování jako na oddělenou fázi na konci vývoje je v agilním prostředí nahrazen integrací testů přímo do procesu tvorby kódu. Zajištění kvality (QA – Quality Assurance) zahrnuje nejen detekci chyb, ale především prevenci jejich vzniku skrze statickou analýzu, code review a automatizované testování. Automatizace v tomto procesu umožňuje rychlou regresní analýzu při jakýchkoliv změnách v systému.
 
 \subsection{Testovací pyramida}
 Koncept testovací pyramidy, který poprvé popularizoval Mike Cohn v knize \textit{Succeeding with Agile}, definuje ideální distribuci různých typů automatizovaných testů \cite{cohn_succeeding}. Cílem je vytvořit robustní základnu rychlých a levných testů, které jsou doplněny menším množstvím komplexnějších a pomalejších scénářů.
 
-\begin{figure}[h]
+\begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.6\textwidth]{doc/images/tests.jpg}
-    \caption{Testovací pyramida (převzato a upraveno podle Mikea Cohna \cite{cohn_succeeding})}
+    \includegraphics[width=0.7\textwidth]{../doc/images/tests.jpg}
+    \caption{Model testovací pyramidy podle Mikea Cohna \cite{cohn_succeeding}}
     \label{fig:test_pyramid}
 \end{figure}
 
 Pyramida se skládá ze tří hlavních úrovní:
 \begin{itemize}
     \item \textbf{Jednotkové testy (Unit Tests):} Tvoří základnu pyramidy. Testují jednotlivé funkce nebo třídy v izolaci od okolního prostředí (např. pomocí mockování). Jsou extrémně rychlé a poskytují vývojáři okamžitou zpětnou vazbu.
-    \item \textbf{Integrační testy (Integration Tests):} Zaměřují se na interakci mezi různými moduly nebo externími službami. V našem případě jde zejména o komunikaci mezi Go klientem a .NET službou přes Unix Domain Sockety.
+    \item \textbf{Integrační testy (Integration Tests):} Zaměřují se na interakci mezi různými moduly nebo externími službami, čímž ověřují správnou komunikaci mezi komponentami systému.
     \item \textbf{End-to-End testy (E2E):} Vrchol pyramidy. Simulují reálné chování uživatele a testují systém jako celek od vstupu v CLI až po vytvoření VPN tunelu v jádře. Jsou nejpomalejší a nejvíce náchylné k chybám v konfiguraci prostředí (tzv. flakiness).
 \end{itemize}
 
@@ -198,7 +198,7 @@ Scénáře v Gherkinu využívají klíčová slova:
     \item \textbf{Then (Pak):} Očekávaný výsledek operace.
 \end{itemize}
 
-Tento přístup umožňuje vytvořit tzv. „živou dokumentaci“, která je zároveň spustitelným testem. V rámci této práce jsou Gherkin scénáře využity pro definici požadavků na CLI rozhraní (např. přihlášení, stav spojení), což zajišťuje, že implementace přesně odpovídá navržené specifikaci.
+Tento přístup umožňuje vytvořit tzv. „živou dokumentaci“, která je zároveň spustitelným testem. V rámci moderního inženýrství jsou Gherkin scénáře často využity pro precizní definici požadavků na rozhraní a chování systému, což zajišťuje, že implementace přesně odpovídá navržené specifikaci.
 
 \section{Distribuce softwaru}
 \label{sec:distribuce}
