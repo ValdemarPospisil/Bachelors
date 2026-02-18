@@ -22,8 +22,3 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] **Track: Write a new theoretical subchapter 1.6 Distribuce softwaru a balíčkovací systémy for the bachelor thesis.**
 *Link: [./tracks/thesis_distribuce_softwaru_20260218/](./tracks/thesis_distribuce_softwaru_20260218/)*
-
----
-
-- [x] **Track: Write final theoretical subchapter 1.7 Agilní metodiky a Extreme Programming in thesis/chapters/01_teorie.tex.**
-*Link: [./tracks/thesis_xp_theory_20260218/](./tracks/thesis_xp_theory_20260218/)*
