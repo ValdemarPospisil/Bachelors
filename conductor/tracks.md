@@ -17,3 +17,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] **Track: Add subchapter 'Zajištění kvality a testování softwaru' to thesis/chapters/01_teorie.tex**
 *Link: [./tracks/thesis_qa_theory_20260217/](./tracks/thesis_qa_theory_20260217/)*
+
+---
+
+- [ ] **Track: Write a new theoretical subchapter 1.6 Distribuce softwaru a balíčkovací systémy for the bachelor thesis.**
+*Link: [./tracks/thesis_distribuce_softwaru_20260218/](./tracks/thesis_distribuce_softwaru_20260218/)*
