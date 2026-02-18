@@ -23,7 +23,7 @@ Tento projekt je zaměřen na vývoj nativního CLI klienta pro službu GoodAcce
 - [x] 1.4 Implementační technologie
 - [x] 1.5 Zajištění kvality a testování softwaru
 - [x] 1.6 Distribuce softwaru a balíčkové systémy
-- [ ] 1.7 Metodika vývoje
+- [x] 1.7 Agilní metodiky a Extreme Programming
 
 ### 2. Analýza a specifikace požadavků
 - [ ] 2.1 Analýza současného stavu

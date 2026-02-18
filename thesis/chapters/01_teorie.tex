@@ -246,6 +246,28 @@ Zatímco Debian využívá sadu souborů v adresáři \texttt{debian/}, RPM stav
 
 Významným rozdílem je také práce se závislostmi. Zatímco rodina Debian využívá nástroj \texttt{APT}, RPM systémy přešly od \texttt{YUM} k modernímu nástroji \texttt{DNF}, který využívá pokročilé algoritmy (SAT solver) pro řešení konfliktů mezi balíčky.
 
-\section{Metodika vývoje}
-\label{sec:metodika}
-% Zde použij svůj text o XP a Beckovi
+\section{Agilní metodiky a Extreme Programming}
+\label{sec:xp_teorie}
+Moderní vývoj softwaru se v posledních dvou dekádách posunul od rigidních modelů typu „vodopád“ k agilním přístupům, které kladou důraz na adaptabilitu a lidský faktor. Jednou z nejvlivnějších metodik v této oblasti je Extreme Programming (XP), kterou definoval Kent Beck na konci 90. let 20. století. XP se zaměřuje na zvyšování kvality softwaru a schopnost týmu reagovat na měnící se požadavky zákazníka skrze intenzivní aplikaci osvědčených inženýrských praktik \cite{beck_xp}.
+
+\subsection{Filozofie a hodnoty XP}
+Základem metodiky XP je pět core hodnot, které tvoří etický a profesní rámec pro veškeré rozhodování v projektu:
+\begin{itemize}
+    \item \textbf{Komunikace (Communication):} Většina problémů v projektech pramení z nedostatku informací. XP podporuje přímou a otevřenou komunikaci mezi členy týmu i zákazníkem.
+    \item \textbf{Jednoduchost (Simplicity):} Cílem je vytvořit „nejjednodušší věc, která může fungovat“. Tím se minimalizuje budoucí režie a technický dluh.
+    \item \textbf{Zpětná vazba (Feedback):} Neustálé ověřování stavu systému skrze testy a interakci se zákazníkem umožňuje včasnou korekci kurzu.
+    \item \textbf{Odvaha (Courage):} Schopnost provádět radikální změny v návrhu (refaktoring) nebo přiznat chybu a zahodit nefunkční kód.
+    \item \textbf{Respekt (Respect):} Vzájemná úcta mezi vývojáři a důvěra v jejich schopnosti jsou nezbytné pro fungování týmových praktik.
+\end{itemize}
+
+\subsection{Klíčové praktiky XP}
+Hodnoty jsou v XP přetaveny do konkrétních technických a procesních praktik. Pro tuto bakalářskou práci byly klíčové zejména:
+\begin{itemize}
+    \item \textbf{Test-Driven Development (TDD):} Psaní testů před samotným kódem zajišťuje vysoké pokrytí, definuje očekávané chování a slouží jako pojistka při refaktoringu.
+    \item \textbf{Kontinuální integrace (Continuous Integration - CI):} Časté začleňování změn do hlavní větve projektu a automatické spouštění testů pro okamžitou detekci regresí.
+    \item \textbf{Refaktoring:} Neustálé vylepšování vnitřní struktury kódu bez změny jeho vnějšího chování s cílem zachovat čistotu a udržitelnost designu.
+    \item \textbf{Jednoduchý návrh (Simple Design):} Návrh systému odpovídá pouze aktuálním požadavkům, čímž se předchází nadměrné komplexitě (over-engineering).
+    \item \textbf{Párové programování (Pair Programming):} Praktika, kdy dva vývojáři pracují na jednom úkolu u jednoho počítače, což zvyšuje kvalitu kódu skrze okamžité code review.
+\end{itemize}
+
+Zatímco metodika XP je primárně navržena pro týmovou spolupráci (zejména párové programování), její technické praktiky jako TDD, CI a Refaktoring jsou plně aplikovatelné i pro samostatně pracujícího vývojáře a byly pro tuto bakalářskou práci klíčové.
