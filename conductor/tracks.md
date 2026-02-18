@@ -25,5 +25,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Write final theoretical subchapter 1.7 Agilní metodiky a Extreme Programming in thesis/chapters/01_teorie.tex.**
+- [x] **Track: Write final theoretical subchapter 1.7 Agilní metodiky a Extreme Programming in thesis/chapters/01_teorie.tex.**
 *Link: [./tracks/thesis_xp_theory_20260218/](./tracks/thesis_xp_theory_20260218/)*
