@@ -17,14 +17,14 @@ The "Full Clean-up" phase where application-specific details are removed and the
 - [x] Task: Re-verify that the text maintains a professional, theoretical tone (autorský plurál). a0b82f3
 - [x] Task: Conductor - User Manual Verification 'Content Refactoring & Generalization' (Protocol in workflow.md) 9acb190
 
-## Phase 3: Structural & Technical Updates
+## Phase 3: Structural & Technical Updates [checkpoint: b2f1a4b]
 Implementing the formal changes to the LaTeX document structure.
 
 - [x] Task: Implement the formal Abbreviation List/Table at the beginning of the chapter. e05a32b
 - [x] Task: Deduplicate abbreviation explanations: Ensure first-instance only explanation and remove others. 71defa6
 - [x] Task: Insert the approved `\subsubsection` tags into the text. 73c641c
 - [x] Task: Apply terminology corrections based on decisions from Phase 1. eec8767
-- [~] Task: Conductor - User Manual Verification 'Structural & Technical Updates' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Structural & Technical Updates' (Protocol in workflow.md) b2f1a4b
 
 ## Phase 4: Final Polish & Verification
 Ensuring the document builds correctly and meets quality standards.
