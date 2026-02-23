@@ -20,11 +20,11 @@ The "Full Clean-up" phase where application-specific details are removed and the
 ## Phase 3: Structural & Technical Updates
 Implementing the formal changes to the LaTeX document structure.
 
-- [ ] Task: Implement the formal Abbreviation List/Table at the beginning of the chapter.
-- [ ] Task: Deduplicate abbreviation explanations: Ensure first-instance only explanation and remove others.
-- [ ] Task: Insert the approved `\subsubsection` tags into the text.
-- [ ] Task: Apply terminology corrections based on decisions from Phase 1.
-- [ ] Task: Conductor - User Manual Verification 'Structural & Technical Updates' (Protocol in workflow.md)
+- [x] Task: Implement the formal Abbreviation List/Table at the beginning of the chapter. e05a32b
+- [x] Task: Deduplicate abbreviation explanations: Ensure first-instance only explanation and remove others. 71defa6
+- [x] Task: Insert the approved `\subsubsection` tags into the text. 73c641c
+- [x] Task: Apply terminology corrections based on decisions from Phase 1. eec8767
+- [~] Task: Conductor - User Manual Verification 'Structural & Technical Updates' (Protocol in workflow.md)
 
 ## Phase 4: Final Polish & Verification
 Ensuring the document builds correctly and meets quality standards.
