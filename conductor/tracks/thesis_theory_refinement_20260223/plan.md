@@ -2,13 +2,13 @@
 
 This plan outlines the steps to refactor `thesis/chapters/01_teorie.tex` to meet the approved specification.
 
-## Phase 1: Analysis & Terminology Alignment
+## Phase 1: Analysis & Terminology Alignment [checkpoint: 7aec937]
 This phase focuses on gathering data and making decisions on terminology to ensure consistency before editing the text.
 
 - [x] Task: Scan `01_teorie.tex` and extract all abbreviations and potential English/Czech technical term conflicts. ba174f4
 - [x] Task: Present the extracted terms to the user and obtain final decisions for each (Case-by-Case). d7bed5a
 - [x] Task: Propose specific locations and titles for new `\subsubsection` (subsubchapters) based on content analysis. dfc85d2
-- [ ] Task: Conductor - User Manual Verification 'Analysis & Terminology Alignment' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Analysis & Terminology Alignment' (Protocol in workflow.md) 7aec937
 
 ## Phase 2: Content Refactoring & Generalization
 The "Full Clean-up" phase where application-specific details are removed and the text is generalized.
