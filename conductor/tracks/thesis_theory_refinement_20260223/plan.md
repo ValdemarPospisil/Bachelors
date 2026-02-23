@@ -10,12 +10,12 @@ This phase focuses on gathering data and making decisions on terminology to ensu
 - [x] Task: Propose specific locations and titles for new `\subsubsection` (subsubchapters) based on content analysis. dfc85d2
 - [x] Task: Conductor - User Manual Verification 'Analysis & Terminology Alignment' (Protocol in workflow.md) 7aec937
 
-## Phase 2: Content Refactoring & Generalization
+## Phase 2: Content Refactoring & Generalization [checkpoint: 9acb190]
 The "Full Clean-up" phase where application-specific details are removed and the text is generalized.
 
 - [x] Task: Remove or generalize all sentences describing the GoodAccess CLI implementation details (focus on DAC and Process Management sections). a0b82f3
 - [x] Task: Re-verify that the text maintains a professional, theoretical tone (autorský plurál). a0b82f3
-- [ ] Task: Conductor - User Manual Verification 'Content Refactoring & Generalization' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Content Refactoring & Generalization' (Protocol in workflow.md) 9acb190
 
 ## Phase 3: Structural & Technical Updates
 Implementing the formal changes to the LaTeX document structure.
