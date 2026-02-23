@@ -1,6 +1,38 @@
 \chapter{Teoretická východiska}
 \label{chap:teorie}
 
+\section*{Seznam použitých zkratek}
+\begin{description}
+    \item[API] Application Programming Interface
+    \item[APT] Advanced Package Tool
+    \item[BDD] Behavior-Driven Development
+    \item[CI] Continuous Integration
+    \item[CLI] Command Line Interface
+    \item[DAC] Discretionary Access Control
+    \item[DNF] Dandified YUM
+    \item[E2E] End-to-End
+    \item[FHS] Filesystem Hierarchy Standard
+    \item[GNU] GNU's Not Unix
+    \item[GUI] Graphical User Interface
+    \item[IPC] Inter-Process Communication
+    \item[JSON] JavaScript Object Notation
+    \item[OIDC] OpenID Connect
+    \item[PID] Process Identifier
+    \item[POSIX] Portable Operating System Interface
+    \item[QA] Quality Assurance
+    \item[SDLC] Software Development Life Cycle
+    \item[SDP] Software Defined Perimeter
+    \item[SSH] Secure Shell
+    \item[SSO] Single Sign-On
+    \item[TDD] Test-Driven Development
+    \item[TUI] Text User Interface
+    \item[UDS] Unix Domain Sockets
+    \item[UID] User Identifier
+    \item[VPN] Virtual Private Network
+    \item[XP] Extreme Programming
+    \item[ZTNA] Zero Trust Network Access
+\end{description}
+
 Tato kapitola analyzuje klíčové technologie, architektonické principy a bezpečnostní standardy nezbytné pro návrh moderních systémových nástrojů v prostředí OS Linux. Text postupuje od obecné problematiky příkazové řádky přes síťové protokoly až po specifika implementačních platforem .NET a Go.
 
 \section{Rozhraní příkazové řádky}
@@ -39,7 +71,7 @@ Virtuální privátní síť (VPN) je technologie, která umožňuje vytvořit b
 Historicky se organizace spoléhaly na model „hrad a příkop“ (Castle-and-Moat). V tomto modelu je vnitřní síť považována za důvěryhodnou zónu, která je od vnějšího světa oddělena firewallem (příkopem). VPN v tomto kontextu slouží jako „padací most“, který umožňuje vzdáleným uživatelům vstoupit do vnitřní sítě. Jakmile však uživatel získá přístup, má často široký dosah k mnoha zdrojům v rámci sítě. Tento přístup trpí kritickou slabinou: pokud útočník kompromituje jediné zařízení uvnitř perimetru, může se v síti volně pohybovat (laterální pohyb) a napadat další systémy, protože vnitřní síť mu implicitně důvěřuje.
 
 \subsection{Zero Trust Network Access (ZTNA) a GoodAccess}
-Filozofie Zero Trust (nulová důvěra) tento model opouští a vychází z principu „nikdy nedůvěřuj, vždy prověřuj“ (Never trust, always verify). V architektuře ZTNA není důvěra nikdy udělena na základě fyzického umístění uživatele nebo jeho IP adresy. Každý pokus o přístup k jakémukoliv zdroji musí být individuálně autentizován, autorizován a šifrován.
+Filozofie Zero Trust (nulová důvěra) tento model opouští a vychází z principu „nikdy nedůvěřuj, vždy prověřuj“ (Never trust, always verify). V architektuře ZTNA není důvěra nikdy udělena na základě fyzického umístění uživatele nebo jeho IP adresy (Internet Protocol). Každý pokus o přístup k jakémukoliv zdroji musí být individuálně autentizován, autorizován a šifrován.
 
 Klíčovým prvkem ZTNA je Software Defined Perimeter (SDP). SDP vytváří dynamickou, virtuální hranici kolem aplikací a služeb, čímž je činí „neviditelnými“ pro veřejný internet i pro neautorizované uživatele v lokální síti. GoodAccess implementuje tyto principy formou cloudové platformy, která nahrazuje tradiční VPN brány \cite{goodaccess_doc}. Místo statických IP adres využívá identitu uživatele (často propojenou s SSO/OIDC) a kontext zařízení (tzv. Device Posture) k dynamickému přidělování přístupových práv k jednotlivým systémům \cite{goodaccess_architecture}. Tím se radikálně snižuje plocha možného útoku, protože uživatel vidí pouze ty zdroje, ke kterým má explicitní oprávnění.
 
@@ -128,7 +160,7 @@ Bezpečnostní stack řeší několik klíčových problémů automatizovaně:
 \begin{itemize}
     \item \textbf{Izolace:} Klíče jsou vázány na konkrétní aplikaci, což zabraňuje dešifrování dat jiným procesem i na stejném systému.
     \item \textbf{Rotace:} Systém automaticky generuje nové klíče a zneplatňuje staré, čímž omezuje dopad případného úniku klíče.
-    \item \textbf{Perzistence:} Na systému Linux stack podporuje ukládání klíčů ve formátu XML do souborového systému, přičemž je možné využít šifrování klíčů pomocí certifikátů nebo systémových úložišť.
+    \item \textbf{Perzistence:} Na systému Linux stack podporuje ukládání klíčů ve formátu XML (Extensible Markup Language) do souborového systému, přičemž je možné využít šifrování klíčů pomocí certifikátů nebo systémových úložišť.
 \end{itemize}
 Díky této abstrakci může vývojář pracovat s jednoduchým rozhraním \texttt{IDataProtector}, zatímco platforma transparentně zajišťuje kryptografickou integritu a důvěrnosti uložených dat.
 
@@ -139,7 +171,7 @@ Jazyk Go, vyvinutý společností Google, se stal standardem pro systémové pro
 Hlavní předností Go v oblasti systémových nástrojů je jeho schopnost statické kompilace. Výsledkem procesu sestavení je jediný binární soubor, který v sobě obsahuje všechny nezbytné knihovny (včetně runtime prostředí). To je v prostředí Linuxu zásadní výhoda, neboť uživatel nemusí instalovat žádné závislosti, což radikálně zjednodušuje distribuci softwaru \cite{donovan_go}. Go dále disponuje pokročilým modelem souběžnosti založeným na \textit{gorutinách} a kanálech (\textit{channels}), což umožňuje efektivní asynchronní zpracování síťových operací a událostí bez složitosti tradičních vláken.
 
 \subsubsection{Framework Cobra}
-Pro tvorbu rozhraní příkazové řádky (CLI) se v ekosystému Go prosadil framework \textbf{Cobra}. Ten definuje standardizované strukturu pro definici příkazů, podřízených příkazů a jejich parametrů (včetně rozlišení mezi globálními a lokálními přepínači). Cobra je de facto standardem, na kterém staví nástroje jako Docker či Kubernetes. Framework automatizuje generování nápovědy, validaci argumentů a poskytuje rozhraní pro generování manuálových stránek nebo skriptů pro automatické doplňování v shellu, čímž zajišťuje konzistentní uživatelský zážitek.
+Pro tvorbu rozhraní příkazové řádky (CLI) se v ekosystému Go prosadil framework \textbf{Cobra}. Ten definuje standardizované strukturu pro definici příkazů, podřízených příkazů a jejich parametrů (včetně rozlišení mezi globálními a lokálními přepínači). Cobra je de facto standardem, na kterém staví nástroje jako Docker či Kubernetes. Framework automatizuje generování nápovědy, validaci argumentů a poskytuje rozhraní pro generování manuálových strnek nebo skriptů pro automatické doplňování v shellu, čímž zajišťuje konzistentní uživatelský zážitek.
 
 \subsubsection{Architektura Elm a framework Bubble Tea}
 V oblasti interaktivních textových rozhraní (TUI) představuje špičku framework \textbf{Bubble Tea}. Ten je unikátní tím, že do terminálového prostředí přináší principy funkcionálního programování skrze vzor \textbf{The Elm Architecture}. Tato architektura definuje tři základní komponenty:
