@@ -110,7 +110,7 @@ Proces je v Linuxu definován jako instance běžícího programu v paměti. Ka�
 \subsubsection{Procesy a daemony}
 Vytváření nových procesů probíhá pomocí dvojice systémových volání \texttt{fork()} a \texttt{exec()}. Volání \texttt{fork()} vytvoří identickou kopii rodičovského procesu, zatímco \texttt{exec()} nahradí kód běžícího procesu novým programem. Tento mechanismus je základem pro spouštění všech aplikací v systému \cite{ward_linux}.
 
-Specifickou kategorií procesů jsou \textit{daemony} (démoni). Jedná se o procesy, které běží na pozadí, nejsou přímo spojeny s žádným terminálem a typicky čekají na určité události nebo poskytují systémové služby. V moderní architektuře systémových nástrojů bývá logika implementována právě jako daemon, který udržuje stav (např. VPN spojení) nezávisle na tom, zda je uživatelské rozhraní zrovna spuštěno. Tento přístup zajišťuje persistenci spojení a umožňuje bezpečné provádění privilegovaných operací (např. manipulaci se síťovými rozhraními) pod identitou uživatele s dostatečnými právy, zatímco samotné rozhraní může běžet v kontextu běžného uživatele.
+Specifickou kategorií procesů jsou \textit{daemony}. Jedná se o procesy, které běží na pozadí, nejsou přímo spojeny s žádným terminálem a typicky čekají na určité události nebo poskytují systémové služby. V moderní architektuře systémových nástrojů bývá logika implementována právě jako daemon, který udržuje stav (např. VPN spojení) nezávisle na tom, zda je uživatelské rozhraní zrovna spuštěno. Tento přístup zajišťuje persistenci spojení a umožňuje bezpečné provádění privilegovaných operací (např. manipulaci se síťovými rozhraními) pod identitou uživatele s dostatečnými právy, zatímco samotné rozhraní může běžet v kontextu běžného uživatele.
 
 \subsection{Správa služeb a systémová inicializace (systemd)}
 Moderní linuxové distribuce využívají pro správu systému a služeb inicializační systém \texttt{systemd}. Ten v posledním desetiletí nahradil starší standardy jako \texttt{sysvinit} a přinesl zásadní změny v tom, jak jsou procesy na pozadí spouštěny, monitorovány a hierarchicky organizovány.
@@ -289,7 +289,7 @@ Významným rozdílem je také práce se závislostmi. Zatímco rodina Debian vy
 
 \section{Agilní metodiky a Extreme Programming}
 \label{sec:xp_teorie}
-Moderní vývoj softwaru se v posledních dvou dekádách posunul od rigidních modelů typu „vodopád“ k agilním přístupům, které kladou důraz na adaptabilitu a lidský faktor. Jednou z nejvlivnějších metodik v této oblasti je Extreme Programming (XP), kterou definoval Kent Beck na konci 90. let 20. století. XP se zaměřuje na zvyšování kvality softwaru a schopnost týmu reagovat na měnící se požadavky zákazníka skrze intenzivní aplikaci osvědčených inženýrských praktik \cite{beck_xp}.
+Moderní vývoj softwaru se v posledních dvou dekádách posunul od rigidních modelů typu vodopádový model (Waterfall) k agilním přístupům, které kladou důraz na adaptabilitu a lidský faktor. Jednou z nejvlivnějších metodik v této oblasti je Extreme Programming (XP), kterou definoval Kent Beck na konci 90. let 20. století. XP se zaměřuje na zvyšování kvality softwaru a schopnost týmu reagovat na měnící se požadavky zákazníka skrze intenzivní aplikaci osvědčených inženýrských praktik \cite{beck_xp}.
 
 \subsection{Filozofie a hodnoty XP}
 Základem metodiky XP je pět core hodnot, které tvoří etický a profesní rámec pro veškeré rozhodování v projektu:
@@ -297,18 +297,18 @@ Základem metodiky XP je pět core hodnot, které tvoří etický a profesní r�
     \item \textbf{Komunikace (Communication):} Většina problémů v projektech pramení z nedostatku informací. XP podporuje přímou a otevřenou komunikaci mezi členy týmu i zákazníkem.
     \item \textbf{Jednoduchost (Simplicity):} Cílem je vytvořit „nejjednodušší věc, která může fungovat“. Tím se minimalizuje budoucí režie a technický dluh.
     \item \textbf{Zpětná vazba (Feedback):} Neustálé ověřování stavu systému skrze testy a interakci se zákazníkem umožňuje včasnou korekci kurzu.
-    \item \textbf{Odvaha (Courage):} Schopnost provádět radikální změny v návrhu (refaktoring) nebo přiznat chybu a zahodit nefunkční kód.
+    \item \textbf{Odvaha (Courage):} Schopnost provádět radikální změny v návrhu (refactoring) nebo přiznat chybu a zahodit nefunkční kód.
     \item \textbf{Respekt (Respect):} Vzájemná úcta mezi vývojáři a důvěra v jejich schopnosti jsou nezbytné pro fungování týmových praktik.
 \end{itemize}
 
 \subsection{Klíčové praktiky XP}
 Hodnoty jsou v XP přetaveny do konkrétních technických a procesních praktik. Pro tuto bakalářskou práci byly klíčové zejména:
 \begin{itemize}
-    \item \textbf{Test-Driven Development (TDD):} Psaní testů před samotným kódem zajišťuje vysoké pokrytí, definuje očekávané chování a slouží jako pojistka při refaktoringu.
+    \item \textbf{Test-Driven Development (TDD):} Psaní testů před samotným kódem zajišťuje vysoké pokrytí, definuje očekávané chování a slouží jako pojistka při refactoringu.
     \item \textbf{Kontinuální integrace (Continuous Integration - CI):} Časté začleňování změn do hlavní větve projektu a automatické spouštění testů pro okamžitou detekci regresí.
-    \item \textbf{Refaktoring:} Neustálé vylepšování vnitřní struktury kódu bez změny jeho vnějšího chování s cílem zachovat čistotu a udržitelnost designu.
+    \item \textbf{Refactoring:} Neustálé vylepšování vnitřní struktury kódu bez změny jeho vnějšího chování s cílem zachovat čistotu a udržitelnost designu.
     \item \textbf{Jednoduchý návrh (Simple Design):} Návrh systému odpovídá pouze aktuálním požadavkům, čímž se předchází nadměrné komplexitě (over-engineering).
     \item \textbf{Párové programování (Pair Programming):} Praktika, kdy dva vývojáři pracují na jednom úkolu u jednoho počítače, což zvyšuje kvalitu kódu skrze okamžité code review.
 \end{itemize}
 
-Zatímco metodika XP je primárně navržena pro týmovou spolupráci (zejména párové programování), její technické praktiky jako TDD, CI a Refaktoring jsou plně aplikovatelné i pro samostatně pracujícího vývojáře a byly pro tuto bakalářskou práci klíčové.
+Zatímco metodika XP je primárně navržena pro týmovou spolupráci (zejména párové programování), její technické praktiky jako TDD, CI a Refactoring jsou plně aplikovatelné i pro samostatně pracujícího vývojáře a byly pro tuto bakalářskou práci klíčové.
