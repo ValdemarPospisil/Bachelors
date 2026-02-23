@@ -13,8 +13,8 @@ This phase focuses on gathering data and making decisions on terminology to ensu
 ## Phase 2: Content Refactoring & Generalization
 The "Full Clean-up" phase where application-specific details are removed and the text is generalized.
 
-- [ ] Task: Remove or generalize all sentences describing the GoodAccess CLI implementation details (focus on DAC and Process Management sections).
-- [ ] Task: Re-verify that the text maintains a professional, theoretical tone (autorský plurál).
+- [x] Task: Remove or generalize all sentences describing the GoodAccess CLI implementation details (focus on DAC and Process Management sections). a0b82f3
+- [x] Task: Re-verify that the text maintains a professional, theoretical tone (autorský plurál). a0b82f3
 - [ ] Task: Conductor - User Manual Verification 'Content Refactoring & Generalization' (Protocol in workflow.md)
 
 ## Phase 3: Structural & Technical Updates
