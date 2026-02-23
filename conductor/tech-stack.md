@@ -17,4 +17,4 @@
 - **Verzování a správa:** Git.
 
 ## Metodika vývoje
-- **Extreme Programming (XP):** Aplikace agilních praktik (TDD, CI, Refaktoring) v kontextu samostatného vývojáře.
+- **Extreme Programming (XP):** Aplikace agilních praktik (TDD, CI, Refactoring) v kontextu samostatného vývojáře.
