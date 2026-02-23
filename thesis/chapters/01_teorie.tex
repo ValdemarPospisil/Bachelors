@@ -1,7 +1,7 @@
 \chapter{Teoretická východiska}
 \label{chap:teorie}
 
-Tato kapitola analyzuje klíčové technologie, architektonické principy a bezpečnostní standardy nezbytné pro návrh moderního CLI nástroje v prostředí OS Linux. Text postupuje od obecné problematiky příkazové řádky přes síťové protokoly až po specifika implementačních platforem .NET a Go.
+Tato kapitola analyzuje klíčové technologie, architektonické principy a bezpečnostní standardy nezbytné pro návrh moderních systémových nástrojů v prostředí OS Linux. Text postupuje od obecné problematiky příkazové řádky přes síťové protokoly až po specifika implementačních platforem .NET a Go.
 
 \section{Rozhraní příkazové řádky}
 \label{sec:cli_teorie}
@@ -56,32 +56,31 @@ Linux dělí paměťový prostor na dvě privilegovaně odlišné části. Toto 
 
 \begin{itemize}
     \item \textbf{Kernel Space (Prostor jádra):} Zde běží jádro operačního systému, ovladače zařízení a kritické síťové moduly, včetně implementace protokolu WireGuard. Kód v tomto prostoru má plný přístup k hardwaru.
-    \item \textbf{User Space (Uživatelský prostor):} Zde běží běžné aplikace, včetně námi vyvíjeného CLI klienta a backendové služby.
+    \item \textbf{User Space (Uživatelský prostor):} Zde běží běžné aplikace, včetně uživatelských rozhraní a backendových služeb.
 \end{itemize}
 
 Toto oddělení, často označované jako \textit{privilege separation}, zajišťuje, že chybný nebo škodlivý kód v uživatelské aplikaci nemůže přímo ohrozit integritu celého systému. Brian Ward ve své knize \textit{How Linux Works} zdůrazňuje, že zatímco uživatelský prostor je místem, kde probíhá většina „reálné akce“ aplikací, jádro slouží jako arbitr a správce všech hardwarových prostředků \cite{ward_linux}.
 
-Aplikace v uživatelském prostoru nemohou přímo přistupovat k hardwaru. Musí využívat tzv. \textit{systémová volání} (syscalls) pro komunikaci s jádrem. Přechod mezi těmito prostory vyžaduje tzv. \textit{přepnutí kontextu} (context switch), což je operace s nenulovou režií. V kontextu VPN řešení je toto kritické při zpracování síťového provozu – například standardní OpenVPN běží v uživatelském prostoru a musí každý paket kopírovat mezi prostory přes virtuální síťové rozhraní (TUN/TAP), což může omezovat propustnost při vysokém zatížení. Naopak WireGuard, díky své implementaci přímo v prostoru jádra, tuto režii minimalizuje a umožňuje efektivnější zpracování datových toků \cite{wireguard_paper}.
+Aplikace v uživatelském prostoru nemohou přímo přistupovat k hardwaru. Musí využívat tzv. \textit{systémová volání} (syscalls) pro komunikaci s jádrem. Přechod mezi těmito prostory vyžaduje tzv. \textit{přepnutí kontextu} (context switch), což je operace s nenulovou režií. V kontextu VPN řešení je toto kritické při zpracování síťového provozu – například protokoly běžící v uživatelském prostoru musí každý paket kopírovat mezi prostory přes virtuální síťové rozhraní (TUN/TAP), což může omezovat propustnost při vysokém zatížení. Naopak implementace přímo v prostoru jádra tuto režii minimalizují a umožňují efektivnější zpracování datových toků \cite{wireguard_paper}.
 
 \subsection{Správa procesů a životní cyklus služeb}
 Proces je v Linuxu definován jako instance běžícího programu v paměti. Každý proces má svůj unikátní identifikátor (PID) a je spravován jádrem, které mu přiděluje procesorový čas a paměťové prostředky.
 
 Vytváření nových procesů probíhá pomocí dvojice systémových volání \texttt{fork()} a \texttt{exec()}. Volání \texttt{fork()} vytvoří identickou kopii rodičovského procesu, zatímco \texttt{exec()} nahradí kód běžícího procesu novým programem. Tento mechanismus je základem pro spouštění všech aplikací v systému \cite{ward_linux}.
 
-Specifickou kategorií procesů jsou \textit{daemony} (démoni). Jedná se o procesy, které běží na pozadí, nejsou přímo spojeny s žádným terminálem a typicky čekají na určité události nebo poskytují systémové služby. V navržené architektuře je backend implementován právě jako daemon, který udržuje stav VPN spojení nezávisle na tom, zda je CLI klient zrovna spuštěn. Tento přístup zajišťuje persistenci spojení a umožňuje bezpečné provádění privilegovaných operací (např. manipulaci se síťovými rozhraními) pod identitou uživatele s dostatečnými právy, zatímco samotné CLI rozhraní může běžet v kontextu běžného uživatele.
+Specifickou kategorií procesů jsou \textit{daemony} (démoni). Jedná se o procesy, které běží na pozadí, nejsou přímo spojeny s žádným terminálem a typicky čekají na určité události nebo poskytují systémové služby. V moderní architektuře systémových nástrojů bývá logika implementována právě jako daemon, který udržuje stav (např. VPN spojení) nezávisle na tom, zda je uživatelské rozhraní zrovna spuštěno. Tento přístup zajišťuje persistenci spojení a umožňuje bezpečné provádění privilegovaných operací (např. manipulaci se síťovými rozhraními) pod identitou uživatele s dostatečnými právy, zatímco samotné rozhraní může běžet v kontextu běžného uživatele.
 
 \subsection{Správa služeb a systémová inicializace (systemd)}
 Moderní linuxové distribuce využívají pro správu systému a služeb inicializační systém \texttt{systemd}. Ten v posledním desetiletí nahradil starší standardy jako \texttt{sysvinit} a přinesl zásadní změny v tom, jak jsou procesy na pozadí spouštěny, monitorovány a hierarchicky organizovány.
 
 Zatímco starší systémy spouštěly služby sekvenčně pomocí shell skriptů, což prodlužovalo start systému, \texttt{systemd} využívá agresivní paralelizaci a spouštění služeb na základě požadavků (on-demand), například skrze socketovou aktivaci. Brian Ward vysvětluje, že \texttt{systemd} není pouhým inicializačním procesem s PID 1, ale komplexním ekosystémem pro správu uživatelského prostoru, který integruje logování (\texttt{journald}), správu zařízení (\texttt{udev}) i konfiguraci sítě \cite{ward_linux}.
 
-Z pohledu vývoje VPN klienta jsou klíčové tzv. \textit{Unit files} (jednotky), konkrétně \texttt{.service} soubory. Tyto deklarativní konfigurační soubory definují parametry spuštění služby, její závislosti na síťové konektivitě a bezpečnostní kontext. Díky integraci s mechanismem \textit{cgroups} (Control Groups) má \texttt{systemd} absolutní kontrolu nad všemi procesy patřícími k dané službě, což umožňuje jejich spolehlivé ukončení nebo automatický restart v případě havárie. V navržené architektuře hraje \texttt{systemd} roli garanta běhu backendové služby, zajišťuje její spuštění po startu systému a poskytuje standardizované rozhraní pro monitoring stavu skrze nástroj \texttt{systemctl}.
+Z pohledu vývoje systémových nástrojů jsou klíčové tzv. \textit{Unit files} (jednotky), konkrétně \texttt{.service} soubory. Tyto deklarativní konfigurační soubory definují parametry spuštění služby, její závislosti na síťové konektivitě a bezpečnostní kontext. Díky integraci s mechanismem \textit{cgroups} (Control Groups) má \texttt{systemd} absolutní kontrolu nad všemi procesy patřícími k dané službě, což umožňuje jejich spolehlivé ukončení nebo automatický restart v případě havárie. V architektuře postavené na službách hraje \texttt{systemd} roli garanta běhu, zajišťuje spuštění po startu systému a poskytuje standardizované rozhraní pro monitoring stavu skrze nástroj \texttt{systemctl}.
 
 \subsection{Konfigurace síťového subsystému (Netlink)}
 Tradiční unixové nástroje (`ifconfig`) byly v Linuxu nahrazeny modernějším balíkem `iproute2`. Na pozadí těchto nástrojů stojí rozhraní \textbf{Netlink}.
 
 Netlink slouží jako komunikační sběrnice mezi jádrem a uživatelským prostorem. Na rozdíl od `ioctl` volání, Netlink používá standardní mechanismus socketů pro předávání zpráv o konfiguraci sítě (např. přiřazení IP adresy, změna routovací tabulky).
-% Tímto jsi splnil povinnost - víš, že to existuje, aniž bys musel tvrdit, že to programuješ ručně.
 
 \subsection{Meziprocesová komunikace (IPC) v Linuxu}
 Jelikož je aplikace rozdělena na dvě části (privilegovaná služba a neprivilegovaný klient), je nutné zajistit efektivní přenos dat mezi nimi. V prostředí Linuxu je standardem pro lokální komunikaci využití \textbf{Unix Domain Sockets (UDS)}.
@@ -91,19 +90,18 @@ Na rozdíl od TCP/IP socketů, které využívají síťová rozhraní a IP adre
 Hlavní výhody pro systémové služby jsou:
 \begin{enumerate}
     \item \textbf{Výkon:} Data se nekopírují přes síťový zásobník, ale zůstávají v paměti OS.
-    \item \textbf{Bezpečnost a řízení přístupu:} Přístup k socketu lze omezit standardními linuxovými oprávněními souborů. To umožňuje, aby se k backendové službě mohl připojit pouze uživatel s příslušným oprávněním.
+    \item \textbf{Bezpečnost a řízení přístupu:} Přístup k socketu lze omezit standardními linuxovými oprávněními souborů. To umožňuje, aby se k chráněné službě mohl připojit pouze uživatel s příslušným oprávněním.
 \end{enumerate}
 
 \subsection{Správa oprávnění a souborový systém}
 Linux využívá standard \textbf{FHS (Filesystem Hierarchy Standard)}, který definuje, kam mají aplikace ukládat svá data.
-% Tady obhájíš to svoje /opt a configy
 
 \subsubsection{Model oprávnění DAC}
 Linux využívá model Discretionary Access Control (DAC). Každý soubor má vlastníka (User), skupinu (Group) a sadu práv pro čtení, zápis a spuštění (\texttt{rwx}). Tento mechanismus je základem pro bezpečnost souborového systému, kde vlastník může rozhodnout, komu udělí přístup ke svým datům \cite{ward_linux}.
 
 Pro systémové služby, jako je VPN klient, je však tradiční model DAC často nedostačující. Operace jako vytváření virtuálních síťových rozhraní (\texttt{tun/tap}), modifikace směrovacích tabulek nebo konfigurace pravidel firewallu vyžadují nejvyšší úroveň oprávnění – identitu superuživatele \texttt{root}. V prostředí Linuxu je tato moc tradičně binární: proces buď disponuje plnými právy (UID 0), nebo je omezen jako běžný uživatel.
 
-Program \texttt{sudo} (superuser do) představuje standardní nástroj pro bezpečné delegování těchto oprávnění běžným uživatelům. V navržené architektuře běží backendová služba (daemon) právě pod identitou \texttt{root} (typicky spouštěná jako systemd služba s příslušnými právy), což jí umožňuje přímou manipulaci se síťovým zásobníkem jádra. Bezpečnostní bariéru zde tvoří meziprocesová komunikace: CLI frontend, běžící s právy běžného uživatele, komunikuje se službou přes Unix Domain Socket. Právě na úrovni tohoto socketu se model DAC znovu uplatňuje – přístup k souboru socketu je omezen na konkrétní uživatelskou skupinu, čímž je zaručeno, že pouze autorizovaní uživatelé mohou iniciovat VPN spojení.
+Program \texttt{sudo} (superuser do) představuje standardní nástroj pro bezpečné delegování těchto oprávnění běžným uživatelům. V rámci bezpečného návrhu systémových služeb běží kritické komponenty právě pod identitou \texttt{root} (typicky spouštěné jako systemd služba s příslušnými právy), což jim umožňuje přímou manipulaci se síťovým zásobníkem jádra. Bezpečnostní bariéru zde tvoří meziprocesová komunikace: frontend, běžící s právy běžného uživatele, komunikuje se službou přes Unix Domain Socket. Právě na úrovni tohoto socketu se model DAC znovu uplatňuje – přístup k souboru socketu je omezen na konkrétní uživatelskou skupinu, čímž je zaručeno, že pouze autorizovaní uživatelé mohou iniciovat chráněné operace.
 
 Moderní Linux dále rozšiřuje tento model o tzv. \textit{Capabilities} (schopnosti). Tento mechanismus umožňuje rozdělit absolutní moc uživatele \texttt{root} na menší, specificky zaměřené celky. Příkladem je schopnost \texttt{CAP\_NET\_ADMIN}, která procesu dovoluje spravovat síťová rozhraní a směrování, aniž by mu musela být udělena plná práva nad celým systémem \cite{ward_linux}. Využití Capabilities tak představuje implementaci principu nejmenších privilegií (Principle of Least Privilege), což výrazně zvyšuje odolnost systému proti potenciálnímu zneužití v případě kompromitace služby.
 
@@ -118,7 +116,7 @@ V rámci teoretického základu pro vývoj moderních systémových nástrojů j
 Platforma .NET 8 (dříve .NET Core) představuje moderní, multiplatformní vývojový ekosystém navržený pro vysoký výkon a škálovatelnost. Jedním z klíčových aspektů této platformy je její schopnost nativního běhu v prostředí OS Linux, což z ní činí vhodný nástroj pro vývoj serverových aplikací a systémových služeb \cite{price_csharp}.
 
 \subsubsection{Generic Host a životní cyklus služeb}
-Základním architektonickým prvkem pro běh aplikací na pozadí je tzv. \textbf{Generic Host}. Tento vzor poskytuje standardizované rozhraní pro správu životního cyklu aplikace, konfiguraci, logování a delegování úloh skrze mechanismus \textit{Dependency Injection} (DI). Generic Host sjednocuje způsob, jakým jsou spravovány různé typy služeb, od webových serverů až po jednoduché úlohy běžící na pozadí. V kontextu systémových služeb umožňuje precizní řízení tzv. „graceful shutdown“ procesu, kdy aplikace při přijetí signálu k ukončení (např. SIGTERM) korektně uvolní prostředky a ukončí běžící operace, čímž předchází nekonzistenci dat.
+Základním architektonickým prvkem pro běh aplikací na pozadí je tzv. \textbf{Generic Host}. Tento vzor poskytuje standardizované rozhraní pro správu životního cyklu aplikace, konfiguraci, logování a delegování úloh skrze mechanismus \textit{Dependency Injection} (DI). Generic Host sjednocuje způsob, jakým jsou spravovány různé typy služeb, od webových serverů až po jednoduché úlohy běžící na pozadí. V kontextu systémových služeb umožňuje precizní řízení procesu ukončení (\textit{graceful shutdown}), kdy aplikace při přijetí signálu k ukončení (např. SIGTERM) korektně uvolní prostředky a ukončí běžící operace, čímž předchází nekonzistenci dat.
 
 \subsubsection{Integrace se systémem systemd}
 Pro hlubší integraci s linuxovým inicializačním systémem \texttt{systemd} poskytuje platforma specializovaný modul \texttt{Microsoft.Extensions.Hosting.Systemd}. Tato komponenta umožňuje .NET aplikaci nativně komunikovat s inicializačním systémem \texttt{systemd}. Díky této integraci může služba odesílat stavová hlášení (např. o úspěšném spuštění) přímo do \texttt{systemd} a využívat pokročilé funkce správy služeb, jako je automatické obnovení po havárii nebo logování skrze systémový žurnál (\texttt{journald}).
