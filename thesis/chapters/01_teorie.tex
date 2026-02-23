@@ -40,13 +40,16 @@ Tato kapitola analyzuje klíčové technologie, architektonické principy a bezp
 Rozhraní příkazové řádky (CLI – Command Line Interface) představuje jeden z nejstarších, avšak stále nejvýkonnějších způsobů interakce uživatele s počítačem. Navzdory masivnímu rozšíření grafických uživatelských rozhraní (GUI) v 90. letech 20. století zůstává CLI nepostradatelným nástrojem pro systémové administrátory, vývojáře a pokročilé uživatele, zejména v prostředí operačních systémů typu Unix a Linux.
 
 \subsection{Role CLI v moderní správě systémů}
+\subsubsection{Efektivita a automatizace}
 Hlavním důvodem preference příkazové řádky v profesionálním prostředí je efektivita, rychlost a snadná automatizace. Zatímco grafické rozhraní je navrženo pro intuitivní objevování funkcí pomocí vizuálních prvků, CLI se zaměřuje na precizní a opakovatelné provádění úkolů. Administrátor může pomocí jediného příkazu nebo krátkého skriptu provést operaci na stovkách serverů současně, což je v rámci GUI prakticky neproveditelné.
 
+\subsubsection{Vzdálená správa a cloud}
 Dalším kritickým faktorem je vzdálená správa. Protokol SSH (Secure Shell), který je de facto standardem pro správu linuxových serverů, je primárně textově orientovaný. Přenos textových příkazů a jejich výstupů vyžaduje minimální síťovou propustnost, což umožňuje spolehlivou správu systémů i přes nestabilní nebo pomalé připojení. V prostředí cloudu a kontejnerizace (např. Docker, Kubernetes), kde systémy často nemají žádné grafické výstupní zařízení (headless režim), je CLI jedinou možností interakce.
 
 \subsection{Principy návrhu a standardy CLI aplikací}
 Kvalitní CLI aplikace se řídí souborem ustálených principů, které zajišťují jejich předvídatelnost a vzájemnou spolupráci. Eric S. Raymond ve své knize \textit{The Art of Unix Programming} definuje tzv. „Unixovou filosofii“, jejímž základem je tvorba malých, jednoúčelových nástrojů, které spolu efektivně komunikují \cite{raymond_unix}. Tento přístup umožňuje skládat komplexní operace z jednoduchých komponent pomocí mechanismu rour (pipes).
 
+\subsubsection{Unixová filozofie}
 Základním stavebním kamenem interakce v CLI jsou standardní datové proudy:
 \begin{itemize}
     \item \textbf{Standardní vstup (stdin):} Zdroj dat pro aplikaci, typicky klávesnice nebo výstup jiného programu.
@@ -54,8 +57,10 @@ Základním stavebním kamenem interakce v CLI jsou standardní datové proudy:
     \item \textbf{Standardní chybový výstup (stderr):} Oddělený kanál pro chybová hlášení a diagnostiku, což umožňuje uživateli přesměrovat data do souboru, zatímco chyby stále vidí na obrazovce.
 \end{itemize}
 
+\subsubsection{Standardní datové proudy}
 Důležitou roli hraje také syntaxe příkazů. Moderní nástroje se snaží dodržovat standardy jako POSIX nebo GNU konvence pro argumenty a přepínače (flags). Krátké přepínače (např. \texttt{-v}) jsou určeny pro rychlé psaní, zatímco dlouhé varianty (např. \texttt{--verbose}) zvyšují čitelnost skriptů a dokumentace.
 
+\subsubsection{Syntaxe a standardy}
 \subsection{CLI versus TUI}
 V rámci terminálu se můžeme setkat také s textovým uživatelským rozhraním (TUI – Text User Interface). Na rozdíl od klasického CLI, které vypisuje řádky textu v sekvenčním pořadí, TUI využívá celou plochu terminálu k vykreslování vizuálních prvků, jako jsou okna, menu, tabulky nebo interaktivní grafy, často s využitím knihoven jako \texttt{ncurses} nebo moderních frameworků v jazyce Go (např. \texttt{Bubble Tea}).
 
@@ -66,8 +71,10 @@ Hlavní rozdíl spočívá v komplexitě a způsobu interakce. CLI je ideální 
 Tradiční pojetí zabezpečení sítě, založené na ochraně perimetru, prochází v posledních letech zásadní transformací. Tato sekce popisuje evoluci od klasických VPN tunelů k moderní architektuře Zero Trust Network Access (ZTNA).
 
 \subsection{Tradiční VPN a perimetrová bezpečnost}
+\subsubsection{Tunelování a enkapsulace}
 Virtuální privátní síť (VPN) je technologie, která umožňuje vytvořit bezpečné, šifrované spojení (tunel) mezi dvěma body v rámci nezabezpečené sítě, jako je internet. Princip tunelování spočívá v zapouzdření (enkapsulaci) síťových paketů do jiného protokolu, který zajišťuje integritu a důvěrnost přenášených dat.
 
+\subsubsection{Model hrad a příkop}
 Historicky se organizace spoléhaly na model „hrad a příkop“ (Castle-and-Moat). V tomto modelu je vnitřní síť považována za důvěryhodnou zónu, která je od vnějšího světa oddělena firewallem (příkopem). VPN v tomto kontextu slouží jako „padací most“, který umožňuje vzdáleným uživatelům vstoupit do vnitřní sítě. Jakmile však uživatel získá přístup, má často široký dosah k mnoha zdrojům v rámci sítě. Tento přístup trpí kritickou slabinou: pokud útočník kompromituje jediné zařízení uvnitř perimetru, může se v síti volně pohybovat (laterální pohyb) a napadat další systémy, protože vnitřní síť mu implicitně důvěřuje.
 
 \subsection{Zero Trust Network Access (ZTNA) a GoodAccess}
@@ -86,6 +93,7 @@ Tato sekce analyzuje klíčové mechanismy operačního systému Linux, které j
 \subsection{Struktura systému: User Space a Kernel Space}
 Linux dělí paměťový prostor na dvě privilegovaně odlišné části. Toto rozdělení je kritické pro stabilitu a bezpečnost systému.
 
+\subsubsection{Prostor jádra a uživatelský prostor}
 \begin{itemize}
     \item \textbf{Kernel Space (Prostor jádra):} Zde běží jádro operačního systému, ovladače zařízení a kritické síťové moduly, včetně implementace protokolu WireGuard. Kód v tomto prostoru má plný přístup k hardwaru.
     \item \textbf{User Space (Uživatelský prostor):} Zde běží běžné aplikace, včetně uživatelských rozhraní a backendových služeb.
@@ -93,11 +101,13 @@ Linux dělí paměťový prostor na dvě privilegovaně odlišné části. Toto 
 
 Toto oddělení, často označované jako \textit{privilege separation}, zajišťuje, že chybný nebo škodlivý kód v uživatelské aplikaci nemůže přímo ohrozit integritu celého systému. Brian Ward ve své knize \textit{How Linux Works} zdůrazňuje, že zatímco uživatelský prostor je místem, kde probíhá většina „reálné akce“ aplikací, jádro slouží jako arbitr a správce všech hardwarových prostředků \cite{ward_linux}.
 
+\subsubsection{Systémová volání a přepnutí kontextu}
 Aplikace v uživatelském prostoru nemohou přímo přistupovat k hardwaru. Musí využívat tzv. \textit{systémová volání} (syscalls) pro komunikaci s jádrem. Přechod mezi těmito prostory vyžaduje tzv. \textit{přepnutí kontextu} (context switch), což je operace s nenulovou režií. V kontextu VPN řešení je toto kritické při zpracování síťového provozu – například protokoly běžící v uživatelském prostoru musí každý paket kopírovat mezi prostory přes virtuální síťové rozhraní (TUN/TAP), což může omezovat propustnost při vysokém zatížení. Naopak implementace přímo v prostoru jádra tuto režii minimalizují a umožňují efektivnější zpracování datových toků \cite{wireguard_paper}.
 
 \subsection{Správa procesů a životní cyklus služeb}
 Proces je v Linuxu definován jako instance běžícího programu v paměti. Každý proces má svůj unikátní identifikátor (PID) a je spravován jádrem, které mu přiděluje procesorový čas a paměťové prostředky.
 
+\subsubsection{Procesy a daemony}
 Vytváření nových procesů probíhá pomocí dvojice systémových volání \texttt{fork()} a \texttt{exec()}. Volání \texttt{fork()} vytvoří identickou kopii rodičovského procesu, zatímco \texttt{exec()} nahradí kód běžícího procesu novým programem. Tento mechanismus je základem pro spouštění všech aplikací v systému \cite{ward_linux}.
 
 Specifickou kategorií procesů jsou \textit{daemony} (démoni). Jedná se o procesy, které běží na pozadí, nejsou přímo spojeny s žádným terminálem a typicky čekají na určité události nebo poskytují systémové služby. V moderní architektuře systémových nástrojů bývá logika implementována právě jako daemon, který udržuje stav (např. VPN spojení) nezávisle na tom, zda je uživatelské rozhraní zrovna spuštěno. Tento přístup zajišťuje persistenci spojení a umožňuje bezpečné provádění privilegovaných operací (např. manipulaci se síťovými rozhraními) pod identitou uživatele s dostatečnými právy, zatímco samotné rozhraní může běžet v kontextu běžného uživatele.
@@ -105,6 +115,7 @@ Specifickou kategorií procesů jsou \textit{daemony} (démoni). Jedná se o pro
 \subsection{Správa služeb a systémová inicializace (systemd)}
 Moderní linuxové distribuce využívají pro správu systému a služeb inicializační systém \texttt{systemd}. Ten v posledním desetiletí nahradil starší standardy jako \texttt{sysvinit} a přinesl zásadní změny v tom, jak jsou procesy na pozadí spouštěny, monitorovány a hierarchicky organizovány.
 
+\subsubsection{systemd a správa služeb}
 Zatímco starší systémy spouštěly služby sekvenčně pomocí shell skriptů, což prodlužovalo start systému, \texttt{systemd} využívá agresivní paralelizaci a spouštění služeb na základě požadavků (on-demand), například skrze socketovou aktivaci. Brian Ward vysvětluje, že \texttt{systemd} není pouhým inicializačním procesem s PID 1, ale komplexním ekosystémem pro správu uživatelského prostoru, který integruje logování (\texttt{journald}), správu zařízení (\texttt{udev}) i konfiguraci sítě \cite{ward_linux}.
 
 Z pohledu vývoje systémových nástrojů jsou klíčové tzv. \textit{Unit files} (jednotky), konkrétně \texttt{.service} soubory. Tyto deklarativní konfigurační soubory definují parametry spuštění služby, její závislosti na síťové konektivitě a bezpečnostní kontext. Díky integraci s mechanismem \textit{cgroups} (Control Groups) má \texttt{systemd} absolutní kontrolu nad všemi procesy patřícími k dané službě, což umožňuje jejich spolehlivé ukončení nebo automatický restart v případě havárie. V architektuře postavené na službách hraje \texttt{systemd} roli garanta běhu, zajišťuje spuštění po startu systému a poskytuje standardizované rozhraní pro monitoring stavu skrze nástroj \texttt{systemctl}.
