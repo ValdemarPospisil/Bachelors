@@ -26,12 +26,12 @@ Implementing the formal changes to the LaTeX document structure.
 - [x] Task: Apply terminology corrections based on decisions from Phase 1. eec8767
 - [x] Task: Conductor - User Manual Verification 'Structural & Technical Updates' (Protocol in workflow.md) b2f1a4b
 
-## Phase 4: Final Polish & Verification
+## Phase 4: Final Polish & Verification [checkpoint: cf31706]
 Ensuring the document builds correctly and meets quality standards.
 
-- [ ] Task: Run a LaTeX build to ensure no syntax errors were introduced.
-- [ ] Task: Final read-through to verify all Acceptance Criteria are met.
-- [ ] Task: Conductor - User Manual Verification 'Final Polish & Verification' (Protocol in workflow.md)
+- [x] Task: Run a LaTeX build to ensure no syntax errors were introduced. 25536be
+- [x] Task: Final read-through to verify all Acceptance Criteria are met. 25536be
+- [x] Task: Conductor - User Manual Verification 'Final Polish & Verification' (Protocol in workflow.md) cf31706
 
 ## Quality Gates
 - [ ] All abbreviations listed and explained correctly.
