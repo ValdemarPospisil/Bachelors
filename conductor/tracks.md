@@ -25,5 +25,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [~] **Track: Theory Chapter Refinement & Unification**
+- [x] **Track: Theory Chapter Refinement & Unification**
 *Link: [./tracks/thesis_theory_refinement_20260223/](./tracks/thesis_theory_refinement_20260223/)*
