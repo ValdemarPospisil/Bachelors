@@ -1,0 +1,43 @@
+# Implementation Plan: Theory Chapter Refinement
+
+This plan outlines the steps to refactor `thesis/chapters/01_teorie.tex` to meet the approved specification.
+
+## Phase 1: Analysis & Terminology Alignment [checkpoint: 7aec937]
+This phase focuses on gathering data and making decisions on terminology to ensure consistency before editing the text.
+
+- [x] Task: Scan `01_teorie.tex` and extract all abbreviations and potential English/Czech technical term conflicts. ba174f4
+- [x] Task: Present the extracted terms to the user and obtain final decisions for each (Case-by-Case). d7bed5a
+- [x] Task: Propose specific locations and titles for new `\subsubsection` (subsubchapters) based on content analysis. dfc85d2
+- [x] Task: Conductor - User Manual Verification 'Analysis & Terminology Alignment' (Protocol in workflow.md) 7aec937
+
+## Phase 2: Content Refactoring & Generalization [checkpoint: 9acb190]
+The "Full Clean-up" phase where application-specific details are removed and the text is generalized.
+
+- [x] Task: Remove or generalize all sentences describing the GoodAccess CLI implementation details (focus on DAC and Process Management sections). a0b82f3
+- [x] Task: Re-verify that the text maintains a professional, theoretical tone (autorský plurál). a0b82f3
+- [x] Task: Conductor - User Manual Verification 'Content Refactoring & Generalization' (Protocol in workflow.md) 9acb190
+
+## Phase 3: Structural & Technical Updates [checkpoint: b2f1a4b]
+Implementing the formal changes to the LaTeX document structure.
+
+- [x] Task: Implement the formal Abbreviation List/Table at the beginning of the chapter. e05a32b
+- [x] Task: Deduplicate abbreviation explanations: Ensure first-instance only explanation and remove others. 71defa6
+- [x] Task: Insert the approved `\subsubsection` tags into the text. 73c641c
+- [x] Task: Apply terminology corrections based on decisions from Phase 1. eec8767
+- [x] Task: Conductor - User Manual Verification 'Structural & Technical Updates' (Protocol in workflow.md) b2f1a4b
+
+## Phase 4: Final Polish & Verification [checkpoint: cf31706]
+Ensuring the document builds correctly and meets quality standards.
+
+- [x] Task: Run a LaTeX build to ensure no syntax errors were introduced. 25536be
+- [x] Task: Final read-through to verify all Acceptance Criteria are met. 25536be
+- [x] Task: Conductor - User Manual Verification 'Final Polish & Verification' (Protocol in workflow.md) cf31706
+
+## Quality Gates
+- [ ] All abbreviations listed and explained correctly.
+- [ ] No "in my app" or implementation-specific sentences remain.
+- [ ] LaTeX document compiles without errors.
+- [ ] Tone is academic and consistent.
+
+## Phase: Review Fixes
+- [x] Task: Apply review suggestions dfff769
