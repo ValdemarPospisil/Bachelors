@@ -1,10 +1,10 @@
 # Implementation Plan: Finish 2nd Chapter
 
-## Phase 1: Update Non-Functional Requirements
-- [ ] Task: In `thesis/chapters/02_analyza.tex`, update "N1 -- Výkon" to focus on fast startup and low resource consumption without mentioning Go.
-- [ ] Task: In `thesis/chapters/02_analyza.tex`, add a new section for "N4 -- Distribuce a nasazení" explicitly mentioning `.deb` and `.rpm` formats.
-- [ ] Task: Compile the LaTeX document to verify compilation.
-- [ ] Task: Conductor - User Manual Verification 'Update Non-Functional Requirements' (Protocol in workflow.md)
+## Phase 1: Update Non-Functional Requirements [checkpoint: 5c9c091]
+- [x] Task: In `thesis/chapters/02_analyza.tex`, update "N1 -- Výkon" to focus on fast startup and low resource consumption without mentioning Go.
+- [x] Task: In `thesis/chapters/02_analyza.tex`, add a new section for "N4 -- Distribuce a nasazení" explicitly mentioning `.deb` and `.rpm` formats.
+- [x] Task: Compile the LaTeX document to verify compilation.
+- [x] Task: Conductor - User Manual Verification 'Update Non-Functional Requirements' (Protocol in workflow.md) [5c9c091]
 
 ## Phase 2: Restructure Architecture Analysis
 - [ ] Task: In `thesis/chapters/02_analyza.tex`, locate the "Analýza architektury" section. Delete the current contents (Návrh A, Návrh B, Zvolené řešení).
