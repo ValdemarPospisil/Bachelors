@@ -23,7 +23,3 @@ This file tracks all major tracks for the project. Each track has its own detail
 - [x] **Track: Write a new theoretical subchapter 1.6 Distribuce softwaru a balíčkovací systémy for the bachelor thesis.**
 *Link: [./tracks/thesis_distribuce_softwaru_20260218/](./tracks/thesis_distribuce_softwaru_20260218/)*
 
----
-
-- [x] **Track: Rewrite section Identifikace zúčastněných stran and Funkční požadavky in chapter 2 to reflect the actual CLI functionality.**
-*Link: [./tracks/thesis_analyza_cli_20260225/](./tracks/thesis_analyza_cli_20260225/)*
