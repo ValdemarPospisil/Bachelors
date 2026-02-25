@@ -25,5 +25,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Finish 2nd chapter**
+- [x] **Track: Finish 2nd chapter**
 *Link: [./tracks/thesis_finish_chapter2_20260225/](./tracks/thesis_finish_chapter2_20260225/)*
