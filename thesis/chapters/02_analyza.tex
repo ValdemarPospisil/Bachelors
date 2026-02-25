@@ -25,24 +25,38 @@ Hlavní scénáře použití systému z pohledu koncového uživatele (administr
 Na základě analýzy potřeb byly stanoveny následující funkční požadavky:
 
 \subsection{Autentizace a správa relace}
-Aplikace musí umožnit přihlášení uživatele v prostředí bez webového prohlížeče.
+Aplikace musí umožnit přihlášení uživatele v prostředí bez webového prohlížeče. Z tohoto důvodu nepodporuje přihlášení pomocí webového SSO (Single Sign-On).
 \begin{itemize}
-    \item \textbf{F1 -- Login:} Podpora pro autentizační toky vhodné pro terminál (např. Device Code Flow), kdy uživatel potvrdí přihlášení na jiném zařízení.
-    \item \textbf{F2 -- Logout:} Bezpečné ukončení relace a smazání lokálně uložených tokenů.
+    \item \textbf{F1 -- Login:} Přihlášení probíhá pomocí standardního terminálového vstupu, kam uživatel zadá název týmu, uživatelské jméno a heslo. Zadávání hesla je pro bezpečnost maskováno (zobrazují se pouze znaky \texttt{*}).
+    \item \textbf{F2 -- Logout:} Standardní ukončení relace uživatele a bezpečné smazání lokálně uložených tokenů.
 \end{itemize}
 
 \subsection{Správa připojení}
-Jádrem aplikace je ovládání VPN tunelu.
+Jádrem aplikace je ovládání VPN tunelu a správa nastavení pro připojení.
 \begin{itemize}
-    \item \textbf{F3 -- Connect:} Navázání připojení k vybrané bráně. Aplikace musí podporovat výběr protokolu (WireGuard jako výchozí, OpenVPN jako záložní).
-    \item \textbf{F4 -- Disconnect:} Korektní ukončení VPN připojení a úklid routovacích pravidel.
-    \item \textbf{F5 -- Gateway Selection:} Uživatel musí mít možnost vybrat si, ke které VPN bráně (Gateway) se chce připojit.
+    \item \textbf{F3 -- Connect:} Navázání připojení. Standardně se využije preferovaný protokol a brána (gateway) uložená z předchozího nastavení.
+    \item \textbf{F4 -- Connect Flags:} Možnost dočasně přepsat preferované nastavení při připojení pomocí přepínačů \texttt{-g} (gateway) a \texttt{-p} (protocol). Přepínač \texttt{--protocol} očekává textový název protokolu, zatímco \texttt{--gateway} vyvolá interaktivní výběr. Tato volba se neuloží jako preferovaná.
+    \item \textbf{F5 -- Disconnect:} Korektní ukončení VPN připojení a úklid routovacích pravidel.
+    \item \textbf{F6 -- Persistent Connect:} Nastavení připojení na úrovni celého zařízení, které zajistí automatické znovupřipojení i po restartu počítače.
+    \item \textbf{F7 -- Gateway Selection:} Možnost uživatele vybrat si konkrétní VPN bránu.
+    \item \textbf{F8 -- Protocol Selection:} Možnost uživatele zvolit preferovaný VPN protokol (WireGuard nebo OpenVPN).
 \end{itemize}
 
 \subsection{Monitoring a stav}
 \begin{itemize}
-    \item \textbf{F6 -- Status:} Zobrazení aktuálního stavu (Připojeno/Odpojeno, IP adresa, přenesená data).
-    \item \textbf{F7 -- JSON Output:} Možnost vyžádat si výstup příkazů (zejména status) ve formátu JSON pro snadné parsování v externích skriptech.
+    \item \textbf{F9 -- Status:} Zobrazení aktuálního stavu připojení (Připojeno/Odpojeno, IP adresa, přenesená data). Výstup lze volitelně formátovat do JSON pro snadné strojové zpracování.
+\end{itemize}
+
+\subsection{Správa konfigurace a konfliktů}
+\begin{itemize}
+    \item \textbf{F10 -- Setup:} Interaktivní průvodce prvotním nastavením (onboarding wizard). Umožňuje uživateli v jednom kroku provést přihlášení, zvolit protokol, vybrat bránu, nastavit perzistentní připojení a rovnou se připojit. Tento proces je striktně interaktivní.
+    \item \textbf{F11 -- Řešení konfliktů (Conflict Resolution):} Systém musí detekovat konfliktní stavy. Pokud je aktivní relace v grafickém klientovi (GUI) nebo je na stejném stroji připojen jiný uživatel, CLI klient na to uživatele upozorní a striktně zamezí přepisu stavu sítě.
+\end{itemize}
+
+\subsection{Obecné příkazy}
+\begin{itemize}
+    \item \textbf{F12 -- Version:} Zobrazení aktuální verze aplikace.
+    \item \textbf{F13 -- Help:} Zobrazení standardní nápovědy k dostupným příkazům a jejich použití.
 \end{itemize}
 
 \section{Nefunkční požadavky}
