@@ -25,5 +25,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Rewrite section Identifikace zúčastněných stran and Funkční požadavky in chapter 2 to reflect the actual CLI functionality.**
+- [x] **Track: Rewrite section Identifikace zúčastněných stran and Funkční požadavky in chapter 2 to reflect the actual CLI functionality.**
 *Link: [./tracks/thesis_analyza_cli_20260225/](./tracks/thesis_analyza_cli_20260225/)*
