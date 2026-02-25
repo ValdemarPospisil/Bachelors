@@ -4,6 +4,16 @@
 V této kapitole je představen detailní technický návrh aplikace. Vychází z analytických požadavků a zvolené architektury tenkého klienta.
 
 \section{Celková architektura systému}
+\subsection{Zvolené řešení: Tenký klient (Wrapper)}
+Na základě analýzy stávajícího systému a požadavků byl pro implementaci CLI zvolen přístup \textbf{tenkého klienta}. V tomto modelu zůstává zachována existující privilegovaná služba (.NET), která drží stav a vykonává operace. Nová CLI aplikace (vytvořená v jazyce Go) nahrazuje grafického klienta a slouží pouze jako dálkové ovládání, které posílá příkazy službě přes IPC.
+
+Tento přístup byl zvolen z následujících důvodů:
+\begin{enumerate}
+    \item \textbf{Single Source of Truth:} Služba drží jednotný stav aplikace. Nedochází k desynchronizaci mezi tím, co si myslí CLI, a tím, co je reálně nastaveno v síti.
+    \item \textbf{Bezpečnost:} Uživatel nemusí spouštět CLI pod \texttt{rootem}. Privilegované operace provádí pouze izolovaná služba na pozadí.
+    \item \textbf{Znovupoužitelnost:} Využívá se již otestovaná a existující logika v .NET backendu, což je v souladu s agilními principy.
+\end{enumerate}
+
 % Zde:
 % - Popiš rozdělení na Client (Go) a Service (.NET).
 % - Zmiň, že Service běží jako daemon pod rootem, Client jako user.

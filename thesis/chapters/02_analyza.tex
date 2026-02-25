@@ -68,18 +68,15 @@ Jádrem aplikace je ovládání VPN tunelu a správa nastavení pro připojení.
 \end{itemize}
 
 \section{Analýza architektury}
-Při návrhu řešení byly zvažovány dva přístupy k interakci s existující logikou GoodAccess:
+\subsection{Analýza stávajícího řešení GoodAccess}
+Aplikace GoodAccess na operačním systému Linux v současné době funguje jako rozdělený systém složený ze dvou hlavních komponent:
 
-\subsection{Návrh A: Tenký klient (Wrapper)}
-V tomto modelu běží v systému jedna privilegovaná služba (.NET), která drží stav a vykonává operace. CLI aplikace (Go) slouží pouze jako dálkové ovládání, které posílá příkazy službě přes IPC.
+\begin{itemize}
+    \item \textbf{GoodAccessService (Daemon):} Tato služba běží na pozadí pod správou systému \texttt{systemd} s právy uživatele \texttt{root}. Její primární odpovědností je správa síťových rozhraní (především tunelů WireGuard), konfigurace systémového směrování (routingu) a bezpečné uchovávání kryptografických klíčů a certifikátů.
+    \item \textbf{Grafický klient (Electron/GUI):} Uživatelské rozhraní je postaveno na frameworku Electron. Tato část běží v běžném uživatelském prostoru (bez root oprávnění) a funguje v podstatě jako „hloupý“ prezentační ovladač. Zobrazuje stav a přijímá příkazy od uživatele, které následně předává daemonu ke zpracování. Komunikace mezi těmito dvěma procesy probíhá lokálně, typicky pomocí Unix Domain Sockets (IPC).
+\end{itemize}
 
-\subsection{Návrh B: Samostatná logika}
-CLI aplikace by obsahovala veškerou logiku pro připojení a správu WireGuardu a běžela by přímo pod uživatelem root, nezávisle na existující službě.
+\subsection{Zhodnocení problému a motivace pro CLI}
+Tato rozdělená architektura funguje spolehlivě na běžných desktopových instalacích Linuxu. Zásadním problémem stávajícího řešení je však závislost grafického klienta na frameworku Electron. Aplikace v Electronu pro své spuštění nutně vyžaduje přítomnost zobrazovacího serveru (např. X11 nebo Wayland).
 
-\subsection{Zvolené řešení}
-Byl zvolen \textbf{Návrh A (Wrapper)} z následujících důvodů:
-\begin{enumerate}
-    \item \textbf{Single Source of Truth:} Služba drží jednotný stav aplikace. Nedochází k desynchronizaci mezi tím, co si myslí CLI, a tím, co je reálně nastaveno v síti.
-    \item \textbf{Bezpečnost:} Uživatel nemusí spouštět CLI pod \texttt{rootem}. Privilegované operace provádí pouze izolovaná služba na pozadí.
-    \item \textbf{Znovupoužitelnost:} Využívá se již otestovaná a existující logika v .NET backendu, což je v souladu s principy XP (Simplicity).
-\end{enumerate}
+Na serverových (headless) distribucích, v prostředích pro kontinuální integraci (CI/CD) nebo uvnitř Docker kontejnerů tyto zobrazovací servery záměrně chybí. V takových případech je spuštění a ovládání grafické aplikace nemožné, přestože klíčová běhová služba (daemon) dokáže fungovat bez problému na pozadí. Z tohoto omezení vyvstává explicitní potřeba vytvořit alternativní rozhraní ve formě aplikace pro příkazovou řádku (CLI), které dokáže plnohodnotně komunikovat s existující službou a ovládat ji čistě v textovém režimu, nezávisle na grafickém prostředí.
