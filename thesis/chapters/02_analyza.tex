@@ -61,9 +61,10 @@ Jádrem aplikace je ovládání VPN tunelu a správa nastavení pro připojení.
 
 \section{Nefunkční požadavky}
 \begin{itemize}
-    \item \textbf{N1 -- Výkon:} Rychlý start aplikace (CLI). Jazyk Go byl zvolen právě pro svou rychlost spouštění a malou paměťovou náročnost.
+    \item \textbf{N1 -- Výkon a odezva:} Aplikace v prostředí příkazové řádky (CLI) musí reagovat okamžitě. Zásadní je rychlý start aplikace a nízká paměťová náročnost, aby její spuštění uživatele neomezovalo.
     \item \textbf{N2 -- Kompatibilita:} Aplikace musí být funkční na hlavních serverových distribucích Linuxu (Debian/Ubuntu, Fedora/RHEL, Arch Linux).
     \item \textbf{N3 -- Bezpečnost:} Citlivá data (přístupové tokeny, privátní klíče) musí být uložena bezpečně a přístupná pouze oprávněné službě.
+    \item \textbf{N4 -- Distribuce a nasazení:} Pro usnadnění instalace a správy ze strany systémových administrátorů musí být aplikace zabalitelná do standardních distribučních balíčků. Konkrétně se jedná o formáty \texttt{.deb} (pro rodinu Debian) a \texttt{.rpm} (pro rodinu Red Hat).
 \end{itemize}
 
 \section{Analýza architektury}
