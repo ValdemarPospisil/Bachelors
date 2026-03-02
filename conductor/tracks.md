@@ -25,7 +25,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Refactor Theory Chapter (Increase citations, tables, cleanup)**
+- [x] **Track: Refactor Theory Chapter (Increase citations, tables, cleanup)**
 *Link: [./tracks/thesis_theory_refactor_20260302/](./tracks/thesis_theory_refactor_20260302/)*
 
 
