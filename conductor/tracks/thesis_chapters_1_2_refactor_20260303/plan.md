@@ -1,13 +1,13 @@
 # Implementation Plan
 
 ## Phase 1: Update Chapter 1 (Theory)
-- [ ] Task: Fix image placements in Chapter 1
-    - [ ] Locate all figures in `thesis/chapters/01_teorie.tex`.
-    - [ ] Update float specifiers to `[!htbp]`.
-- [ ] Task: Add Zero Trust concept and restructure text
-    - [ ] Add paragraph explaining the concept of Zero Trust.
-    - [ ] Ensure the "Castle and Moat vs Zero Trust" comparison table follows the new text.
-    - [ ] Ensure the ZTNA text follows the table and clarifies it as an implementation of Zero Trust.
+- [x] Task: Fix image placements in Chapter 1 3981759
+    - [x] Locate all figures in `thesis/chapters/01_teorie.tex`.
+    - [x] Update float specifiers to `[!htbp]`.
+- [x] Task: Add Zero Trust concept and restructure text 3981759
+    - [x] Add paragraph explaining the concept of Zero Trust.
+    - [x] Ensure the "Castle and Moat vs Zero Trust" comparison table follows the new text.
+    - [x] Ensure the ZTNA text follows the table and clarifies it as an implementation of Zero Trust.
 - [ ] Task: Conductor - User Manual Verification 'Update Chapter 1 (Theory)' (Protocol in workflow.md)
 
 ## Phase 2: Update Chapter 2 (Analysis)
