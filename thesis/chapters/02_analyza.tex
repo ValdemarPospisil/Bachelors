@@ -3,8 +3,10 @@
 
 Cílem této kapitoly je analyzovat potřeby cílové skupiny uživatelů a na jejich základě definovat funkční i nefunkční požadavky na výslednou aplikaci. Součástí je také analýza možných architektonických přístupů.
 
+Celý proces analýzy a sběru požadavků probíhal v agilním prostředí. Během vývoje se využívaly iterativní schůzky, pravidelné standupy a dedikované brainstormové sekce. Na těchto setkáních byli přítomni zkušení vývojáři a technický ředitel (CTO), kteří měli přímý kontakt se zákazníky a znali jejich konkrétní požadavky a zpětnou vazbu. Díky tomu bylo možné rychle a efektivně reagovat na potřeby uživatelů a správně specifikovat klíčové vlastnosti aplikace.
+
 \section{Identifikace zúčastněných stran}
-Primárními uživateli GoodAccess CLI pro Linux jsou technicky zdatní profesionálové:
+Primárními uživateli GoodAccess CLI pro Linux jsou:
 \begin{itemize}
     \item \textbf{System Administrators:} Spravují servery a vyžadují stabilní nástroj pro vzdálenou správu přes SSH bez nutnosti grafického rozhraní.
     \item \textbf{DevOps Inženýři:} Potřebují integrovat VPN připojení do automatizovaných skriptů a CI/CD pipelin. Vyžadují predikovatelné chování a strojově čitelný výstup.
@@ -80,3 +82,27 @@ Aplikace GoodAccess na operačním systému Linux v současné době funguje jak
 Tato rozdělená architektura funguje spolehlivě na běžných desktopových instalacích Linuxu. Zásadním problémem stávajícího řešení je však závislost grafického klienta na frameworku Electron. Aplikace v Electronu pro své spuštění nutně vyžaduje přítomnost zobrazovacího serveru (např. X11 nebo Wayland).
 
 Na serverových (headless) distribucích, v prostředích pro kontinuální integraci (CI/CD) nebo uvnitř Docker kontejnerů tyto zobrazovací servery záměrně chybí. V takových případech je spuštění a ovládání grafické aplikace nemožné, přestože klíčová běhová služba (daemon) dokáže fungovat bez problému na pozadí. Z tohoto omezení vyvstává explicitní potřeba vytvořit alternativní rozhraní ve formě aplikace pro příkazovou řádku (CLI), které dokáže plnohodnotně komunikovat s existující službou a ovládat ji čistě v textovém režimu, nezávisle na grafickém prostředí.
+
+\subsection{Možné architektonické přístupy}
+Při návrhu řešení byly zvažovány dva přístupy k interakci s existující logikou GoodAccess:
+
+\subsubsection{Návrh A: Tenký klient (Wrapper)}
+V tomto modelu běží v systému jedna privilegovaná služba (.NET), která drží stav a vykonává operace. CLI aplikace (Go) slouží pouze jako dálkové ovládání, které posílá příkazy službě přes IPC.
+
+\subsubsection{Návrh B: Samostatná logika}
+CLI aplikace by obsahovala veškerou logiku pro připojení a správu WireGuardu a běžela by přímo pod uživatelem root, nezávisle na existující službě.
+
+\subsection{Zvolené řešení}
+Byl zvolen \textbf{Návrh A (Wrapper)} z následujících důvodů:
+\begin{enumerate}
+    \item \textbf{Single Source of Truth:} Služba drží jednotný stav aplikace. Nedochází k desynchronizaci mezi tím, co si myslí CLI, a tím, co je reálně nastaveno v síti.
+    \item \textbf{Bezpečnost:} Uživatel nemusí spouštět CLI pod \texttt{rootem}. Privilegované operace provádí pouze izolovaná služba na pozadí.
+    \item \textbf{Znovupoužitelnost:} Využívá se již otestovaná a existující logika v .NET backendu, což je v souladu s principy XP (Simplicity).
+\end{enumerate}
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/architecture.png}
+    \caption{Zvolená architektura: Tenký klient (Wrapper)}
+    \label{fig:architecture}
+\end{figure}
