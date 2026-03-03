@@ -1,6 +1,6 @@
 # Implementation Plan
 
-## Phase 1: Update Chapter 1 (Theory)
+## Phase 1: Update Chapter 1 (Theory) [checkpoint: c78cd99]
 - [x] Task: Fix image placements in Chapter 1 3981759
     - [x] Locate all figures in `thesis/chapters/01_teorie.tex`.
     - [x] Update float specifiers to `[!htbp]`.
@@ -8,7 +8,7 @@
     - [x] Add paragraph explaining the concept of Zero Trust.
     - [x] Ensure the "Castle and Moat vs Zero Trust" comparison table follows the new text.
     - [x] Ensure the ZTNA text follows the table and clarifies it as an implementation of Zero Trust.
-- [ ] Task: Conductor - User Manual Verification 'Update Chapter 1 (Theory)' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Update Chapter 1 (Theory)' (Protocol in workflow.md)
 
 ## Phase 2: Update Chapter 2 (Analysis)
 - [ ] Task: Add agile methodology details
