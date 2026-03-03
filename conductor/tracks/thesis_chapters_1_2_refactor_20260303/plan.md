@@ -11,15 +11,15 @@
 - [x] Task: Conductor - User Manual Verification 'Update Chapter 1 (Theory)' (Protocol in workflow.md)
 
 ## Phase 2: Update Chapter 2 (Analysis)
-- [ ] Task: Add agile methodology details
-    - [ ] Locate the analysis process section in `thesis/chapters/02_analyza.tex`.
-    - [ ] Insert details about iterative meetings, brainstorms, agile environment, sprints, standups, experienced devs, and the CTO.
-- [ ] Task: Update user description in section 2.1
-    - [ ] Find "zdatní profesionálové" in section 2.1.
-    - [ ] Replace it with a broader description of the users.
-- [ ] Task: Add Architecture Analysis
-    - [ ] Insert the provided LaTeX snippet containing "Návrh A" and "Návrh B".
-    - [ ] Embed the `architecture.png` directly under the "Zvolené řešení" subsection.
+- [x] Task: Add agile methodology details e5f99dc
+    - [x] Locate the analysis process section in `thesis/chapters/02_analyza.tex`.
+    - [x] Insert details about iterative meetings, brainstorms, agile environment, sprints, standups, experienced devs, and the CTO.
+- [x] Task: Update user description in section 2.1 e5f99dc
+    - [x] Find "zdatní profesionálové" in section 2.1.
+    - [x] Replace it with a broader description of the users.
+- [x] Task: Add Architecture Analysis e5f99dc
+    - [x] Insert the provided LaTeX snippet containing "Návrh A" and "Návrh B".
+    - [x] Embed the `architecture.png` directly under the "Zvolené řešení" subsection.
 - [ ] Task: Conductor - User Manual Verification 'Update Chapter 2 (Analysis)' (Protocol in workflow.md)
 
 ## Phase 3: Update Chapter 3 and Abbreviations
