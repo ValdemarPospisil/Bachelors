@@ -23,13 +23,13 @@
 - [x] Task: Conductor - User Manual Verification 'Update Chapter 2 (Analysis)' (Protocol in workflow.md)
 
 ## Phase 3: Update Chapter 3 and Abbreviations
-- [ ] Task: Refine transition in Chapter 3
-    - [ ] Locate the architecture section in `thesis/chapters/03_navrh.tex`.
-    - [ ] Add continuity text referencing the analysis from Chapter 2 (e.g., Option B would be only Go).
-- [ ] Task: Clean up abbreviations
-    - [ ] Locate "Seznam zkratek" in `thesis/thesis.tex`.
-    - [ ] Remove "GNU" and "DNF" entries.
-- [ ] Task: Compile and review
-    - [ ] Build the LaTeX document.
-    - [ ] Verify visually that the output matches the acceptance criteria.
+- [x] Task: Refine transition in Chapter 3 84c6567
+    - [x] Locate the architecture section in `thesis/chapters/03_navrh.tex`.
+    - [x] Add continuity text referencing the analysis from Chapter 2 (e.g., Option B would be only Go).
+- [x] Task: Clean up abbreviations 84c6567
+    - [x] Locate "Seznam zkratek" in `thesis/thesis.tex`.
+    - [x] Remove "GNU" and "DNF" entries.
+- [x] Task: Compile and review 84c6567
+    - [x] Build the LaTeX document.
+    - [x] Verify visually that the output matches the acceptance criteria.
 - [ ] Task: Conductor - User Manual Verification 'Update Chapter 3 and Abbreviations' (Protocol in workflow.md)
