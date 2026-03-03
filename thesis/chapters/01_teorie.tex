@@ -44,7 +44,17 @@ Virtuální privátní síť (VPN) je technologie, která umožňuje vytvořit b
 \subsubsection{Model hrad a příkop}
 Historicky se organizace spoléhaly na model „hrad a příkop“ (Castle-and-Moat). V tomto modelu je vnitřní síť považována za důvěryhodnou zónu, která je od vnějšího světa oddělena firewallem (příkopem) \cite{cloudflare_castle_moat}. VPN v tomto kontextu slouží jako „padací most“, který umožňuje vzdáleným uživatelům vstoupit do vnitřní sítě. Jakmile však uživatel získá přístup, má často široký dosah k mnoha zdrojům v rámci sítě. Tento přístup trpí kritickou slabinou: pokud útočník kompromituje jediné zařízení uvnitř perimetru, může se v síti volně pohybovat (laterální pohyb) a napadat další systémy, protože vnitřní síť mu implicitně důvěřuje \cite{nist_800_207}.
 
-\begin{table}[htbp]
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/castle-and-moat.png}
+    \caption{Vizualizace modelu Castle-and-Moat \cite{cloudflare_castle_moat}}
+    \label{fig:castle_moat}
+\end{figure}
+
+\subsubsection{Koncept Zero Trust}
+Filozofie Zero Trust (nulová důvěra) model „hrad a příkop“ opouští a vychází z principu „nikdy nedůvěřuj, vždy prověřuj“ (Never trust, always verify). V konceptu Zero Trust není důvěra nikdy udělena automaticky na základě fyzického umístění uživatele nebo jeho IP adresy. Každý pokus o přístup k jakémukoliv zdroji musí být individuálně autentizován, autorizován a šifrován.
+
+\begin{table}[!htbp]
     \centering
     \caption{Srovnání modelů Castle-and-Moat a Zero Trust \cite{cloudflare_zero_trust}}
     \label{tab:castle_zero}
@@ -59,33 +69,25 @@ Historicky se organizace spoléhaly na model „hrad a příkop“ (Castle-and-M
     \end{tabular}
 \end{table}
 
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.7\textwidth]{images/castle-and-moat.png}
-    \caption{Vizualizace modelu Castle-and-Moat \cite{cloudflare_castle_moat}}
-    \label{fig:castle_moat}
-\end{figure}
-
 \subsection{Zero Trust Network Access (ZTNA) a GoodAccess}
-...
 
-Filozofie Zero Trust (nulová důvěra) tento model opouští a vychází z principu „nikdy nedůvěřuj, vždy prověřuj“ (Never trust, always verify). V architektuře ZTNA není důvěra nikdy udělena na základě fyzického umístění uživatele nebo jeho IP adresy (Internet Protocol). Každý pokus o přístup k jakémukoliv zdroji musí být individuálně autentizován, autorizován a šifrován.
+Zero Trust Network Access (ZTNA) představuje praktickou technologickou implementaci architektury Zero Trust. V architektuře ZTNA je kontrola přístupu striktně vynucována pro každou relaci.
 
 Klíčovým prvkem ZTNA je Software Defined Perimeter (SDP). SDP vytváří dynamickou, virtuální hranici kolem aplikací a služeb, čímž je činí „neviditelnými“ pro veřejný internet i pro neautorizované uživatele v lokální síti. GoodAccess implementuje tyto principy formou cloudové platformy, která nahrazuje tradiční VPN brány \cite{goodaccess_doc}. Místo statických IP adres využívá identitu uživatele (často propojenou s SSO/OIDC) a kontext zařízení (tzv. Device Posture) k dynamickému přidělování přístupových práv k jednotlivým systémům \cite{goodaccess_architecture}. Tím se radikálně snižuje plocha možného útoku, protože uživatel vidí pouze ty zdroje, ke kterým má explicitní oprávnění.
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
     \centering
-    \includegraphics[width=0.7\textwidth]{images/ZTNA.png}
+    \includegraphics[width=1.0\textwidth]{images/ZTNA.png}
     \caption{Architektura Zero Trust Network Access \cite{ztna_paper_2025}}
     \label{fig:ztna_arch}
 \end{figure}
 
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.7\textwidth]{images/nist800.png}
-    \caption{Komponenty architektury Zero Trust podle NIST SP 800-207 \cite{nist_800_207}}
-    \label{fig:nist800}
-\end{figure}
+%\begin{figure}[!htbp]
+%    \centering
+%    \includegraphics[width=1.0\textwidth]{images/nist800.png}
+%    \caption{Komponenty architektury Zero Trust podle NIST SP 800-207 \cite{nist_800_207}}
+%    \label{fig:nist800}
+%\end{figure}
 
 \subsection{Srovnání protokolů WireGuard a OpenVPN}
 Naproti tomu WireGuard je moderní protokol navržený s důrazem na jednoduchost, rychlost a moderní kryptografii \cite{wireguard_paper}. S rozsahem přibližně 4 000 řádků kódu je WireGuard snadno auditovatelný a díky implementaci přímo v jádře Linuxu dosahuje výrazně vyšší propustnosti a nižší latence než OpenVPN. Z pohledu správy systému se WireGuard chová jako standardní síťové rozhraní, což zjednodušuje konfiguraci směrování a integraci do systémových nástrojů. Pro dynamické enterprise prostředí, které GoodAccess obsluhuje, je WireGuard ideální volbou díky rychlému navazování spojení (handshake) a vysoké odolnosti vůči změnám síťového prostředí.
@@ -230,7 +232,7 @@ Tradiční pohled na testování jako na oddělenou fázi na konci vývoje je v 
 \subsection{Testovací pyramida}
 Koncept testovací pyramidy, který poprvé popularizoval Mike Cohn v knize \textit{Succeeding with Agile}, definuje ideální distribuci různých typů automatizovaných testů \cite{cohn_succeeding}. Cílem je vytvořit robustní základnu rychlých a levných testů, které jsou doplněny menším množstvím komplexnějších a pomalejších scénářů.
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
     \centering
     \includegraphics[width=0.7\textwidth]{../doc/images/tests.jpg}
     \caption{Model testovací pyramidy podle Mikea Cohna \cite{cohn_succeeding}}
@@ -269,7 +271,7 @@ Vztah mezi vývojáři a uživateli je definován modelem Upstream/Downstream \c
     \item \textbf{Downstream (Dolní proud):} Představuje linuxové distribuce, které přebírají kód z upstreamu, upravují jej pro své potřeby (např. aplikací specifických patchů), kompilují a balí do binárních balíčků.
 \end{itemize}
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
     \centering
     \includegraphics[width=0.7\textwidth]{images/upstream-downstream.png}
     \caption{Model Upstream a Downstream v distribuci softwaru \cite{luminousmen_upstream}}
@@ -317,21 +319,21 @@ Moderní vývoj softwaru se v posledních dvou dekádách posunul od rigidních 
 \subsection{Filozofie a hodnoty XP}
 Základem metodiky XP je pět core hodnot, které tvoří etický a profesní rámec pro veškeré rozhodování v projektu \cite{beck_xp}:
 \begin{itemize}
-    \item \textbf{Komunikace (Communication):} Většina problémů v projektech pramení z nedostatku informací. XP podporuje přímou a otevřenou komunikaci mezi členy týmu i zákazníkem \cite{beck_xp}.
-    \item \textbf{Jednoduchost (Simplicity):} Cílem je vytvořit „nejjednodušší věc, která může fungovat“. Tím se minimalizuje budoucí režie a technický dluh \cite{beck_xp}.
-    \item \textbf{Zpětná vazba (Feedback):} Neustálé ověřování stavu systému skrze testy a interakci se zákazníkem umožňuje včasnou korekci kurzu \cite{beck_xp}.
-    \item \textbf{Odvaha (Courage):} Schopnost provádět radikální změny v návrhu (refactoring) nebo přiznat chybu a zahodit nefunkční kód \cite{beck_xp}.
-    \item \textbf{Respekt (Respect):} Vzájemná úcta mezi vývojáři a důvěra v jejich schopnosti jsou nezbytné pro fungování týmových praktik \cite{beck_xp}.
+    \item \textbf{Komunikace (Communication):} Většina problémů v projektech pramení z nedostatku informací. XP podporuje přímou a otevřenou komunikaci mezi členy týmu i zákazníkem.
+    \item \textbf{Jednoduchost (Simplicity):} Cílem je vytvořit „nejjednodušší věc, která může fungovat“. Tím se minimalizuje budoucí režie a technický dluh.
+    \item \textbf{Zpětná vazba (Feedback):} Neustálé ověřování stavu systému skrze testy a interakci se zákazníkem umožňuje včasnou korekci kurzu.
+    \item \textbf{Odvaha (Courage):} Schopnost provádět radikální změny v návrhu (refactoring) nebo přiznat chybu a zahodit nefunkční kód.
+    \item \textbf{Respekt (Respect):} Vzájemná úcta mezi vývojáři a důvěra v jejich schopnosti jsou nezbytné pro fungování týmových praktik.
 \end{itemize}
 
 \subsection{Klíčové praktiky XP}
 Hodnoty jsou v XP přetaveny do konkrétních technických a procesních praktik \cite{beck_xp}. Pro tuto bakalářskou práci byly klíčové zejména:
 \begin{itemize}
-    \item \textbf{Test-Driven Development (TDD):} Psaní testů před samotným kódem zajišťuje vysoké pokrytí, definuje očekávané chování a slouží jako pojistka při refactoringu \cite{beck_xp}.
-    \item \textbf{Kontinuální integrace (Continuous Integration - CI):} Časté začleňování změn do hlavní větve projektu a automatické spouštění testů pro okamžitou detekci regresí \cite{beck_xp}.
-    \item \textbf{Refactoring:} Neustálé vylepšování vnitřní struktury kódu bez změny jeho vnějšího chování s cílem zachovat čistotu a udržitelnost designu \cite{beck_xp}.
-    \item \textbf{Jednoduchý návrh (Simple Design):} Návrh systému odpovídá pouze aktuálním požadavkům, čímž se předchází nadměrné komplexitě (over-engineering) \cite{beck_xp}.
-    \item \textbf{Párové programování (Pair Programming):} Praktika, kdy dva vývojáři pracují na jednom úkolu u jednoho počítače, což zvyšuje kvalitu kódu skrze okamžité code review \cite{beck_xp}.
+    \item \textbf{Test-Driven Development (TDD):} Psaní testů před samotným kódem zajišťuje vysoké pokrytí, definuje očekávané chování a slouží jako pojistka při refactoringu.
+    \item \textbf{Kontinuální integrace (Continuous Integration - CI):} Časté začleňování změn do hlavní větve projektu a automatické spouštění testů pro okamžitou detekci regresí.
+    \item \textbf{Refactoring:} Neustálé vylepšování vnitřní struktury kódu bez změny jeho vnějšího chování s cílem zachovat čistotu a udržitelnost designu.
+    \item \textbf{Jednoduchý návrh (Simple Design):} Návrh systému odpovídá pouze aktuálním požadavkům, čímž se předchází nadměrné komplexitě (over-engineering).
+    \item \textbf{Párové programování (Pair Programming):} Praktika, kdy dva vývojáři pracují na jednom úkolu u jednoho počítače, což zvyšuje kvalitu kódu skrze okamžité code review.
 \end{itemize}
 
 Zatímco metodika XP je primárně navržena pro týmovou spolupráci (zejména párové programování), její technické praktiky jako TDD, CI a Refactoring jsou plně aplikovatelné i pro samostatně pracujícího vývojáře a byly pro tuto bakalářskou práci klíčové.
