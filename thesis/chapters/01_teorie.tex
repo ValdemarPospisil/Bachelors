@@ -89,8 +89,8 @@ Klíčovým prvkem ZTNA je Software Defined Perimeter (SDP). SDP vytváří dyna
 %    \label{fig:nist800}
 %\end{figure}
 
-\subsection{Srovnání protokolů WireGuard a OpenVPN}
-Naproti tomu WireGuard je moderní protokol navržený s důrazem na jednoduchost, rychlost a moderní kryptografii \cite{wireguard_paper}. S rozsahem přibližně 4 000 řádků kódu je WireGuard snadno auditovatelný a díky implementaci přímo v jádře Linuxu dosahuje výrazně vyšší propustnosti a nižší latence než OpenVPN. Z pohledu správy systému se WireGuard chová jako standardní síťové rozhraní, což zjednodušuje konfiguraci směrování a integraci do systémových nástrojů. Pro dynamické enterprise prostředí, které GoodAccess obsluhuje, je WireGuard ideální volbou díky rychlému navazování spojení (handshake) a vysoké odolnosti vůči změnám síťového prostředí.
+\subsection{Protokol WireGuard}
+WireGuard je moderní VPN protokol navržený s důrazem na jednoduchost, rychlost a moderní kryptografii \cite{wireguard_paper}. S rozsahem přibližně 4 000 řádků kódu je WireGuard velmi snadno auditovatelný. Díky své implementaci přímo v jádře Linuxu dosahuje vynikající propustnosti a velmi nízké latence. Z pohledu správy systému se WireGuard chová jako standardní síťové rozhraní, což výrazně zjednodušuje konfiguraci směrování a celkovou integraci do systémových nástrojů. Pro dynamické enterprise prostředí, které GoodAccess obsluhuje, představuje WireGuard ideální volbu především díky mimořádně rychlému navazování spojení (handshake) a vysoké odolnosti vůči změnám síťového prostředí (roaming).
 
 \section{Architektura operačního systému Linux}
 \label{sec:linux_arch}
