@@ -25,5 +25,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Refactor Chapters 1 and 2, add Zero Trust text, fix image placements, and expand on the analysis process and architecture.**
+- [x] **Track: Refactor Chapters 1 and 2, add Zero Trust text, fix image placements, and expand on the analysis process and architecture.**
 *Link: [./tracks/thesis_chapters_1_2_refactor_20260303/](./tracks/thesis_chapters_1_2_refactor_20260303/)*
