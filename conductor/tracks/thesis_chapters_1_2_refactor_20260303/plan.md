@@ -10,7 +10,7 @@
     - [x] Ensure the ZTNA text follows the table and clarifies it as an implementation of Zero Trust.
 - [x] Task: Conductor - User Manual Verification 'Update Chapter 1 (Theory)' (Protocol in workflow.md)
 
-## Phase 2: Update Chapter 2 (Analysis)
+## Phase 2: Update Chapter 2 (Analysis) [checkpoint: 0f24adf]
 - [x] Task: Add agile methodology details e5f99dc
     - [x] Locate the analysis process section in `thesis/chapters/02_analyza.tex`.
     - [x] Insert details about iterative meetings, brainstorms, agile environment, sprints, standups, experienced devs, and the CTO.
@@ -20,7 +20,7 @@
 - [x] Task: Add Architecture Analysis e5f99dc
     - [x] Insert the provided LaTeX snippet containing "Návrh A" and "Návrh B".
     - [x] Embed the `architecture.png` directly under the "Zvolené řešení" subsection.
-- [ ] Task: Conductor - User Manual Verification 'Update Chapter 2 (Analysis)' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Update Chapter 2 (Analysis)' (Protocol in workflow.md)
 
 ## Phase 3: Update Chapter 3 and Abbreviations
 - [ ] Task: Refine transition in Chapter 3
