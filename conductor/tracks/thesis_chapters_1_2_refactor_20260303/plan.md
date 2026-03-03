@@ -22,7 +22,7 @@
     - [x] Embed the `architecture.png` directly under the "Zvolené řešení" subsection.
 - [x] Task: Conductor - User Manual Verification 'Update Chapter 2 (Analysis)' (Protocol in workflow.md)
 
-## Phase 3: Update Chapter 3 and Abbreviations
+## Phase 3: Update Chapter 3 and Abbreviations [checkpoint: f48e83c]
 - [x] Task: Refine transition in Chapter 3 84c6567
     - [x] Locate the architecture section in `thesis/chapters/03_navrh.tex`.
     - [x] Add continuity text referencing the analysis from Chapter 2 (e.g., Option B would be only Go).
@@ -32,4 +32,4 @@
 - [x] Task: Compile and review 84c6567
     - [x] Build the LaTeX document.
     - [x] Verify visually that the output matches the acceptance criteria.
-- [ ] Task: Conductor - User Manual Verification 'Update Chapter 3 and Abbreviations' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Update Chapter 3 and Abbreviations' (Protocol in workflow.md)
