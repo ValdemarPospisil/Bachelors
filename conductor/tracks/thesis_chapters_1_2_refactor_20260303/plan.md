@@ -1,0 +1,35 @@
+# Implementation Plan
+
+## Phase 1: Update Chapter 1 (Theory)
+- [ ] Task: Fix image placements in Chapter 1
+    - [ ] Locate all figures in `thesis/chapters/01_teorie.tex`.
+    - [ ] Update float specifiers to `[!htbp]`.
+- [ ] Task: Add Zero Trust concept and restructure text
+    - [ ] Add paragraph explaining the concept of Zero Trust.
+    - [ ] Ensure the "Castle and Moat vs Zero Trust" comparison table follows the new text.
+    - [ ] Ensure the ZTNA text follows the table and clarifies it as an implementation of Zero Trust.
+- [ ] Task: Conductor - User Manual Verification 'Update Chapter 1 (Theory)' (Protocol in workflow.md)
+
+## Phase 2: Update Chapter 2 (Analysis)
+- [ ] Task: Add agile methodology details
+    - [ ] Locate the analysis process section in `thesis/chapters/02_analyza.tex`.
+    - [ ] Insert details about iterative meetings, brainstorms, agile environment, sprints, standups, experienced devs, and the CTO.
+- [ ] Task: Update user description in section 2.1
+    - [ ] Find "zdatní profesionálové" in section 2.1.
+    - [ ] Replace it with a broader description of the users.
+- [ ] Task: Add Architecture Analysis
+    - [ ] Insert the provided LaTeX snippet containing "Návrh A" and "Návrh B".
+    - [ ] Embed the `architecture.png` directly under the "Zvolené řešení" subsection.
+- [ ] Task: Conductor - User Manual Verification 'Update Chapter 2 (Analysis)' (Protocol in workflow.md)
+
+## Phase 3: Update Chapter 3 and Abbreviations
+- [ ] Task: Refine transition in Chapter 3
+    - [ ] Locate the architecture section in `thesis/chapters/03_navrh.tex`.
+    - [ ] Add continuity text referencing the analysis from Chapter 2 (e.g., Option B would be only Go).
+- [ ] Task: Clean up abbreviations
+    - [ ] Locate "Seznam zkratek" in `thesis/thesis.tex`.
+    - [ ] Remove "GNU" and "DNF" entries.
+- [ ] Task: Compile and review
+    - [ ] Build the LaTeX document.
+    - [ ] Verify visually that the output matches the acceptance criteria.
+- [ ] Task: Conductor - User Manual Verification 'Update Chapter 3 and Abbreviations' (Protocol in workflow.md)

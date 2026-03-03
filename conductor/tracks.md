@@ -23,5 +23,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 - [x] **Track: Write a new theoretical subchapter 1.6 Distribuce softwaru a balíčkovací systémy for the bachelor thesis.**
 *Link: [./tracks/thesis_distribuce_softwaru_20260218/](./tracks/thesis_distribuce_softwaru_20260218/)*
 
+---
 
-
+- [ ] **Track: Refactor Chapters 1 and 2, add Zero Trust text, fix image placements, and expand on the analysis process and architecture.**
+*Link: [./tracks/thesis_chapters_1_2_refactor_20260303/](./tracks/thesis_chapters_1_2_refactor_20260303/)*
