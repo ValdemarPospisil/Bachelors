@@ -4,10 +4,12 @@
 V této kapitole je představen detailní technický návrh aplikace. Vychází z analytických požadavků a zvolené architektury tenkého klienta.
 
 \section{Celková architektura systému}
-\subsection{Zvolené řešení: Tenký klient (Wrapper)}
-Na základě analýzy stávajícího systému a požadavků byl pro implementaci CLI zvolen přístup \textbf{tenkého klienta}. V tomto modelu zůstává zachována existující privilegovaná služba (.NET), která drží stav a vykonává operace. Nová CLI aplikace (vytvořená v jazyce Go) nahrazuje grafického klienta a slouží pouze jako dálkové ovládání, které posílá příkazy službě přes IPC.
+Jak bylo podrobně rozebráno v předchozí kapitole, během analýzy byly zvažovány dvě hlavní cesty: vytvoření tenkého klienta napojeného na existující .NET službu, nebo vývoj zcela nezávislé aplikace napsané čistě v jazyce Go (Návrh B).
 
-Tento přístup byl zvolen z následujících důvodů:
+\subsection{Zvolené řešení: Tenký klient (Wrapper)}
+Na základě zhodnocení byl pro finální implementaci CLI zvolen první přístup, tedy \textbf{tenký klient (Návrh A)}. V tomto modelu zůstává plně zachována existující privilegovaná služba v .NET, která bezpečně drží stav a vykonává veškeré síťové operace. Nová CLI aplikace, napsaná v jazyce Go, pak funguje výhradně jako interaktivní dálkové ovládání, které si předává zprávy se službou prostřednictvím lokálního IPC mechanismu.
+
+Tento přístup, namísto budování celé logiky v Go, byl zvolen a potvrzen z následujících důvodů:
 \begin{enumerate}
     \item \textbf{Single Source of Truth:} Služba drží jednotný stav aplikace. Nedochází k desynchronizaci mezi tím, co si myslí CLI, a tím, co je reálně nastaveno v síti.
     \item \textbf{Bezpečnost:} Uživatel nemusí spouštět CLI pod \texttt{rootem}. Privilegované operace provádí pouze izolovaná služba na pozadí.
