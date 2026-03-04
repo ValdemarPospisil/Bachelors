@@ -26,9 +26,11 @@ Tento projekt je zaměřen na vývoj nativního CLI klienta pro službu GoodAcce
 - [x] 1.7 Agilní metodiky a Extreme Programming
 
 ### 2. Analýza a specifikace požadavků
-- [ ] 2.1 Analýza současného stavu
-- [ ] 2.2 Specifikace funkčních požadavků
-- [ ] 2.3 Specifikace nefunkčních požadavků
+- [x] 2.1 Identifikace zúčastněných stran
+- [x] 2.2 Případy užití
+- [x] 2.3 Funkční požadavky
+- [x] 2.4 Mimofunkční požadavky
+- [x] 2.5 Analýza architektury
 
 ### 3. Návrh řešení
 - [ ] 3.1 Architektura systému
