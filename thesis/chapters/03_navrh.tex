@@ -24,19 +24,19 @@ Tento přístup, namísto budování celé logiky v Go, byl zvolen a potvrzen z 
     \item \textbf{Znovupoužitelnost:} Využívá se již otestovaná a existující logika v .NET backendu, což je v souladu s agilními principy.
 \end{enumerate}
 
-\begin{figure}[!htbp]
+\begin{figure}[htbp]
     \centering
     % TODO: Přidat skutečný obrázek architektury
-    %\includegraphics[width=0.8\textwidth]{images/architecture_ipc.png}
+    \includegraphics[width=0.8\textwidth]{images/navrh-architecture.png}
     \vspace{4cm} % Placeholder pro obrázek
     \caption{Architektura systému znázorňující hranici mezi .NET Službou a Go Klientem skrze IPC (Unix Domain Sockets).}
     \label{fig:architecture_ipc}
 \end{figure}
 
-\begin{figure}[!htbp]
+\begin{figure}[htbp]
     \centering
     % TODO: Přidat skutečný obrázek Clean Architecture
-    %\includegraphics[width=0.8\textwidth]{images/clean_architecture_go.png}
+    \includegraphics[width=0.8\textwidth]{images/clean-architecture.png}
     \vspace{4cm} % Placeholder pro obrázek
     \caption{Struktura vrstev Go klienta v souladu s principy Clean Architecture.}
     \label{fig:clean_architecture_go}
