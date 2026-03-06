@@ -25,3 +25,6 @@
     - [x] Review for technical accuracy, clarity, and Czech grammar.
     - [x] Ensure the "Thin Client (Wrapper)" argument is consistent with the rest of the chapter.
 - [x] **Task: Conductor - User Manual Verification 'Thesis Refinement' (Protocol in workflow.md)**
+
+## Phase: Review Fixes
+- [x] Task: Apply review suggestions 0e4e398
