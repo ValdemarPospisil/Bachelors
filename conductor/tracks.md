@@ -27,5 +27,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Thesis Architecture Refinement (Chapter 3)**
+- [x] **Track: Thesis Architecture Refinement (Chapter 3)**
 *Link: [./tracks/thesis_arch_refinement_20260306/](./tracks/thesis_arch_refinement_20260306/)*
