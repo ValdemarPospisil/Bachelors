@@ -24,3 +24,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 *Link: [./tracks/thesis_distribuce_softwaru_20260218/](./tracks/thesis_distribuce_softwaru_20260218/)*
 
 
+
+---
+
+- [ ] **Track: Thesis Architecture Refinement (Chapter 3)**
+*Link: [./tracks/thesis_arch_refinement_20260306/](./tracks/thesis_arch_refinement_20260306/)*
