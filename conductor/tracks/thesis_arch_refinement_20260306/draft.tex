@@ -1,0 +1,25 @@
+Tento návrh je postaven na striktním oddělení kompetencí (Separation of Concerns). Architektura je rozdělena na dvě klíčové komponenty:
+\begin{itemize}
+    \item \textbf{Služba (Service - .NET):} Funguje jako daemon spravovaný systémem \texttt{systemd} s právy uživatele \texttt{root}. Její primární a jedinou odpovědností je správa stavu sítě, konfigurace rozhraní WireGuard a bezpečné ukládání kryptografických klíčů. Volba platformy .NET pro tuto komponentu přímo vychází z potřeby multiplatformní podpory a snadné integrace do systému \texttt{systemd} (viz sekce \ref{sec:technologie}), a především umožňuje znovupoužití již existující a otestované logiky z grafického klienta (viz kapitola \ref{chap:analyza}).
+    \item \textbf{Klient (Client - Go):} Běží v uživatelském prostoru (bez \texttt{root} oprávnění) a zajišťuje čistě interakci s uživatelem. Zodpovídá za parsování argumentů příkazové řádky pomocí frameworku \texttt{Cobra}, obsluhu interaktivních TUI prvků prostřednictvím \texttt{Bubble Tea} a finální formátování výstupu. Jazyk Go byl pro vývoj CLI zvolen díky svým vlastnostem pro systémové programování, rychlému startu a statické kompilaci do jediné binárky, což radikálně zjednodušuje distribuci (viz sekce \ref{sec:technologie} a \ref{sec:cli_teorie}).
+\end{itemize}
+
+Architektura Go klienta navíc úzce reflektuje principy takzvané \textit{Clean Architecture}. Celá kódová základna klienta je rozdělena do logických vrstev, kde uživatelské rozhraní (UI a parsování příkazů) je zcela odděleno od aplikační logiky a transportní vrstvy (IPC komunikace přes Unix Domain Sockets). Toto vrstvení zaručuje vysokou testovatelnost komponent a možnost nezávisle upravovat vizuální prezentaci bez vlivu na způsob, jakým klient komunikuje s .NET službou.
+
+\begin{figure}[!htbp]
+    \centering
+    % TODO: Přidat skutečný obrázek architektury
+    %\includegraphics[width=0.8\textwidth]{images/architecture_ipc.png}
+    \vspace{4cm} % Placeholder pro obrázek
+    \caption{Architektura systému znázorňující hranici mezi .NET Službou a Go Klientem skrze IPC (Unix Domain Sockets).}
+    \label{fig:architecture_ipc}
+\end{figure}
+
+\begin{figure}[!htbp]
+    \centering
+    % TODO: Přidat skutečný obrázek Clean Architecture
+    %\includegraphics[width=0.8\textwidth]{images/clean_architecture_go.png}
+    \vspace{4cm} % Placeholder pro obrázek
+    \caption{Struktura vrstev Go klienta v souladu s principy Clean Architecture.}
+    \label{fig:clean_architecture_go}
+\end{figure}
