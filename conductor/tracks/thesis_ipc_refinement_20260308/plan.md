@@ -1,7 +1,7 @@
 # Implementation Plan: Thesis IPC & Architecture Refinement
 
 ## Phase 1: Preparation & Cross-References
-- [ ] Task: Add label `\label{sec:analyza_architektury}` to Section 2.5 in `thesis/chapters/02_analyza.tex`.
+- [x] Task: Add label `\label{sec:analyza_architektury}` to Section 2.5 in `thesis/chapters/02_analyza.tex`. b07acb1
 - [ ] Task: Identify and verify all existing `\begin{figure}` blocks in Chapter 2 and 3 for float fix preparation.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Preparation' (Protocol in workflow.md)
 
