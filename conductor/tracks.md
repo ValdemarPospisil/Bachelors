@@ -23,3 +23,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 - [x] **Track: Write a new theoretical subchapter 1.6 Distribuce softwaru a balíčkovací systémy for the bachelor thesis.**
 *Link: [./tracks/thesis_distribuce_softwaru_20260218/](./tracks/thesis_distribuce_softwaru_20260218/)*
 
+---
+
+- [ ] **Track: UI Design Section (3.3)**
+*Link: [./tracks/thesis_ui_design_20260308/](./tracks/thesis_ui_design_20260308/)*
