@@ -25,5 +25,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Thesis IPC & Architecture Refinement**
+- [x] **Track: Thesis IPC & Architecture Refinement**
 *Link: [./tracks/thesis_ipc_refinement_20260308/](./tracks/thesis_ipc_refinement_20260308/)*
