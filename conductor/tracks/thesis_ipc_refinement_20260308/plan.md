@@ -5,10 +5,10 @@
 - [x] Task: Identify and verify all existing `\begin{figure}` blocks in Chapter 2 and 3 for float fix preparation. 4 matches found. 2d0fcbd
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Preparation' (Protocol in workflow.md) 8389020
 
-## Phase 2: Chapter 2 Image Float Refinement
-- [ ] Task: Update all `\begin{figure}` environments in `thesis/chapters/02_analyza.tex` to use `[H]` or `[!htbp]` to ensure fixed positioning.
-- [ ] Task: Verify that "Možné architektonické přístupy" and "Zvolené řešení" remain intact at the end of the chapter.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Chapter 2 Refinement' (Protocol in workflow.md)
+## Phase 2: Chapter 2 Image Float Refinement [checkpoint: b8f0dc9]
+- [x] Task: Update all `\begin{figure}` environments in `thesis/chapters/02_analyza.tex` to use `[H]` or `[!htbp]` to ensure fixed positioning. Used `[H]`.
+- [x] Task: Verify that "Možné architektonické přístupy" and "Zvolené řešení" remain intact at the end of the chapter. Verified.
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Chapter 2 Refinement' (Protocol in workflow.md) b8f0dc9
 
 ## Phase 3: Chapter 3 Introduction & Reference Refactor
 - [ ] Task: Rewrite the introduction of Chapter 3 in `thesis/chapters/03_navrh.tex`. Remove Section 1.1/1.2 and replace with a direct transition from Analysis.
