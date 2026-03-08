@@ -2,7 +2,7 @@
 
 ## Phase 1: Preparation & Cross-References
 - [x] Task: Add label `\label{sec:analyza_architektury}` to Section 2.5 in `thesis/chapters/02_analyza.tex`. b07acb1
-- [x] Task: Identify and verify all existing `\begin{figure}` blocks in Chapter 2 and 3 for float fix preparation. 4 matches found.
+- [x] Task: Identify and verify all existing `\begin{figure}` blocks in Chapter 2 and 3 for float fix preparation. 4 matches found. 2d0fcbd
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Preparation' (Protocol in workflow.md)
 
 ## Phase 2: Chapter 2 Image Float Refinement
