@@ -132,7 +132,8 @@ Tradiční unixové nástroje (`ifconfig`) byly v Linuxu nahrazeny modernější
 
 Netlink slouží jako komunikační sběrnice mezi jádrem a uživatelským prostorem \cite{ward_linux}. Na rozdíl od `ioctl` volání, Netlink používá standardní mechanismus socketů pro předávání zpráv o konfiguraci sítě (např. přiřazení IP adresy, změna routovací tabulky).
 
-\subsection{Meziprocesová komunikace (IPC) v Linuxu}
+\section{Meziprocesová komunikace (IPC) v Linuxu}
+\label{sec:ipc_theory}
 Jelikož je aplikace rozdělena na dvě části (privilegovaná služba a neprivilegovaný klient), je nutné zajistit efektivní přenos dat mezi nimi. V prostředí Linuxu je standardem pro lokální komunikaci využití \textbf{Unix Domain Sockets (UDS)}.
 
 \subsubsection{Unix Domain Sockets}
@@ -194,6 +195,7 @@ V oblasti interaktivních textových rozhraní (TUI) představuje špičku frame
 Zásadním přínosem tohoto přístupu je determinismus a snadná testovatelnost. Veškeré změny stavu probíhají asynchronně skrze zasílání zpráv, což zabraňuje vzniku \textit{race conditions}. Framework Bubble Tea se stará o efektivní překreslování terminálu (tzv. \textit{diffing}), kdy jsou aktualizovány pouze ty části obrazovky, které se skutečně změnily. To umožňuje vytvářet plynulá a reaktivní rozhraní, která uživateli poskytují okamžitou zpětnou vazbu bez problikávání či zpoždění.
 
 \subsection{Serializace dat a transportní formáty}
+\label{sec:formats_theory}
 Efektivní výměna dat mezi procesy (IPC) vyžaduje volbu vhodného formátu pro serializaci, který balancuje mezi výkonem, čitelností a snadnou údržbou.
 
 \subsubsection{Formát JSON}
