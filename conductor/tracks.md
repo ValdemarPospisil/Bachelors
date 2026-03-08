@@ -23,4 +23,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 - [x] **Track: Write a new theoretical subchapter 1.6 Distribuce softwaru a balíčkovací systémy for the bachelor thesis.**
 *Link: [./tracks/thesis_distribuce_softwaru_20260218/](./tracks/thesis_distribuce_softwaru_20260218/)*
 
+---
 
+- [ ] **Track: Thesis IPC & Architecture Refinement**
+*Link: [./tracks/thesis_ipc_refinement_20260308/](./tracks/thesis_ipc_refinement_20260308/)*
