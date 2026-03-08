@@ -97,10 +97,44 @@ Příklad odpovědi při chybě (neplatné údaje):
 \end{minipage}
 
 \section{Návrh uživatelského rozhraní (CLI)}
-% Zde:
-% - Strom příkazů (ga login, ga connect, ga status).
-% - Návrh interaktivního režimu (TUI) vs. skriptovacího režimu (flags).
-% - Jak budou vypadat výstupy (barvičky pro lidi, JSON pro stroje).
+Uživatelské rozhraní aplikace je navrženo s důrazem na dvě odlišné skupiny uživatelů: lidi, kteří vyžadují interaktivní a přehledné prostředí pro každodenní práci, a stroje (skripty, CI/CD systémy), které potřebují predikovatelný a snadno parsovatelný výstup. Tento duální přístup přímo reflektuje funkční požadavky stanovené v analytické části (viz sekce \ref{sec:funkcni_pozadavky}).
+
+\subsection{Strom příkazů}
+Struktura příkazů je postavena na frameworku \texttt{Cobra} (viz sekce \ref{sec:technologie}), který umožňuje definovat hierarchický model ovládání. Hlavní binární soubor \texttt{ga-cli} slouží jako vstupní bod, pod kterým jsou organizovány jednotlivé funkční celky formou sub-příkazů. Tato struktura zajišťuje intuitivní ovládání a snadnou rozšiřitelnost o budoucí funkce.
+
+Aktuální hierarchii příkazů znázorňuje Obrázek \ref{fig:command_tree}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/command-tree.png}
+    \caption{Hierarchická struktura příkazů (Command Tree) aplikace ga-cli.}
+    \label{fig:command_tree}
+\end{figure}
+
+Mezi klíčové příkazy patří:
+\begin{itemize}
+    \item \texttt{login}: Pro autentizaci uživatele.
+    \item \texttt{setup}: Interaktivní průvodce prvotním nastavením.
+    \item \texttt{connect} a \texttt{disconnect}: Pro ovládání stavu VPN tunelu.
+    \item \texttt{status}: Pro zobrazení aktuálních informací o připojení.
+\end{itemize}
+
+\subsection{Režimy zobrazení}
+Aplikace dynamicky mění své chování a způsob prezentace dat na základě kontextu, ve kterém je spuštěna.
+
+\subsubsection{Interaktivní režim (TUI)}
+V tomto režimu aplikace využívá framework \texttt{Bubble Tea} (viz sekce \ref{sec:technologie}) k vytvoření bohatého textového rozhraní. Uživatel je navigován pomocí interaktivních prvků, jako jsou výběrové seznamy (např. při volbě brány v příkazu \texttt{ga-cli setup}), spinners indikující probíhající operaci nebo barevně odlišené stavové zprávy. Tento režim je aktivován automaticky, pokud je detekován standardní terminálový výstup (TTY).
+
+\subsubsection{Skriptovací a headless režim}
+Pro účely automatizace a volání z jiných programů aplikace podporuje přepínač \texttt{--json}. V tomto režimu je potlačeno veškeré interaktivní vykreslování (TUI), barvy a spinners. Výstupem příkazů je pak čistý a validní JSON objekt (viz sekce \ref{sec:formats_theory}), který lze snadno zpracovat nástroji jako \texttt{jq}. Pokud aplikace detekuje, že výstup je přesměrován do roury (pipe) nebo souboru a přepínač \texttt{--json} není přítomen, automaticky vypíná barvy, aby nedocházelo ke znečištění textu ANSI únikovými kódy.
+
+\subsection{Argumenty versus přepínače}
+Při návrhu syntaxe příkazů bylo využito kombinace pozičních argumentů a pojmenovaných přepínačů (flags), což odpovídá standardům GNU/POSIX popsaným v teoretické části (viz sekce \ref{sec:cli_teorie}).
+
+\begin{itemize}
+    \item \textbf{Poziční argumenty:} Jsou použity pro data, která jsou pro daný příkaz klíčová a bez kterých nedává smysl (např. \texttt{ga-cli connect <gateway>}).
+    \item \textbf{Přepínače (Flags):} Slouží k modifikaci chování příkazu nebo k předání doplňujících informací (např. \texttt{--protocol wireguard}). Výhodou přepínačů je jejich explicitnost, která zvyšuje čitelnost příkazů v dokumentaci a skriptech.
+\end{itemize}
 
 \section{Bezpečnostní model}
 % Zde:
