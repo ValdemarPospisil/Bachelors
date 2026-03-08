@@ -1,28 +1,17 @@
 \chapter{Návrh řešení}
 \label{chap:navrh}
 
-V této kapitole je představen detailní technický návrh aplikace. Vychází z analytických požadavků a zvolené architektury tenkého klienta.
+V této kapitole je představen detailní technický návrh prototypu CLI klienta a navazující síťové služby. Návrh přímo vychází ze zvolené architektury tenkého klienta, která byla zdůvodněna v předchozí kapitole (viz sekce \ref{sec:analyza_architektury}).
 
-\section{Celková architektura systému}
-Jak bylo podrobně rozebráno v předchozí kapitole, během analýzy byly zvažovány dvě hlavní cesty: vytvoření tenkého klienta napojeného na existující .NET službu, nebo vývoj zcela nezávislé aplikace napsané čistě v jazyce Go (Návrh B).
+\section{Komponenty systému}
+Celý systém je v souladu se zvoleným návrhem rozdělen na dvě hlavní, technologicky odlišné komponenty, které spolu komunikují přes definované rozhraní.
 
-\subsection{Zvolené řešení: Tenký klient (Wrapper)}
-Na základě zhodnocení byl pro finální implementaci CLI zvolen první přístup, tedy \textbf{tenký klient (Návrh A)}. V tomto modelu zůstává plně zachována existující privilegovaná služba v .NET, která bezpečně drží stav a vykonává veškeré síťové operace. Nová CLI aplikace, napsaná v jazyce Go, pak funguje výhradně jako interaktivní dálkové ovládání, které si předává zprávy se službou prostřednictvím lokálního IPC mechanismu.
-
-Tento návrh je postaven na striktním oddělení kompetencí (Separation of Concerns). Architektura je rozdělena na dvě klíčové komponenty:
 \begin{itemize}
-    \item \textbf{Služba (Service - .NET):} Funguje jako daemon spravovaný systémem \texttt{systemd} s právy uživatele \texttt{root}. Její primární a jedinou odpovědností je správa stavu sítě, konfigurace rozhraní WireGuard a bezpečné ukládání kryptografických klíčů. Volba platformy .NET pro tuto komponentu přímo vychází z potřeby multiplatformní podpory a snadné integrace do systému \texttt{systemd} (viz sekce \ref{sec:technologie}), a především umožňuje znovupoužití již existující a otestované logiky z grafického klienta (viz kapitola \ref{chap:analyza}).
+    \item \textbf{Služba (Service - .NET):} Funguje jako daemon spravovaný systémem \texttt{systemd} s právy uživatele \texttt{root}. Její primární a jedinou odpovědností je správa stavu sítě, konfigurace rozhraní WireGuard a bezpečné ukládání kryptografických klíčů. Volba platformy .NET pro tuto komponentu přímo vychází z potřeby multiplatformní podpory a snadné integrace do systému \texttt{systemd} (viz sekce \ref{sec:technologie}), a především umožňuje znovupoužití již existující a otestované logiky z grafického klienta (viz sekce \ref{sec:analyza_architektury}).
     \item \textbf{Klient (Client - Go):} Běží v uživatelském prostoru (bez \texttt{root} oprávnění) a zajišťuje čistě interakci s uživatelem. Zodpovídá za parsování argumentů příkazové řádky pomocí frameworku \texttt{Cobra}, obsluhu interaktivních TUI prvků prostřednictvím \texttt{Bubble Tea} a finální formátování výstupu. Jazyk Go byl pro vývoj CLI zvolen díky svým vlastnostem pro systémové programování, rychlému startu a statické kompilaci do jediné binárky, což radikálně zjednodušuje distribuci (viz sekce \ref{sec:technologie} a \ref{sec:cli_teorie}).
 \end{itemize}
 
 Architektura Go klienta navíc úzce reflektuje principy takzvané \textit{Clean Architecture}. Celá kódová základna klienta je rozdělena do logických vrstev, kde uživatelské rozhraní (UI a parsování příkazů) je zcela odděleno od aplikační logiky a transportní vrstvy (IPC komunikace přes Unix Domain Sockets). Toto vrstvení zaručuje vysokou testovatelnost komponent a možnost nezávisle upravovat vizuální prezentaci bez vlivu na způsob, jakým klient komunikuje s .NET službou.
-
-Tento přístup, namísto budování celé logiky v Go, byl zvolen a potvrzen z následujících důvodů:
-\begin{enumerate}
-    \item \textbf{Single Source of Truth:} Služba drží jednotný stav aplikace. Nedochází k desynchronizaci mezi tím, co si myslí CLI, a tím, co je reálně nastaveno v síti.
-    \item \textbf{Bezpečnost:} Uživatel nemusí spouštět CLI pod \texttt{rootem}. Privilegované operace provádí pouze izolovaná služba na pozadí.
-    \item \textbf{Znovupoužitelnost:} Využívá se již otestovaná a existující logika v .NET backendu, což je v souladu s agilními principy.
-\end{enumerate}
 
 \begin{figure}[htbp]
     \centering
