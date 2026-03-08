@@ -16,13 +16,13 @@
 - [x] Task: Update the .NET Service reference in Chapter 3 to use `\ref{sec:analyza_architektury}` instead of `\ref{chap:analyza}`.
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Chapter 3 Intro Refactor' (Protocol in workflow.md) 8516f38
 
-## Phase 4: IPC Communication Design (Section 3.2)
-- [ ] Task: Implement Section 3.2 "Návrh komunikace IPC" in `thesis/chapters/03_navrh.tex`.
-    - [ ] Add reference to theory section 1.4.
-    - [ ] Add justification for JSON.
-    - [ ] Add `\begin{figure}[H]` for `ipc-sequence.png`.
-    - [ ] Add request/response JSON code snippets using `lstlisting` or `verbatim`.
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: IPC Design' (Protocol in workflow.md)
+## Phase 4: IPC Communication Design (Section 3.2) [checkpoint: 33b18d3]
+- [x] Task: Implement Section 3.2 "Návrh komunikace IPC" in `thesis/chapters/03_navrh.tex`.
+    - [x] Add reference to theory section 1.4.
+    - [x] Add justification for JSON.
+    - [x] Add `\begin{figure}[H]` for `ipc-sequence.png`.
+    - [x] Add request/response JSON code snippets using `lstlisting` or `verbatim`.
+- [x] Task: Conductor - User Manual Verification 'Phase 4: IPC Design' (Protocol in workflow.md) 33b18d3
 
 ## Phase 5: Global Verification
 - [ ] Task: Perform a final sweep of all `.tex` files in `thesis/chapters/` to ensure consistent figure positioning (`[H]`).
