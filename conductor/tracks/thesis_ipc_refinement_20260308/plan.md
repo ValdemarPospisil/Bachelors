@@ -1,9 +1,9 @@
 # Implementation Plan: Thesis IPC & Architecture Refinement
 
-## Phase 1: Preparation & Cross-References
+## Phase 1: Preparation & Cross-References [checkpoint: 8389020]
 - [x] Task: Add label `\label{sec:analyza_architektury}` to Section 2.5 in `thesis/chapters/02_analyza.tex`. b07acb1
 - [x] Task: Identify and verify all existing `\begin{figure}` blocks in Chapter 2 and 3 for float fix preparation. 4 matches found. 2d0fcbd
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Preparation' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Preparation' (Protocol in workflow.md) 8389020
 
 ## Phase 2: Chapter 2 Image Float Refinement
 - [ ] Task: Update all `\begin{figure}` environments in `thesis/chapters/02_analyza.tex` to use `[H]` or `[!htbp]` to ensure fixed positioning.
