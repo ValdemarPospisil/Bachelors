@@ -24,6 +24,6 @@
     - [x] Add request/response JSON code snippets using `lstlisting` or `verbatim`.
 - [x] Task: Conductor - User Manual Verification 'Phase 4: IPC Design' (Protocol in workflow.md) 33b18d3
 
-## Phase 5: Global Verification
-- [ ] Task: Perform a final sweep of all `.tex` files in `thesis/chapters/` to ensure consistent figure positioning (`[H]`).
-- [ ] Task: Conductor - User Manual Verification 'Phase 5: Final Sweep' (Protocol in workflow.md)
+## Phase 5: Global Verification [checkpoint: 2d16bc5]
+- [x] Task: Perform a final sweep of all `.tex` files in `thesis/chapters/` to ensure consistent figure positioning (`[H]`). Done for all chapters.
+- [x] Task: Conductor - User Manual Verification 'Phase 5: Final Sweep' (Protocol in workflow.md) 2d16bc5
