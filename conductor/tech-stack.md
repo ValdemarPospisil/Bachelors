@@ -4,6 +4,7 @@
 - **Backend (Logika):** .NET 8 / C# 12 – implementace `CLIService` modulu pro autentizaci a řízení tunelů.
 - **Frontend (CLI):** Go (Golang) – nativní binární aplikace pro Linux, slouží jako rozhraní pro uživatele.
 - **IPC (Inter-process Communication):** Unix Domain Sockets (UDS) – meziprocesní komunikace mezi Go CLI a .NET backendem.
+- **Data Format:** JSON – textový formát pro výměnu zpráv mezi komponentami.
 
 ## VPN a síťové technologie
 - **Protokoly:** 
