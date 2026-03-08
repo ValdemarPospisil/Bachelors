@@ -28,3 +28,6 @@
 - [x] Task: Replace "Argumenty vs Přepínače" with Section 3.3.3 "Vizuální styl a UX" (Colors, Spinners, Hints).
 - [x] Task: Write Section 3.3.4 "Průvodce nastavením (Setup)" detailing the onboarding flow.
 - [x] Task: Conductor - User Manual Verification 'Phase 5: Refinement' (Protocol in workflow.md) ref1234
+
+## Phase: Review Fixes
+- [~] Task: Apply review suggestions
