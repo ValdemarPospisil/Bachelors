@@ -33,9 +33,12 @@ Tento projekt je zaměřen na vývoj nativního CLI klienta pro službu GoodAcce
 - [x] 2.5 Analýza architektury
 
 ### 3. Návrh řešení
-- [ ] 3.1 Architektura systému
-- [ ] 3.2 Návrh komunikačního protokolu
-- [ ] 3.3 Návrh uživatelského rozhraní
+- [x] 3.1 Komponenty systému
+- [x] 3.2 Návrh komunikace IPC
+- [x] 3.3 Návrh uživatelského rozhraní (CLI)
+- [ ] 3.4 Bezpečnostní model
+- [ ] 3.5 Správa stavu a konfigurace
+- [ ] 3.6 Návrh distribuce a aktualizací
 
 ### 4. Implementace
 - [ ] 4.1 Implementace backendové služby
