@@ -21,3 +21,10 @@
 - [x] Task: Perform a final sweep for academic tone and LaTeX formatting consistency.
 - [x] Task: Verify that all figures in Chapter 3 use the `[H]` float specifier as per project standards.
 - [x] Task: Conductor - User Manual Verification 'Phase 4: Final Polish' (Protocol in workflow.md) abcdefg
+
+## Phase 5: UI/UX Refinement & Content Expansion [checkpoint: ref1234]
+- [x] Task: Increase `command-tree.png` size to `0.8\textwidth`.
+- [x] Task: Refactor Section 3.3.1 to correct `connect` command behavior (no positional args, `--gateway` flag).
+- [x] Task: Replace "Argumenty vs Přepínače" with Section 3.3.3 "Vizuální styl a UX" (Colors, Spinners, Hints).
+- [x] Task: Write Section 3.3.4 "Průvodce nastavením (Setup)" detailing the onboarding flow.
+- [x] Task: Conductor - User Manual Verification 'Phase 5: Refinement' (Protocol in workflow.md) ref1234

@@ -106,35 +106,53 @@ Aktuální hierarchii příkazů znázorňuje Obrázek \ref{fig:command_tree}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\textwidth]{images/command-tree.png}
+    \includegraphics[width=0.8\textwidth]{images/command-tree.png}
     \caption{Hierarchická struktura příkazů (Command Tree) aplikace ga-cli.}
     \label{fig:command_tree}
 \end{figure}
 
 Mezi klíčové příkazy patří:
 \begin{itemize}
-    \item \texttt{login}: Pro autentizaci uživatele.
-    \item \texttt{setup}: Interaktivní průvodce prvotním nastavením.
-    \item \texttt{connect} a \texttt{disconnect}: Pro ovládání stavu VPN tunelu.
-    \item \texttt{status}: Pro zobrazení aktuálních informací o připojení.
+    \item \texttt{login}: Pro autentizaci uživatele vůči backendu GoodAccess.
+    \item \texttt{setup}: Komplexní průvodce prvotním nastavením (viz sekce \ref{sec:setup_flow}).
+    \item \texttt{connect}: Navázání VPN připojení. Bez parametrů se připojuje k preferované bráně. Pomocí přepínače \texttt{-g} nebo \texttt{--gateway} lze vyvolat interaktivní výběr pro jednorázové připojení k jiné bráně.
+    \item \texttt{disconnect}: Bezpečné ukončení aktivního tunelu.
+    \item \texttt{status}: Zobrazení detailních informací o aktuální relaci.
 \end{itemize}
 
 \subsection{Režimy zobrazení}
 Aplikace dynamicky mění své chování a způsob prezentace dat na základě kontextu, ve kterém je spuštěna.
 
 \subsubsection{Interaktivní režim (TUI)}
-V tomto režimu aplikace využívá framework \texttt{Bubble Tea} (viz sekce \ref{sec:technologie}) k vytvoření bohatého textového rozhraní. Uživatel je navigován pomocí interaktivních prvků, jako jsou výběrové seznamy (např. při volbě brány v příkazu \texttt{ga-cli setup}), spinners indikující probíhající operaci nebo barevně odlišené stavové zprávy. Tento režim je aktivován automaticky, pokud je detekován standardní terminálový výstup (TTY).
+V tomto režimu aplikace využívá framework \texttt{Bubble Tea} (viz sekce \ref{sec:technologie}) k vytvoření bohatého textového rozhraní. Uživatel je navigován pomocí interaktivních prvků, jako jsou výběrové seznamy (např. při volbě brány), spinners indikující probíhající operaci nebo barevně odlišené stavové zprávy. Tento režim je aktivován automaticky, pokud je detekován standardní terminálový výstup (TTY).
 
 \subsubsection{Skriptovací a headless režim}
 Pro účely automatizace a volání z jiných programů aplikace podporuje přepínač \texttt{--json}. V tomto režimu je potlačeno veškeré interaktivní vykreslování (TUI), barvy a spinners. Výstupem příkazů je pak čistý a validní JSON objekt (viz sekce \ref{sec:formats_theory}), který lze snadno zpracovat nástroji jako \texttt{jq}. Pokud aplikace detekuje, že výstup je přesměrován do roury (pipe) nebo souboru a přepínač \texttt{--json} není přítomen, automaticky vypíná barvy, aby nedocházelo ke znečištění textu ANSI únikovými kódy.
 
-\subsection{Argumenty versus přepínače}
-Při návrhu syntaxe příkazů bylo využito kombinace pozičních argumentů a pojmenovaných přepínačů (flags), což odpovídá standardům GNU/POSIX popsaným v teoretické části (viz sekce \ref{sec:cli_teorie}).
+\subsection{Vizuální styl a UX principy}
+Pro zajištění konzistentního a profesionálního vzhledu v terminálu využívá aplikace knihovnu \texttt{Lip Gloss} pro definici stylů a barevné palety. Zvolené barvy nejsou náhodné, ale plní specifickou sémantickou roli:
 
 \begin{itemize}
-    \item \textbf{Poziční argumenty:} Jsou použity pro data, která jsou pro daný příkaz klíčová a bez kterých nedává smysl (např. \texttt{ga-cli connect <gateway>}).
-    \item \textbf{Přepínače (Flags):} Slouží k modifikaci chování příkazu nebo k předání doplňujících informací (např. \texttt{--protocol wireguard}). Výhodou přepínačů je jejich explicitnost, která zvyšuje čitelnost příkazů v dokumentaci a skriptech.
+    \item \textbf{Primary (Fialová \texttt{\#7D56F4}):} Použita pro hlavní značku aplikace, nadpisy a zvýraznění klíčových informací.
+    \item \textbf{Secondary (Zelená \texttt{\#04B575}):} Indikuje úspěšné operace a stav „Připojeno“.
+    \item \textbf{Error (Červená \texttt{\#FF0000}):} Kritické chyby a neúspěšné validace.
+    \item \textbf{Warning (Oranžová \texttt{\#FFA500}):} Varování, která nevyžadují okamžité ukončení, ale vyžadují pozornost uživatele.
+    \item \textbf{Subtle (Šedá \texttt{\#626262}):} Doplňkové informace a nápovědy, které nemají odvádět pozornost od hlavního toku dat.
 \end{itemize}
+
+Z pohledu uživatelské zkušenosti (UX) je kladen důraz na okamžitou odezvu. Každá operace trvající déle než 100\,ms je doprovázena animovaným prvkem (spinner), aby uživatel věděl, že aplikace „nezamrzla“. Dále aplikace využívá kontextové nápovědy (hints), které uživateli po dokončení příkazu navrhují další logický krok (např. po úspěšném přihlášení navrhne spuštění \texttt{ga-cli setup} nebo \texttt{ga-cli connect}).
+
+\subsection{Průvodce nastavením (Setup)}
+\label{sec:setup_flow}
+Specifickým prvkem návrhu je příkaz \texttt{ga-cli setup}. Jedná se o tzv. „vše v jednom“ flow, které je navrženo pro maximální pohodlí při prvním spuštění aplikace. Průvodce lineárně provede uživatele následujícími kroky:
+\begin{enumerate}
+    \item Autentizace (pokud uživatel není přihlášen).
+    \item Výběr preferovaného VPN protokolu (WireGuard / OpenVPN).
+    \item Interaktivní výběr výchozí brány (gateway).
+    \item Dotaz na aktivaci perzistentního připojení (Auto-connect).
+    \item Okamžité navázání spojení s nově uloženou konfigurací.
+\end{enumerate}
+Tento přístup radikálně snižuje bariéru vstupu pro nové uživatele, kteří by jinak museli studovat manuálové stránky jednotlivých příkazů.
 
 \section{Bezpečnostní model}
 % Zde:
