@@ -21,13 +21,13 @@ Architektura Go klienta navíc úzce reflektuje principy takzvané \textit{Clean
     \label{fig:architecture_ipc}
 \end{figure}
 
-\begin{figure}[H]
-    \centering
+%\begin{figure}[H]
+%    \centering
     % TODO: Přidat skutečný obrázek Clean Architecture
-    \includegraphics[width=0.8\textwidth]{images/clean-architecture.png}
-    \caption{Struktura vrstev Go klienta v souladu s principy Clean Architecture.}
-    \label{fig:clean_architecture_go}
-\end{figure}
+%    \includegraphics[width=0.8\textwidth]{images/clean-architecture.png}
+%    \caption{Struktura vrstev Go klienta v souladu s principy Clean Architecture.}
+%    \label{fig:clean_architecture_go}
+%\end{figure}
 
 \section{Návrh komunikace IPC}
 Pro výměnu dat mezi Go klientem a .NET službou bylo nutné zvolit vhodný mechanismus meziprocesní komunikace (IPC). Jak bylo popsáno v teoretické části (viz sekce \ref{sec:ipc_theory}), pro lokální komunikaci v systému Linux jsou nejvhodnějším nástrojem Unix Domain Sockets (UDS). Ty nabízejí vyšší bezpečnost díky souborovým oprávněním a lepší výkon oproti síťovým socketům (TCP/IP), protože nedochází k režii spojené se síťovým stackem.
@@ -36,7 +36,7 @@ Pro výměnu dat mezi Go klientem a .NET službou bylo nutné zvolit vhodný mec
 V teoretické kapitole (viz sekce \ref{sec:formats_theory}) byly porovnány formáty JSON a gRPC. Pro účely této práce byl zvolen formát \textbf{JSON}. Hlavním důvodem je jeho textová čitelnost, která výrazně usnadňuje ladění komunikace během vývoje, a nativní podpora v obou použitých jazycích (Go i C\#) bez nutnosti generovat složité stuby, což odpovídá agilnímu principu jednoduchosti.
 
 \subsection{Protokol a struktura zpráv}
-Komunikace probíhá podle modelu Request-Response. Klient otevře spojení k socketu služby (typicky \texttt{/var/run/goodaccess.sock}), odešle požadavek v JSON formátu a čeká na odpověď, po které spojení uzavře.
+Komunikace probíhá podle modelu Request-Response. Klient otevře spojení k socketu služby (typicky \texttt{/tmp/ga-cli.sock}), odešle požadavek v JSON formátu a čeká na odpověď, po které spojení uzavře.
 
 Průběh typické komunikace pro přihlášení uživatele znázorňuje následující sekvenční diagram (Obrázek \ref{fig:ipcsequence}).
 

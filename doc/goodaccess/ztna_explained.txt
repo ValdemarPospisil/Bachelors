@@ -1,0 +1,177 @@
+Zero Trust Network Access Explained
+
+Zero Trust Network Access Explained
+
+The increased use of technology in business workflows goes hand-in-hand with the number of new cyber threats that take advantage of it. The cost of cybercrime has more than doubled between 2020 and 2022, with stolen credentials representing the most common attack vector of cyberattacks.
+
+Organizations that offer remote and hybrid work models run the risk of increasing their attack surface as more of their users and IT infrastructure are open to attack. They must therefore deploy countermeasures that mitigate the cyber risk introduced by this new IT reality.
+
+Governments are also aware. The new NIS2 Directive seeks to improve cyber risk management across the European Union in response to the massive emergence of cyber threats scaring both private and public institutions across Europe.
+
+One major security strategy that the Directive and IT experts recommend as a means of mitigating cybersecurity risk is zero trust architecture. This article explains what zero trust is and what security benefits it can bring to businesses.
+GoodAccess Zero Trust - Key Principles
+Table of Contents
+
+What is zero trust?
+
+What is zero trust network access?
+
+How does ZTNA work?
+
+Zero-trust network access vs VPN
+
+Summary
+
+What is zero trust?
+
+Zero trust is a security model of network architecture that aims to reduce cyber risk and eliminate vulnerabilities. The phrase zero trust refers to the practice of treating every part of the business infrastructure as a potential threat.
+Origins of zero trust
+
+The term zero trust was coined in 2010 by John Kindervag of Forrester Research in reference to a future-proof and flexible model of network architecture with security woven into its DNA.
+
+At that time, cloud services and BYOD were becoming more widespread, bringing security challenges to businesses that adopted them. This trend only increased as time went on, and zero trust gained attention as a promising method of enforcing a uniform level of security across such diverse IT environments.
+Tenets of zero trust
+
+In 2018, the National Institute of Standards and Technology (NIST) of the United States published a document called Zero Trust Architecture that (among other things) formulates the tenets of zero trust. They go as follows:
+
+    All resource authentication and authorization are dynamic and strictly enforced before access is allowed.
+    All data sources and computing services are considered resources.
+    The enterprise monitors and measures the integrity and security posture of all owned and associated resources
+    All communication is secured regardless of network location.
+    Access to individual enterprise resources is granted on a per-session basis.
+    Access to resources is determined by dynamic policy—including the observable state of client identity, application/service, and the requesting asset—and may include other behavioral and environmental attributes.
+    The enterprise collects as much information as possible about the current state of assets, network infrastructure and communications and uses it to improve its security posture.
+
+(source: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-207.pdf)
+
+Zero trust architecture is in stark contrast to the traditional castle-and-moat architecture that protects resources behind a secure perimeter, but uses few security measures behind it. Once a potential attacker gets past the main defenses, they have more or less free rein of the infrastructure.
+
+But the zero trust architecture mitigates this by eliminating implicit trust and making all users prove their legitimacy for access constantly, to every resource, and to a high degree of certainty.
+
+
+Example: A zero trust building
+
+To help you understand, imagine you are entering an office building for an appointment with Mrs. Simmons.
+
+In the traditional paradigm, you arrive at the porter’s desk and give the phrase, “I have an appointment with Mrs. Simmons.” The porter may give you some directions on how to get there, but after that you can roam the building relatively freely, visit different floors and corridors, and even peek in offices, if they are unlocked.
+
+Under the zero trust security model, however, the porter first checks your identity, to find out if Mrs. Simmons is expecting you (and if it’s really you she is expecting), and then issues you a passcard that will only get you in Mrs. Simmons’ office and nowhere else.
+
+All this may sound like the zero trust architecture trades off security for productivity. But when properly implemented, zero trust architectures provide a smooth user experience while providing the following benefits:
+
+    Reduced cybersecurity risk—Zero trust architectures reduce the risk of threat ingress into the network.
+    Decreased breach impact—Least-privilege access prevents lateral movement and limits the number of systems affected by a successful intrusion.
+    Minimized human error—Strict authentication with multi-factor authentication (MFA) prevents access even if an employee’s credentials are compromised as part of a phishing attack.
+    Increased observability—Zero trust closes visibility gaps and makes it easier to spot suspicious behaviors in the network early.
+    Improved compliance—The zero-trust approach also helps meet the requirements of data protection acts like HIPAA, GDPR, and NIS2.
+
+What is zero trust network access?
+
+Zero trust network access, or ZTNA, is a piece of technology that provides secure access to business systems regardless of their location or the location of the users. As the name implies, it is the application of zero trust principles on the network layer (layer 3 of the ISO/OSI model).
+
+ZTNA authenticates user identity, assigns user-resource access privileges, and handles network-level access control.
+
+The main benefit of ZTNA is the additional, network-based layer of protection on top of the application-layer measures (application-layer MFA and SSO are reinforced on the network layer as well) and a software-defined perimeter (SDP), which is an invisible encrypted private network concealed from the public internet.
+
+By doing this, ZNTA shrinks the organization’s attack surface and increases network and application traffic visibility.
+How does ZTNA work?
+
+Different ZTNA solutions vary in their technological implementation, but they follow the same general mechanisms.
+
+    Identity-based authentication
+    Least-privilege access
+    Secure connections
+
+Identity-based authentication
+
+Identity-based authentication means the user must prove, to a high degree of certainty, that they are who they claim to be. To do this, more mechanisms are needed than just username and password.
+Source of user identity
+
+Firstly, the user rarely chooses their electronic identity for sign-in. Rather, the user identity is agreed upon with the company, or it is created for the user.
+
+To do this organizations often rely on a source of identity, like an identity provider (IdP) used for single sign-on (SSO) or an identity and access management platform (IAM) to provision user identities.
+Context-based authentication
+
+In addition, the login process is reinforced by multi-factor authentication (MFA) to mitigate the risk of stolen credentials, whose strictness may vary depending on context. For instance, an employee logging in outside of business hours may have to provide additional identity factors.
+Device authentication
+
+Lastly, ZTNA authenticates user devices as well as users themselves. Device authentication involves various methods like installed certificates, hardware tokens, or client apps. Device posture checks are also performed to identify devices that contain vulnerabilities.
+
+If you’re interested in learning more about identity-based authentication, check our Zero Trust Authentication Guide.
+Least-privilege access
+
+Least-privilege access means that after successful and satisfactory authentication the user receives access, but this access is limited strictly to those resources the user needs for their work. For instance, developers will only have access to their development tools and repositories, but not CRM or invoicing. This model is known as application segmentation (microsegmentation).
+Application segmentation
+
+Application segmentation (microsegmentation), which stands for partitioning the IT environment into smaller segments by restricting access privileges within a multi-SaaS environment. The purpose is to prevent lateral movement if the network is penetrated by a cyber attacker. Lateral movement means the attacker is traversing the network and finding new resources to compromise. But when the infrastructure is segmented the threat remains contained within the pool of resources available to the compromised role.
+Network segmentation
+
+Another segmentation method is network segmentation (macrosegmentation), which segments infrastructures on the network level, either by physical devices and connections between them or by L2 partitioning to divide the network into logical segments. Physical macrosegmentation requires a lot of networking knowledge and skill, but modern zero-trust solutions are hardwareless and allow for much easier segmentation and data flow monitoring.
+
+For more detail on application and network segmentation, see this article on Zero Trust Segmentation.
+Zero trust access control
+
+Identity-based authentication and least-privilege access (with granular segmentation) are the main building blocks of access control in zero trust.
+
+‍There are many ways that access control can be implemented, the scope of which would exceed the scope of this article. But if you want to know more, check this Access Control Model Guide.
+
+Often people think that zero trust access control is difficult to set up and maintain, but that ceases to be true. Modern ZTNA-as-a-service solutions, like GoodAccess, make this task much easier, to a point that you don’t even need an IT expert on staff.
+Secure connections
+
+Once the user (and their device) has been successfully and satisfactorily authenticated, and received the privileges their role allows, they may connect to company resources.
+
+ZTNA establishes connections between the user and the specific application via an encrypted tunnel to shield the data from eavesdroppers and protect it from interception.
+
+This helps prevent attacks like man-in-the-middle and protect users from credential theft, which is the most common cause of breaches nowadays.
+Zero-trust network access vs VPN
+
+ZTNA and VPN share a use case: secure remote access. But besides that there are substantial differences between them.
+ZTNA
+VPN*
+Purpose
+
+Reduce risk by eliminating trust within and on the perimeter.
+
+Secure extension of the local network.
+Access control
+
+Highly granular and context-aware. Combining user identity management, microsegmentation, and macrosegmentation.
+
+Mostly limited to network-level allow-all/deny-all access control.
+Scalability
+
+Highly scalable, especially in cloud-native solutions. Accommodating for multi-cloud environments.
+
+In hardware configurations, faces scalability issues and is less suited to diverse environments.
+Complexity
+
+Well-suited for multi-site and multi-cloud environments by forming direct user-resource tunnels via any network.
+
+Good for simple deployments, but complexity increases exponentially in multi-site and multi-cloud environments.
+Observability
+
+Granular visibility and logging of user and device behavior.
+
+Limited visibility into user activity and behavior.
+Main use case
+
+Cyber risk reduction in multi-cloud, multi-SaaS environments.
+
+Secure remote access to on-premise resources.
+
+Tab. 1—Comparison of ZTNA and VPN.
+*This comparison focuses on traditional hardware VPNs
+
+If you’re interested in more in-depth comparison, check this article on ZTNA vs VPN.
+
+A sort of middle ground is a business cloud VPN. Business cloud VPNs are SaaS solutions that offer secure remote access with zero hardware requirements. They eliminate the difficulty and cost of managing a legacy hardware-based VPN, but do not offer as robust security controls as ZTNA solutions.
+Summary
+
+Once the user (and their device) has been successfully and satisfactorily authenticated, and received the privileges their role allows, they may connect to company resources.
+
+ZTNA establishes connections between the user and the specific application via an encrypted tunnel to shield the data from eavesdroppers and protect it from interception.
+
+This helps prevent attacks like man-in-the-middle and protect users from credential theft, which is the most common cause of breaches nowadays.
+Read more
+
+If you want to dive deep into the world of zero trust, check out our Guide to Understanding Zero Trust: On protecting business data in the everything-online age.
