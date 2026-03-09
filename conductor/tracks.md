@@ -25,6 +25,6 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Add GoodAccess ZTNA source to thesis and update text accordingly.**
+- [x] **Track: Add GoodAccess ZTNA source to thesis and update text accordingly.**
 *Link: [./tracks/thesis_ztna_update_20260309/](./tracks/thesis_ztna_update_20260309/)*
 

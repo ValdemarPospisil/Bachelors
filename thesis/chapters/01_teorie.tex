@@ -36,7 +36,7 @@ Hlavní rozdíl spočívá v komplexitě a způsobu interakce. CLI je ideální 
 
 \section{Architektura VPN a principy Zero Trust}
 \label{sec:vpn_zero_trust}
-Tradiční pojetí zabezpečení sítě, založené na ochraně perimetru, prochází v posledních letech zásadní transformací. Tato sekce popisuje evoluci od klasických VPN tunelů k moderní architektuře Zero Trust Network Access (ZTNA).
+Tradiční pojetí zabezpečení sítě, založené na ochraně perimetru, prochází v posledních letech zásadní transformací. Tato sekce popisuje evoluci od klasických VPN tunelů k moderní architektuře Zero Trust Network Access (ZTNA). Tento vývoj je v současnosti silně ovlivněn nejen technologickým pokrokem, ale i legislativními rámci, jako je evropská směrnice NIS2, která klade zvýšený důraz na odolnost kritické infrastruktury a doporučuje principy Zero Trust jako součást moderní strategie kybernetické bezpečnosti \cite{goodaccess_ztna_explained}.
 
 \subsection{Tradiční VPN a perimetrová bezpečnost}
 \subsubsection{Tunelování a enkapsulace}
@@ -52,7 +52,7 @@ Historicky se organizace spoléhaly na model „hrad a příkop“ (Castle-and-M
 \end{figure}
 
 \subsubsection{Koncept Zero Trust}
-Filozofie Zero Trust (nulová důvěra) model „hrad a příkop“ opouští a vychází z principu „nikdy nedůvěřuj, vždy prověřuj“ (Never trust, always verify). V konceptu Zero Trust není důvěra nikdy udělena automaticky na základě fyzického umístění uživatele nebo jeho IP adresy. Každý pokus o přístup k jakémukoliv zdroji musí být individuálně autentizován, autorizován a šifrován.
+Filozofie Zero Trust (nulová důvěra) model „hrad a příkop“ opouští a vychází z principu „nikdy nedůvěřuj, vždy prověřuj“ (Never trust, always verify). Samotný koncept není nový; termín „Zero Trust“ zpopularizoval již v roce 2010 John Kindervag (v té době analytik společnosti Forrester Research), který prosazoval myšlenku, že bezpečnost musí být nedílnou součástí architektury sítě, nikoliv pouze jejím vnějším obalem \cite{goodaccess_ztna_explained}. V konceptu Zero Trust není důvěra nikdy udělena automaticky na základě fyzického umístění uživatele nebo jeho IP adresy. Každý pokus o přístup k jakémukoliv zdroji musí být individuálně autentizován, autorizován a šifrován \cite{goodaccess_ztna_explained}.
 
 \begin{table}[!htbp]
     \centering
@@ -66,6 +66,8 @@ Filozofie Zero Trust (nulová důvěra) model „hrad a příkop“ opouští a 
         Úroveň přístupu & Široký přístup k síti & Granulární (Least Privilege) \\ \hline
         Ověřování & Jednorázové (při vstupu) & Kontinuální (při každém požadavku) \\ \hline
         Laterální pohyb & Snadný po průniku & Výrazně omezen segmentací \\ \hline
+        Škálovatelnost & Omezená hardwarem & Vysoká (cloud-native) \\ \hline
+        Viditelnost & Omezená (logy na bráně) & Detailní (každá relace) \\ \hline
     \end{tabular}
 \end{table}
 
@@ -74,6 +76,12 @@ Filozofie Zero Trust (nulová důvěra) model „hrad a příkop“ opouští a 
 Zero Trust Network Access (ZTNA) představuje praktickou technologickou implementaci architektury Zero Trust. V architektuře ZTNA je kontrola přístupu striktně vynucována pro každou relaci.
 
 Klíčovým prvkem ZTNA je Software Defined Perimeter (SDP). SDP vytváří dynamickou, virtuální hranici kolem aplikací a služeb, čímž je činí „neviditelnými“ pro veřejný internet i pro neautorizované uživatele v lokální síti. GoodAccess implementuje tyto principy formou cloudové platformy, která nahrazuje tradiční VPN brány \cite{goodaccess_doc}. Místo statických IP adres využívá identitu uživatele (často propojenou s SSO/OIDC) a kontext zařízení (tzv. Device Posture) k dynamickému přidělování přístupových práv k jednotlivým systémům \cite{goodaccess_architecture}. Tím se radikálně snižuje plocha možného útoku, protože uživatel vidí pouze ty zdroje, ke kterým má explicitní oprávnění.
+
+V rámci ZTNA se rozlišují dva hlavní přístupy k segmentaci:
+\begin{itemize}
+    \item \textbf{Aplikace (Mikrosegmentace):} Rozdělení infrastruktury na úrovni jednotlivých aplikací a služeb. Uživatel získává přístup pouze k těm systémům, které nezbytně potřebuje ke své práci (např. vývojář má přístup k repositářům, ale nikoliv k účetnímu systému). Tento přístup efektivně brání laterálnímu pohybu útočníka v síti \cite{goodaccess_ztna_explained}.
+    \item \textbf{Síť (Makrosegmentace):} Tradičnější přístup rozdělující síť na větší logické celky. Moderní ZTNA řešení však umožňují realizovat makrosegmentaci softwarově bez nutnosti složité konfigurace fyzických síťových prvků \cite{goodaccess_ztna_explained}.
+\end{itemize}
 
 \begin{figure}[H]
     \centering
