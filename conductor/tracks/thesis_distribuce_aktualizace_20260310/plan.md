@@ -1,7 +1,7 @@
 # Implementation Plan: Návrh distribuce a aktualizací
 
 ## Phase 1: Content Replacement and Drafting
-- [ ] Task: Read `thesis/chapters/03_navrh.tex` to locate the existing "Datový model a konfigurace" section.
+- [~] Task: Read `thesis/chapters/03_navrh.tex` to locate the existing "Datový model a konfigurace" section.
 - [ ] Task: Read `thesis/chapters/01_teorie.tex` to find the exact labels for "Distribuce softwaru a balíčkové systémy" and "UNIX philosophy" to cross-reference them correctly.
 - [ ] Task: Remove the existing "Datový model a konfigurace" section (including comments) in `thesis/chapters/03_navrh.tex`.
 - [ ] Task: Write the new `\section{Návrh distribuce a aktualizací} \label{sec:distribuce_aktualizace}` and introductory text.
