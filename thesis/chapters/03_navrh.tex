@@ -182,7 +182,33 @@ Komunikační kanál mezi klientem a službou je realizován pomocí pojmenovan�
 
 Každý požadavek odeslaný z CLI klienta obsahuje kromě samotných uživatelských dat (payload) také aplikační kontext s identifikátorem volajícího uživatele (\texttt{LinuxId}). Služba tak může při zpracování požadavku bezpečně ověřovat, zda má uživatel dostatečná oprávnění k požadované akci (např. manipulaci s VPN připojením, odhlášení relace). V případě zjištění narušení bezpečnosti nebo nedostatečných oprávnění je požadavek okamžitě zamítnut, čímž je zajištěna integrita systému i při sdílení jednoho soketu více lokálními uživateli.
 
-\section{Datový model a konfigurace}
-% Zde:
-% - Kde bude konfigurace (/etc/goodaccess vs ~/.config/goodaccess).
-% - Co všechno se musí ukládat (aliasy bran, poslední připojení).
+\section{Návrh distribuce a aktualizací}
+\label{sec:distribuce_aktualizace}
+
+Díky cílení na platformu operačního systému Linux bylo nezbytné navrhnout distribuční a aktualizační mechanismus tak, aby ctil zavedené standardy (viz sekce \ref{sec:unix_filozofie}) a integraci se systémovými nástroji (viz sekce \ref{sec:distribuce}). Návrh se proto cíleně vyhýbá mechanismu automatických vnitřních aktualizací (tzv. self-update), který je běžný například v prostředí Windows, a místo toho se plně spoléhá na nativní správce balíčků.
+
+\subsection{Distribuční balíčky a instalace}
+
+Aplikace bude distribuována ve dvou standardních formátech, které pokrývají drtivou většinu cílového trhu:
+\begin{itemize}
+    \item \textbf{.deb balíčky} pro distribuce vycházející z rodiny Debian (např. Ubuntu, Linux Mint).
+    \item \textbf{.rpm balíčky} pro rodinu distribucí založených na Red Hat (např. Fedora, CentOS, RHEL).
+\end{itemize}
+
+Instalační balíček funkčně zapouzdřuje obě klíčové komponenty systému. Během instalačního procesu (např. při volání \texttt{apt-get install}) dojde k umístění zkompilované binární aplikace klienta (napsané v jazyce Go) do systémového adresáře \texttt{/usr/bin/ga-cli}, čímž se stane globálně dostupnou pro všechny uživatele systému. Zároveň jsou do adresáře \texttt{/opt/GoodAccess/} rozbaleny veškeré závislosti a samotná .NET služba. Součástí instalace je také registrace příslušného konfiguračního souboru (unit file) pro inicializační systém \texttt{systemd}. Instalační skript balíčku (post-install) následně zajistí automatické spuštění služby na pozadí, čímž je systém okamžitě připraven k použití.
+
+\subsection{Detekce a provedení aktualizace}
+
+Ačkoliv je samotný proces povýšení verze (upgrade) ponechán na operačním systému, aplikace aktivně detekuje dostupnost nových vydání, aby zajistila informovanost uživatele. Tato proaktivní detekce je implementována primárně v rámci příkazu \texttt{ga version} (a podpůrně též v příkazu \texttt{ga status}). Služba při zavolání asynchronně dotazuje centrální API GoodAccess. Pokud odpověď ze serveru indikuje dostupnost novější verze (v datovém modelu reprezentováno příznakem \texttt{UpdateAvailable}), CLI klient tuto skutečnost vizuálně zdůrazní ve standardním výstupu a doporučí uživateli provést systémovou aktualizaci.
+
+Celý tento proces detekce a aktualizace je znázorněn na obrázku \ref{fig:distribution_diagram}.
+
+\begin{figure}[htbp]
+    \centering
+    % PLACEHOLDER: Update flow diagram
+    \includegraphics[width=0.8\textwidth]{images/distribution-diagram.png}
+    \caption{Proces distribuce a detekce aktualizací}
+    \label{fig:distribution_diagram}
+\end{figure}
+
+\textbf{Bezpečnostní a architektonický přínos:} Tento model striktně odděluje informační povinnost klienta od výkonné moci nad souborovým systémem. Neprivilegovaný uživatel je upozorněn na novou verzi, avšak samotný přepis spustitelných souborů a nezbytný restart daemonu může provést pouze systémový administrátor (\texttt{root}) standardním voláním systémového správce balíčků (např. \texttt{sudo apt-get update \&\& sudo apt-get upgrade goodaccess-cli}). Tím je na architektonické úrovni zamezeno případnému narušení bezpečnosti (privilege escalation) skrze potenciální zranitelnosti v aktualizačním procesu samotné aplikace.
