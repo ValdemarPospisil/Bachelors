@@ -27,8 +27,3 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] **Track: Add GoodAccess ZTNA source to thesis and update text accordingly.**
 *Link: [./tracks/thesis_ztna_update_20260309/](./tracks/thesis_ztna_update_20260309/)*
-
----
-
-- [x] **Track: Rewrite Bezpečnostní model to Správa dat a bezpečnostní model in 03_navrh.tex, focusing on data persistence, secure storage and IPC security.**
-*Link: [./tracks/thesis_security_model_20260310/](./tracks/thesis_security_model_20260310/)*
