@@ -1,7 +1,7 @@
 # Implementation Plan: Správa dat a bezpečnostní model
 
 ## Phase 1: Content Replacement and Drafting
-- [ ] Task: Read `thesis/chapters/03_navrh.tex` to locate the existing "Bezpečnostní model" section.
+- [~] Task: Read `thesis/chapters/03_navrh.tex` to locate the existing "Bezpečnostní model" section.
 - [ ] Task: Remove the existing "Bezpečnostní model" content and replace it with `\section{Správa dat a bezpečnostní model} \label{sec:data_a_bezpecnost}`.
 - [ ] Task: Write the introductory text, referencing the theoretical explanation in `thesis/chapters/01_teorie.tex`.
 - [ ] Task: Write the `\subsection{Perzistence a struktura dat}` content based on the specification.
