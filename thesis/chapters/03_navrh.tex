@@ -154,11 +154,33 @@ Specifickým prvkem návrhu je příkaz \texttt{ga-cli setup}. Jedná se o tzv. 
 \end{enumerate}
 Tento přístup radikálně snižuje bariéru vstupu pro nové uživatele, kteří by jinak museli studovat manuálové stránky jednotlivých příkazů.
 
-\section{Bezpečnostní model}
-% Zde:
-% - Ukládání tokenů (kde budou fyzicky na disku).
-% - Oprávnění k socketu (kdo smí poslat příkaz službě).
-% - Zabezpečení proti neoprávněné manipulaci.
+\section{Správa dat a bezpečnostní model}
+\label{sec:data_a_bezpecnost}
+
+Jelikož je navržený systém rozdělen na privilegovanou službu a neprivilegovaného klienta, je nutné zajistit bezpečné úložiště pro citlivá data (zejména autentizační tokeny) a zabezpečit meziprocesovou komunikaci. Tyto dvě oblasti spolu úzce souvisejí, a proto jsou v návrhu řešeny komplexně.
+
+\subsection{Perzistence a struktura dat}
+
+Veškerý perzistentní stav aplikace je udržován systémovou službou (daemonem), zatímco CLI klient zůstává striktně bezestavový. Datový model je definován kořenovou strukturou, která sdružuje globální konfiguraci (\texttt{GlobalConfig}), aktivní uživatelské relace obsahující relační tokeny (\texttt{ActiveSessions}) a lokální mezipaměť známých bran (\texttt{KnownGateways}). Tato datová struktura je při ukládání serializována do textového formátu JSON. Aby však nedošlo k úniku citlivých dat (například při neoprávněném čtení souborového systému jiným procesem či uživatelem), je tento textový řetězec před samotným zápisem na disk kryptograficky chráněn.
+
+\subsection{Implementace zabezpečeného úložiště (Secure Storage)}
+
+Pro ochranu perzistentních dat bylo využito rozhraní \texttt{Data Protection API}, které je nativní součástí platformy ASP.NET Core (jak bylo teoreticky popsáno v sekci \ref{sec:technologie}). Toto rozhraní zajišťuje transparentní šifrování (\texttt{Protect}) a dešifrování (\texttt{Unprotect}) ukládaných databázových souborů.
+
+Klíčovým bezpečnostním prvkem celého mechanismu je správa samotných šifrovacích klíčů. Ty jsou generovány a izolovány ve vyhrazeném adresáři (konkrétně \texttt{/opt/GoodAccess/configs/DataProtection-Keys}). Při startu služby je programově zajištěno nastavení striktních přístupových práv (v prostředí Linuxu pomocí příkazu \texttt{chmod 700}). Tím je na úrovni operačního systému garantováno, že k šifrovacím klíčům – a potažmo k uloženým datům – má přístup výhradně uživatel \texttt{root}, pod nímž je služba běžně spuštěna. Celková architektura bezpečnostní komponenty je znázorněna na obrázku \ref{fig:security_component}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/security-component.png}
+    \caption{Architektura zabezpečeného úložiště a správy klíčů}
+    \label{fig:security_component}
+\end{figure}
+
+\subsection{Bezpečnost meziprocesové komunikace (IPC)}
+
+Komunikační kanál mezi klientem a službou je realizován pomocí pojmenovaných rour (Named Pipes), které jsou v prostředí operačního systému Linux implementovány jako Unix Domain Sockets (v tomto návrhu konkrétně umístěné v systémovém adresáři \texttt{/tmp/CoreFxPipe\_ga-cli.sock}). Místo zavádění dedikovaných uživatelských skupin pro omezení přístupu k soketu na úrovni souborového systému je bezpečnost řešena dynamicky přímo na aplikační úrovni služby.
+
+Každý požadavek odeslaný z CLI klienta obsahuje kromě samotných uživatelských dat (payload) také aplikační kontext s identifikátorem volajícího uživatele (\texttt{LinuxId}). Služba tak může při zpracování požadavku bezpečně ověřovat, zda má uživatel dostatečná oprávnění k požadované akci (např. manipulaci s VPN připojením, odhlášení relace). V případě zjištění narušení bezpečnosti nebo nedostatečných oprávnění je požadavek okamžitě zamítnut, čímž je zajištěna integrita systému i při sdílení jednoho soketu více lokálními uživateli.
 
 \section{Datový model a konfigurace}
 % Zde:
