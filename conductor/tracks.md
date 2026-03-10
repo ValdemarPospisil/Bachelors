@@ -27,3 +27,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] **Track: Add GoodAccess ZTNA source to thesis and update text accordingly.**
 *Link: [./tracks/thesis_ztna_update_20260309/](./tracks/thesis_ztna_update_20260309/)*
+
+---
+
+- [ ] **Track: Write a new subchapter Návrh distribuce a aktualizací in 03_navrh.tex, replacing Datový model a konfigurace.**
+*Link: [./tracks/thesis_distribuce_aktualizace_20260310/](./tracks/thesis_distribuce_aktualizace_20260310/)*
