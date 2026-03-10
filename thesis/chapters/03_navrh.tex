@@ -201,14 +201,4 @@ Instalační balíček funkčně zapouzdřuje obě klíčové komponenty systém
 
 Ačkoliv je samotný proces povýšení verze (upgrade) ponechán na operačním systému, aplikace aktivně detekuje dostupnost nových vydání, aby zajistila informovanost uživatele. Tato proaktivní detekce je implementována primárně v rámci příkazu \texttt{ga-cli version} (a podpůrně též v příkazu \texttt{ga-cli status}). Služba při zavolání asynchronně dotazuje centrální API \mbox{GoodAccess}. Pokud odpověď ze serveru indikuje dostupnost novější verze (v datovém modelu reprezentováno příznakem \texttt{UpdateAvailable}), CLI klient tuto skutečnost vizuálně zdůrazní ve standardním výstupu a doporučí uživateli provést systémovou aktualizaci.
 
-Celý tento proces detekce a aktualizace je znázorněn na obrázku \ref{fig:distribution_diagram}.
-
-\begin{figure}[htbp]
-    \centering
-    % PLACEHOLDER: Update flow diagram
-    \includegraphics[width=0.8\textwidth]{images/distribution-diagram.png}
-    \caption{Proces distribuce a detekce aktualizací}
-    \label{fig:distribution_diagram}
-\end{figure}
-
 \textbf{Bezpečnostní a architektonický přínos:} Tento model striktně odděluje informační povinnost klienta od výkonné moci nad souborovým systémem. Neprivilegovaný uživatel je upozorněn na novou verzi, avšak samotný přepis spustitelných souborů a nezbytný restart daemonu může provést pouze systémový administrátor (\texttt{root}) standardním voláním systémového správce balíčků (např. \texttt{sudo apt-get update \&\& sudo apt-get upgrade goodaccess-cli}). Tím je na architektonické úrovni zamezeno případnému narušení bezpečnosti (privilege escalation) skrze potenciální zranitelnosti v aktualizačním procesu samotné aplikace.
