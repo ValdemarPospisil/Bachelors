@@ -199,7 +199,7 @@ Instalační balíček funkčně zapouzdřuje obě klíčové komponenty systém
 
 \subsection{Detekce a provedení aktualizace}
 
-Ačkoliv je samotný proces povýšení verze (upgrade) ponechán na operačním systému, aplikace aktivně detekuje dostupnost nových vydání, aby zajistila informovanost uživatele. Tato proaktivní detekce je implementována primárně v rámci příkazu \texttt{ga version} (a podpůrně též v příkazu \texttt{ga status}). Služba při zavolání asynchronně dotazuje centrální API GoodAccess. Pokud odpověď ze serveru indikuje dostupnost novější verze (v datovém modelu reprezentováno příznakem \texttt{UpdateAvailable}), CLI klient tuto skutečnost vizuálně zdůrazní ve standardním výstupu a doporučí uživateli provést systémovou aktualizaci.
+Ačkoliv je samotný proces povýšení verze (upgrade) ponechán na operačním systému, aplikace aktivně detekuje dostupnost nových vydání, aby zajistila informovanost uživatele. Tato proaktivní detekce je implementována primárně v rámci příkazu \texttt{ga-cli version} (a podpůrně též v příkazu \texttt{ga-cli status}). Služba při zavolání asynchronně dotazuje centrální API \mbox{GoodAccess}. Pokud odpověď ze serveru indikuje dostupnost novější verze (v datovém modelu reprezentováno příznakem \texttt{UpdateAvailable}), CLI klient tuto skutečnost vizuálně zdůrazní ve standardním výstupu a doporučí uživateli provést systémovou aktualizaci.
 
 Celý tento proces detekce a aktualizace je znázorněn na obrázku \ref{fig:distribution_diagram}.
 
