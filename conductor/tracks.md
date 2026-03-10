@@ -30,5 +30,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Rewrite Bezpečnostní model to Správa dat a bezpečnostní model in 03_navrh.tex, focusing on data persistence, secure storage and IPC security.**
+- [x] **Track: Rewrite Bezpečnostní model to Správa dat a bezpečnostní model in 03_navrh.tex, focusing on data persistence, secure storage and IPC security.**
 *Link: [./tracks/thesis_security_model_20260310/](./tracks/thesis_security_model_20260310/)*
