@@ -36,10 +36,36 @@
   ```
 
 ## 3. Implementace klientské aplikace (Go)
-- Úvod do Go klienta.
-- **3.1 Parsování příkazů (Cobra)**
-- **3.2 Interaktivní terminálové rozhraní (Bubble Tea)**
-- **3.3 Komunikace se službou (IPC Klient)**
+- Úvod do Go klienta. Architektura vrstev (Clean Architecture) a oddělení UI od logiky.
+
+### 3.1 Parsování příkazů (Cobra)
+- **Téma:** CLI rozhraní a struktura příkazů.
+- **Propojení s teorií:** Odkaz na sekci 1.5.2 (Framework Cobra).
+- **Obsah:** Popis inicializace hlavního příkazu `ga-cli` a podřízených příkazů (`setup`, `connect`, `status`). Způsob předávání flagů (např. `--json`).
+- **Ukázka kódu (Placeholder):**
+  ```go
+  // [KÓD: Inicializace root příkazu pomocí knihovny Cobra]
+  ```
+- **Diagram (Placeholder):** `[DIAGRAM: Command Tree struktura s vybranými příkazy z návrhu]`
+
+### 3.2 Interaktivní terminálové rozhraní (Bubble Tea)
+- **Téma:** Textové uživatelské rozhraní pro průvodce nastavením (Setup wizard).
+- **Propojení s teorií:** Odkaz na sekci 1.5.2 (Architektura Elm a Bubble Tea).
+- **Obsah:** Ukázka The Elm Architecture v praxi. Implementace `Update` funkce pro reakci na klávesy a `View` pro vykreslování s využitím `Lip Gloss`. Průběh onboarding flow.
+- **Ukázka kódu (Placeholder):**
+  ```go
+  // [KÓD: Update funkce v Bubble Tea (reakce na Msg)]
+  ```
+- **Screenshot (Placeholder):** `[SCREENSHOT: Setup Wizard UI - výběr brány / zadávání hesla]`
+
+### 3.3 Komunikace se službou (IPC Klient)
+- **Téma:** Odesílání a přijímání JSON dat z Unix Domain Socketu.
+- **Propojení s teorií:** Odkaz na sekci 1.4.1 (Unix Domain Sockets) a 1.5.3 (JSON IPC).
+- **Obsah:** Kód IPC klienta, který navazuje spojení přes `net.Dial("unix", "/tmp/CoreFxPipe_ga-cli.sock")`. Formátování dat do JSON struktur (Structs v Go) a jejich deserializace zpět.
+- **Ukázka kódu (Placeholder):**
+  ```go
+  // [KÓD: Vytvoření požadavku, jeho JSON marshaling a odeslání přes UDS]
+  ```
 
 ## 4. Závěr kapitoly
 - Shrnutí implementace.
