@@ -1,9 +1,9 @@
 # Implementation Plan: Thesis Implementation Chapter (04_implementace.tex) Plan
 
-## Phase 1: Setup and Outline Creation
+## Phase 1: Setup and Outline Creation [checkpoint: 8d121e7]
 - [x] Task: Create the markdown file `doc/notes/implementace_plan.md` b21f577
 - [x] Task: Draft the high-level outline (Introduction, .NET Service, Go Client, Conclusion) b21f577
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Setup and Outline Creation' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Setup and Outline Creation' (Protocol in workflow.md) 8d121e7
 
 ## Phase 2: .NET Service Walkthrough Section
 - [ ] Task: Detail the "Secure Storage" subsection (include placeholders for code snippets and connection to Data Protection API from theory).
