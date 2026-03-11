@@ -9,9 +9,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Struktura projektu a backendové služby' (Protocol in workflow.md) b30a9ea
 
 ## Phase 2: Klientská aplikace a příkazy (Go)
-- [ ] Task: Draft section "Command Structure" detailing Cobra initialization and command tree definition (include CLI commands snippet).
-- [ ] Task: Draft section "Commands Implementation" covering the iterative process (`login`, `logout`, `setup`, `connect`, `disconnect`).
-- [ ] Task: Highlight the `status` command as a proof-of-work/storage reader throughout development.
+- [x] Task: Draft section "Command Structure" detailing Cobra initialization and command tree definition (include CLI commands snippet). 2d0fdd4
+- [x] Task: Draft section "Commands Implementation" covering the iterative process (`login`, `logout`, `setup`, `connect`, `disconnect`). 2d0fdd4
+- [x] Task: Highlight the `status` command as a proof-of-work/storage reader throughout development. 2d0fdd4
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Klientská aplikace a příkazy (Go)' (Protocol in workflow.md)
 
 ## Phase 3: Pokročilé funkce a omezení
