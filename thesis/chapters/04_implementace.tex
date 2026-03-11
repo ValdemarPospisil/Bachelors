@@ -91,3 +91,24 @@ Jednotlivé příkazy byly do aplikace implementovány iterativním způsobem v 
 \end{enumerate}
 
 Během celého procesu implementace výše zmíněných příkazů se ukázal jako kritický podpůrný prvek příkaz \textbf{status}. Tento příkaz byl průběžně doplňován a využíván k rychlé diagnostice stavu. Fakticky fungoval jako bezpečný nástroj pro čtení dat ze \textit{Secure Storage}, který prokazoval, zda předchozí operace (např. uložení tokenu po loginu či modifikace preferované brány po setupu) proběhly úspěšně. V pozdějších fázích projektu umožňoval navíc zobrazení aktivní chybové hlášky nebo logu připojení z backendu v reálném čase.
+
+\section{Pokročilé funkce a technické výzvy}
+Během integrace stěžejních funkčních celků do architektury se objevilo několik netriviálních technických výzev, které vyžadovaly hlubší analýzu a návrh specializovaných řešení.
+
+\subsection{Správa VPN spojení (OpenVPN)}
+Samotné vytvoření šifrovaného tunelu skrze protokol OpenVPN těží z již existující architektury modulu \texttt{ProtoService}, který je nasazen na ostatních platformách. Pro potřeby CLI klienta tak stačilo mapovat požadavky z UDS rozhraní do podoby interních struktur sítě a volat sdílenou aplikační logiku. Modul automaticky vygeneruje odpovídající konfiguraci, sestaví spojení a na pozadí monitoruje stabilitu relace.
+
+\subsection{Persistentní relace a vícero uživatelů}
+Jednou z definovaných funkčností byla možnost navázání persistentního (trvalého) spojení, kdy VPN zůstává aktivní i po odhlášení aktuálního systémového uživatele nebo po restartu zařízení.
+Tento požadavek s sebou přinesl zásadní problém týkající se izolace více Linuxových uživatelů.
+
+Jelikož je sestavené VPN spojení systémového charakteru (routování přes rozhraní tunelu ovlivňuje globální směrovací tabulky stroje), mohlo by dojít k situaci, kdy jeden uživatel sestaví persistentní spojení a jiný uživatel po přihlášení nemá oprávnění jej modifikovat či ukončit, přestože je jeho síťový provoz rovněž šifrován.
+Z toho důvodu bylo nutné obohatit komunikační protokol IPC o explicitní předávání systémového kontextu a identifikaci uživatele, který požadavek vznáší. Pokud je aktivní persistentní tunel spuštěný jiným uživatelem a nejedná se o autorizovanou operaci, je akce zamítnuta na úrovni služby. Administrátor pak musí relaci manuálně ukončit přes příkaz vyžadující superuživatelská práva, např. voláním \texttt{sudo ga-cli disconnect}.
+
+\subsection{Implementace protokolu WireGuard}
+Moderní protokol WireGuard představoval v kontextu architektury významnou výzvu, jelikož práce zahrnovala implementaci samotného agenta (sestavování sítě) cíleně pouze pro prostředí Linux s využitím statických konfigurací.
+Na rozdíl od uceleného řízení (životní cyklus přes operační systém, dynamické doporučování gateway, automatické znovupřipojení), které přesahuje rámec této bakalářské práce a je paralelně vyvíjeno ostatními členy týmu na různých platformách, se tato konkrétní implementace zaměřuje primárně na fundamentální logiku navázání komunikace přes nativní systémové nástroje (ip link, wg). Tyto operace jsou vloženy do kontextu služeb \texttt{ProtoService} a tvoří základ budoucí robustní síťové logiky.
+
+\subsection{Vylepšení uživatelské přívětivosti (UX)}
+S cílem maximalizovat komfort koncových uživatelů při interakci v terminálu byl klient postupně doplňován o podpůrné funkce a takzvané přepínače (flags).
+Příkladem je plná podpora pro strojově čitelné formátování výstupů prostřednictvím flagu \texttt{--json}, jenž zajišťuje, že aplikace nebude vracet interaktivní textové uživatelské rozhraní, ale naopak striktně strukturovaný JSON výstup. Tato funkce je naprosto nezbytná pro možnou integraci CLI do DevOps pipelinek a automatizačních skriptů, kde je vyžadováno bezobslužné řízení celého procesu připojení. Další UX optimalizace zahrnovaly vylepšení asynchronního logování stavu a přehlednější zpracování konfiguračních interakcí.
