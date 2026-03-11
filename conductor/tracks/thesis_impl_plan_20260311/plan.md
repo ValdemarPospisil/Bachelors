@@ -12,9 +12,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: .NET Service Walkthrough Section' (Protocol in workflow.md) 3186f4c
 
 ## Phase 3: Go Client Walkthrough Section
-- [ ] Task: Detail the "Cobra Commands" subsection (include placeholders for command tree diagram and setup code).
-- [ ] Task: Detail the "Bubble Tea TUI" subsection (include placeholders for UI screenshots and Elm architecture mention).
-- [ ] Task: Detail the "IPC Client" subsection (include placeholders for JSON serialization/deserialization code).
+- [x] Task: Detail the "Cobra Commands" subsection (include placeholders for command tree diagram and setup code). b17b290
+- [x] Task: Detail the "Bubble Tea TUI" subsection (include placeholders for UI screenshots and Elm architecture mention). b17b290
+- [x] Task: Detail the "IPC Client" subsection (include placeholders for JSON serialization/deserialization code). b17b290
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Go Client Walkthrough Section' (Protocol in workflow.md)
 
 ## Phase 4: Review and Refine
