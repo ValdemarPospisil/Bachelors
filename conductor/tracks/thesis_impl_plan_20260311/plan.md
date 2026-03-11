@@ -5,11 +5,11 @@
 - [x] Task: Draft the high-level outline (Introduction, .NET Service, Go Client, Conclusion) b21f577
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Setup and Outline Creation' (Protocol in workflow.md) 8d121e7
 
-## Phase 2: .NET Service Walkthrough Section
+## Phase 2: .NET Service Walkthrough Section [checkpoint: 3186f4c]
 - [x] Task: Detail the "Secure Storage" subsection (include placeholders for code snippets and connection to Data Protection API from theory). f2974cc
 - [x] Task: Detail the "IPC Server" subsection (include placeholders for flow diagrams and UDS code). f2974cc
 - [x] Task: Detail the "systemd Service" subsection (include placeholders for lifecycle management). f2974cc
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: .NET Service Walkthrough Section' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: .NET Service Walkthrough Section' (Protocol in workflow.md) 3186f4c
 
 ## Phase 3: Go Client Walkthrough Section
 - [ ] Task: Detail the "Cobra Commands" subsection (include placeholders for command tree diagram and setup code).
