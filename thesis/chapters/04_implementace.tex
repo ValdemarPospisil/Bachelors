@@ -28,7 +28,7 @@ Základním kamenem architektury je nově vytvořený modul \texttt{CLIService}.
 Služba vytvoří pojmenovanou rouru (named pipe), na které asynchronně naslouchá příchozím spojením od klienta. Požadavky jsou zasílány a vraceny ve formátu JSON, což usnadňuje deserializaci dat na obou stranách.
 
 \begin{figure}[ht]
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 // Ukázka inicializace IPC serveru pomocí NamedPipeServerStream pro Linux
 var pipeServer = new NamedPipeServerStream(
     pipeName: "CoreFxPipe_ga-cli.sock",
@@ -63,7 +63,7 @@ Základní aplikační kostra byla postavena na populárním frameworku Cobra. T
 Hlavní příkaz \texttt{ga-cli} byl inicializován jako kořenový uzel (Root Command), ke kterému byly postupně přidávány dílčí příkazy odpovídající požadovaným akcím (login, setup, connect a další). Architektura frameworku Cobra navíc vybízí k přehlednému uspořádání kódu, kdy má každý příkaz svůj vlastní soubor v adresáři \texttt{cmd/}.
 
 \begin{figure}[ht]
-\begin{lstlisting}[language=C]
+\begin{lstlisting}
 // Ukázka inicializace kořenového příkazu
 var rootCmd = &cobra.Command{
 	Use:   "ga-cli",
