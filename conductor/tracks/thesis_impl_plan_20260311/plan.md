@@ -11,11 +11,11 @@
 - [x] Task: Detail the "systemd Service" subsection (include placeholders for lifecycle management). f2974cc
 - [x] Task: Conductor - User Manual Verification 'Phase 2: .NET Service Walkthrough Section' (Protocol in workflow.md) 3186f4c
 
-## Phase 3: Go Client Walkthrough Section
+## Phase 3: Go Client Walkthrough Section [checkpoint: aa64dd7]
 - [x] Task: Detail the "Cobra Commands" subsection (include placeholders for command tree diagram and setup code). b17b290
 - [x] Task: Detail the "Bubble Tea TUI" subsection (include placeholders for UI screenshots and Elm architecture mention). b17b290
 - [x] Task: Detail the "IPC Client" subsection (include placeholders for JSON serialization/deserialization code). b17b290
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Go Client Walkthrough Section' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Go Client Walkthrough Section' (Protocol in workflow.md) aa64dd7
 
 ## Phase 4: Review and Refine
 - [ ] Task: Review the drafted plan against `01_teorie.tex`, `02_analyza.tex`, and `03_navrh.tex` to ensure proper references and continuity.
