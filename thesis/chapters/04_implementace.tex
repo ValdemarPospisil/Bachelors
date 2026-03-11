@@ -1,34 +1,55 @@
 \chapter{Implementace}
 \label{chap:implementace}
 
-Kapitola popisuje proces vývoje, použitou strukturu projektu a klíčové implementační detaily jednotlivých komponent.
+V této kapitole je detailně rozebrán samotný proces implementace navrženého řešení. Pozornost je věnována struktuře celého projektu a následně specifickým technickým výzvám spojeným s vývojem klientské aplikace v jazyce Go a úpravám systémové služby na platformě .NET.
 
-\section{Struktura projektu a nástroje}
-% Zde:
-% - Popis Clean Architecture v Go (adresáře cmd, internal, pkg).
-% - Použité knihovny (Cobra, Viper, BubbleTea).
-% - Verzování a build proces (Makefiles).
+\section{Struktura projektu a vývojové prostředí}
+Jelikož se výsledný produkt skládá z několika oddělených, avšak spolupracujících částí, bylo zásadní správně navrhnout strukturu repozitáře. Repozitář je koncipován jako monorepo, které zastřešuje zdrojové kódy jak pro klientskou část (frontend), tak pro vrstvu systémové služby (backend). Tento přístup zjednodušuje správu závislostí a verzování.
 
-\section{Implementace klienta (Frontend)}
-% Zde:
-% - Jak funguje parsování příkazů (Cobra).
-% - Implementace TUI (BubbleTea model-update-view cyklus).
-% - Komunikační vrstva (odesílání dat do socketu).
+Hlavní rozdělení repozitáře je následující:
+\begin{itemize}
+    \item \texttt{cli/} -- Obsahuje zdrojové kódy klientské aplikace napsané v jazyce Go. Kód je strukturován s ohledem na oddělení uživatelského rozhraní od komunikační logiky (adresáře \texttt{cmd/} a \texttt{internal/}).
+    \item \texttt{services/} -- Zahrnuje .NET projekty představující systémovou službu, která běží na pozadí.
+    \begin{itemize}
+        \item \texttt{CLIService/} -- Nově vytvořený modul určený primárně pro obsluhu IPC komunikace s CLI klientem a řízení jeho požadavků.
+        \item \texttt{GoodAccessService/} -- Původní jádro služby obstarávající infrastrukturu a samotné sestavování tunelů (např. OpenVPN, WireGuard).
+    \end{itemize}
+    \item \texttt{GoodAccess.Shared/} -- Sdílené doménové modely, rozhraní a utility využívané napříč různými .NET službami.
+\end{itemize}
 
-\section{Úpravy backendové služby}
-% Zde:
-% - Jak jsi upravil .NET službu, aby naslouchala na Unix Socketu.
-% - Zpracování příkazů a volání WireGuard/OpenVPN logiky.
-% - Handling signálů (SIGTERM, SIGINT).
+Architektura je tak striktně rozdělena na hloupého klienta (Go), který se stará pouze o prezentaci dat uživateli, a chytrou službu (.NET), kde probíhá veškerá složitá byznys logika.
 
-\section{Integrace WireGuardu}
-% Zde:
-% - Jak služba reálně nastavuje síť (volání 'ip link', 'wg' nebo nativní knihovny).
-% - Řešení DNS a routování.
+\section{Implementace systémové služby (.NET)}
+Aby bylo možné efektivně zpracovávat požadavky přicházející od CLI klienta, bylo nutné infrastrukturu na straně služby patřičně rozšířit. Vývoj probíhal iterativně počínaje zajištěním bezpečného úložiště a zprovozněním lokálního komunikačního kanálu.
 
-\section{Distribuční balíčky a Systemd}
-% Zde:
-% - Tvorba .deb / .rpm balíčku.
-% - Unit file pro systemd (jak zajistit start po rebootu).
+\subsection{Meziprocesní komunikace (IPC)}
+Základním kamenem architektury je nově vytvořený modul \texttt{CLIService}. Tento modul slouží jako most mezi uživatelskými vstupy a jádrem služby. Komunikace probíhá přes Unix Domain Sockets (UDS), což je na platformě Linux standardní a vysoce výkonný způsob výměny dat mezi lokálními procesy.
 
+Služba vytvoří pojmenovanou rouru (named pipe), na které asynchronně naslouchá příchozím spojením od klienta. Požadavky jsou zasílány a vraceny ve formátu JSON, což usnadňuje deserializaci dat na obou stranách.
 
+\begin{figure}[ht]
+\begin{minted}{csharp}
+// Ukázka inicializace IPC serveru pomocí NamedPipeServerStream pro Linux
+var pipeServer = new NamedPipeServerStream(
+    pipeName: "CoreFxPipe_ga-cli.sock",
+    direction: PipeDirection.InOut,
+    maxNumberOfServerInstances: 1,
+    transmissionMode: PipeTransmissionMode.Byte,
+    options: PipeOptions.Asynchronous);
+
+await pipeServer.WaitForConnectionAsync(cancellationToken);
+// Zpracování příchozích dat ze socketu...
+\end{minted}
+\caption{Inicializace Unix Domain Socketu na straně .NET služby}
+\label{fig:ipc_init}
+\end{figure}
+
+\subsection{Bezpečné úložiště (Secure Storage)}
+Aplikace potřebuje uchovávat citlivá data jako jsou autentizační tokeny a privátní klíče. Původní implementace pro grafické rozhraní ukládala některá data do prostoru uživatele. Jelikož CLI je navrženo s možností trvalého spojení běžícího čistě na úrovni systému, muselo být úložiště přesunuto do bezpečného systémového adresáře.
+
+Byla vytvořena třída reprezentující \textit{Secure Storage}. Fyzické uložení dat využívá soubory zabezpečené restriktivními přístupovými právy (\texttt{chmod 700}), čímž je zaručeno, že k souborům má přístup pouze vlastník procesu (v tomto případě uživatel \texttt{root}, pod kterým služba běží). Samotná data uvnitř souborů jsou navíc šifrována pomocí \texttt{DataProtection API}.
+
+\subsection{Zpracování příkazů (CliMessenger)}
+Za samotné odbavování příchozích zpráv zodpovídá komponenta \texttt{CliMessenger}. Každý požadavek ve formátu JSON obsahuje specifikaci příkazu (např. \texttt{login}, \texttt{connect}) a příslušné argumenty. \texttt{CliMessenger} tyto požadavky směruje na specifické služby v rámci .NET backendu.
+
+V raných fázích vývoje, kdy ještě nebyla zcela implementována veškerá produkční logika a klientská aplikace se teprve formovala, vracela metoda \texttt{CliMessenger} provizorní pevně daná data (tzv. hardcoded odpovědi). Tento přístup umožnil paralelní vývoj -- UI se mohlo designovat a testovat proti konzistentnímu API bez čekání na dokončení komplexní aplikační logiky. Postupem času byly tyto provizorní odpovědi nahrazovány reálným napojením na síťové a autentizační subsystémy.
