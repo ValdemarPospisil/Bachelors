@@ -15,9 +15,9 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Klientská aplikace a příkazy (Go)' (Protocol in workflow.md) f8d9b7c
 
 ## Phase 3: Pokročilé funkce a omezení
-- [ ] Task: Draft section "OpenVPN Connection" covering integration with `ProtoService`.
-- [ ] Task: Draft section "Persistent Connection" explaining device-wide connections, multi-user challenges, context passing, and `sudo ga-cli disconnect`.
-- [ ] Task: Draft section "WireGuard Implementation" focusing on architecture, static config limitations on Linux, and future scope.
-- [ ] Task: Draft section "UX Enhancements" covering CLI flags and UI/UX improvements.
-- [ ] Task: Review the entire `thesis/chapters/04_implementace.tex` for flow, logical domain grouping, and formatting. Ensure "Úvod", "Závěr", and "GUI conflict resolution" are omitted.
+- [x] Task: Draft section "OpenVPN Connection" covering integration with `ProtoService`. b2f162e
+- [x] Task: Draft section "Persistent Connection" explaining device-wide connections, multi-user challenges, context passing, and `sudo ga-cli disconnect`. b2f162e
+- [x] Task: Draft section "WireGuard Implementation" focusing on architecture, static config limitations on Linux, and future scope. b2f162e
+- [x] Task: Draft section "UX Enhancements" covering CLI flags and UI/UX improvements. b2f162e
+- [x] Task: Review the entire `thesis/chapters/04_implementace.tex` for flow, logical domain grouping, and formatting. Ensure "Úvod", "Závěr", and "GUI conflict resolution" are omitted. b2f162e
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Pokročilé funkce a omezení' (Protocol in workflow.md)
