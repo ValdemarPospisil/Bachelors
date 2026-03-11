@@ -1,8 +1,8 @@
 # Implementation Plan: Thesis Implementation Chapter (04_implementace.tex) Plan
 
 ## Phase 1: Setup and Outline Creation
-- [ ] Task: Create the markdown file `doc/notes/implementace_plan.md`
-- [ ] Task: Draft the high-level outline (Introduction, .NET Service, Go Client, Conclusion)
+- [x] Task: Create the markdown file `doc/notes/implementace_plan.md` b21f577
+- [x] Task: Draft the high-level outline (Introduction, .NET Service, Go Client, Conclusion) b21f577
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Setup and Outline Creation' (Protocol in workflow.md)
 
 ## Phase 2: .NET Service Walkthrough Section
