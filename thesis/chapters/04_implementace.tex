@@ -28,7 +28,7 @@ Základním kamenem architektury je nově vytvořený modul \texttt{CLIService}.
 Služba vytvoří pojmenovanou rouru (named pipe), na které asynchronně naslouchá příchozím spojením od klienta. Požadavky jsou zasílány a vraceny ve formátu JSON, což usnadňuje deserializaci dat na obou stranách.
 
 \begin{figure}[ht]
-\begin{minted}{csharp}
+\begin{lstlisting}[language={[Sharp]C}]
 // Ukázka inicializace IPC serveru pomocí NamedPipeServerStream pro Linux
 var pipeServer = new NamedPipeServerStream(
     pipeName: "CoreFxPipe_ga-cli.sock",
@@ -39,7 +39,7 @@ var pipeServer = new NamedPipeServerStream(
 
 await pipeServer.WaitForConnectionAsync(cancellationToken);
 // Zpracování příchozích dat ze socketu...
-\end{minted}
+\end{lstlisting}
 \caption{Inicializace Unix Domain Socketu na straně .NET služby}
 \label{fig:ipc_init}
 \end{figure}
