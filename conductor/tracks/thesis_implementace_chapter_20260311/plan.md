@@ -8,11 +8,11 @@
 - [x] Task: Draft section "CliMessenger" explaining command handling and initial hardcoded data phase. ec614c9
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Struktura projektu a backendové služby' (Protocol in workflow.md) b30a9ea
 
-## Phase 2: Klientská aplikace a příkazy (Go)
+## Phase 2: Klientská aplikace a příkazy (Go) [checkpoint: f8d9b7c]
 - [x] Task: Draft section "Command Structure" detailing Cobra initialization and command tree definition (include CLI commands snippet). 2d0fdd4
 - [x] Task: Draft section "Commands Implementation" covering the iterative process (`login`, `logout`, `setup`, `connect`, `disconnect`). 2d0fdd4
 - [x] Task: Highlight the `status` command as a proof-of-work/storage reader throughout development. 2d0fdd4
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Klientská aplikace a příkazy (Go)' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Klientská aplikace a příkazy (Go)' (Protocol in workflow.md) f8d9b7c
 
 ## Phase 3: Pokročilé funkce a omezení
 - [ ] Task: Draft section "OpenVPN Connection" covering integration with `ProtoService`.
