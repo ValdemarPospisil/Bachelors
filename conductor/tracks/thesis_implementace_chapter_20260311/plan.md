@@ -1,11 +1,11 @@
 # Implementation Plan: Thesis Chapter 4 - Implementace
 
 ## Phase 1: Struktura projektu a backendové služby
-- [ ] Task: Analyze `doc/notes/project-structure.txt` and integrate the repository layout into LaTeX format.
-- [ ] Task: Draft section "Struktura projektu a vývojové prostředí" focusing on the separation of .NET backend and Go frontend.
-- [ ] Task: Draft section "IPC Communication" explaining `CLIService` module creation and setup (include architecture snippet).
-- [ ] Task: Draft section "Secure Storage" explaining secure token/key storage implementation.
-- [ ] Task: Draft section "CliMessenger" explaining command handling and initial hardcoded data phase.
+- [x] Task: Analyze `doc/notes/project-structure.txt` and integrate the repository layout into LaTeX format. ec614c9
+- [x] Task: Draft section "Struktura projektu a vývojové prostředí" focusing on the separation of .NET backend and Go frontend. ec614c9
+- [x] Task: Draft section "IPC Communication" explaining `CLIService` module creation and setup (include architecture snippet). ec614c9
+- [x] Task: Draft section "Secure Storage" explaining secure token/key storage implementation. ec614c9
+- [x] Task: Draft section "CliMessenger" explaining command handling and initial hardcoded data phase. ec614c9
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Struktura projektu a backendové služby' (Protocol in workflow.md)
 
 ## Phase 2: Klientská aplikace a příkazy (Go)
