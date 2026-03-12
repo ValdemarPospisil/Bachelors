@@ -35,5 +35,4 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [x] **Track: Refine the second subchapter in implementation chapter (.NET Service), add code snippets and diagram.**
-*Link: [./tracks/thesis_impl_refine_net_20260312/](./tracks/thesis_impl_refine_net_20260312/)*
+---
