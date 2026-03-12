@@ -32,3 +32,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [~] **Track: Write Chapter 4 (Implementace) of the thesis based on the detailed plan including IPC, Go frontend, .NET backend, secure storage, and specific features.**
 *Link: [./tracks/thesis_implementace_chapter_20260311/](./tracks/thesis_implementace_chapter_20260311/)*
+
+---
+
+- [ ] **Track: Refine the first subchapter in the implementation chapter with deeper file structure description and diagrams.**
+*Link: [./tracks/thesis_impl_refine_20260312/](./tracks/thesis_impl_refine_20260312/)*
