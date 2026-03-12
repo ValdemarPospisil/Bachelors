@@ -77,7 +77,7 @@ Základním kamenem architektury je nově vytvořený modul \texttt{CLIService}.
 Za samotné odbavování příchozích zpráv zodpovídá komponenta \texttt{CliMessenger}. Jak bylo definováno v podkapitole~\ref{sec:navrh_ipc} (včetně konkrétních JSON příkladů), každý požadavek ve formátu JSON obsahuje specifikaci příkazu (např. \texttt{login}, \texttt{connect}) a příslušné argumenty. \texttt{CliMessenger} tyto požadavky zpracovává a směruje je na specifické služby v rámci .NET backendu. Jak ukazuje následující ukázka kódu, třída pomocí konstrukce \texttt{switch} analyzuje přijatý příkaz a asynchronně volá odpovídající obslužné metody.
 
 \noindent\begin{minipage}{\linewidth}
-\lstinputlisting[language=C, stringstyle=\itshape, firstline=194, lastline=226]{../doc/code/CliMessenger.cs}
+\lstinputlisting[language=C, stringstyle=\itshape, firstline=194, lastline=204]{../doc/code/CliMessenger.cs}
 \end{minipage}
 
 V raných fázích vývoje, kdy ještě nebyla zcela implementována veškerá produkční logika a klientská aplikace se teprve formovala, vracela metoda \texttt{CliMessenger} provizorní, pevně definované hodnoty (tzv. hardcoded data). Tento přístup umožnil paralelní vývoj -- uživatelské rozhraní se mohlo designovat a testovat proti konzistentnímu API bez čekání na dokončení komplexní aplikační logiky. Postupem času byly tyto provizorní odpovědi nahrazovány reálným napojením na síťové a autentizační subsystémy.

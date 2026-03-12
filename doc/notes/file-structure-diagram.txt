@@ -1,0 +1,34 @@
+@startwbs
+skinparam defaultFontName Arial
+skinparam wbsNodeBackgroundColor White
+skinparam wbsNodeBorderColor Black
+skinparam shadowing false
+
+* **ga-client-app-windows** (Monorepo)
+** **client/** (Zdrojové kódy původního grafického klienta - Electron/React)
+** **cli/** (Go Frontend)
+*** **cmd/** (Definice CLI příkazů - framework Cobra)
+****_ root.go
+****_ login.go, connect.go, status.go...
+*** **internal/**
+**** **ipc/** (Komunikační vrstva - UDS klient a protokol)
+**** **tui/** (Interaktivní rozhraní - framework Bubble Tea)
+***** **login/, connect/, status/...** (Složky jednotlivých obrazovek)
+******_ model.go (Definice stavu)
+******_ update.go (Zpracování událostí)
+******_ view.go (Vykreslení UI)
+** **services/** (.NET Backend)
+*** **CLIService/** (Dedikovaná wrapper služba pro CLI)
+****_ Program.cs (Vstupní bod, inicializace DI kontejneru)
+**** **GoodAccess/**
+*****_ Worker.cs (Běh služby na pozadí)
+*****_ CliMessenger.cs (Směrování IPC požadavků)
+***** **Main/**
+******_ SenderReader.cs (Zpracování datového streamu)
+*** **GoodAccess.Shared/** (Sdílená doménová logika)
+****_ ApiClient.cs (Komunikace s centrálním REST API)
+**** **Proto/** (Implementace VPN protokolů)
+*****_ ProtoService.cs
+*****_ VpnManager.cs
+*** **GoodAccessService/** (Jádro síťové infrastruktury a daemon)
+@endwbs
