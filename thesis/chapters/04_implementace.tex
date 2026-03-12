@@ -4,20 +4,48 @@
 V této kapitole je detailně rozebrán samotný proces implementace navrženého řešení. Pozornost je věnována struktuře celého projektu a následně specifickým technickým výzvám spojeným s vývojem klientské aplikace v jazyce Go a úpravám systémové služby na platformě .NET.
 
 \section{Struktura projektu a vývojové prostředí}
-Jelikož se výsledný produkt skládá z několika oddělených, avšak spolupracujících částí, bylo zásadní správně navrhnout strukturu repozitáře. Repozitář je koncipován jako monorepo, které zastřešuje zdrojové kódy jak pro klientskou část (frontend), tak pro vrstvu systémové služby (backend). Tento přístup zjednodušuje správu závislostí a verzování.
+Jelikož se výsledný produkt skládá z několika oddělených, avšak úzce spolupracujících částí, bylo zásadní správně navrhnout strukturu repozitáře. Repozitář je koncipován jako monorepo, které zastřešuje zdrojové kódy pro všechny klientské i systémové komponenty. Tento přístup výrazně zjednodušuje správu závislostí a zajišťuje konzistentní verzování napříč celým projektem.
 
-Hlavní rozdělení repozitáře je následující:
+Hlavní rozdělení kořenového adresáře odráží oddělení jednotlivých technologických a logických domén:
+
 \begin{itemize}
-    \item \texttt{cli/} -- Obsahuje zdrojové kódy klientské aplikace napsané v jazyce Go. Kód je strukturován s ohledem na oddělení uživatelského rozhraní od komunikační logiky (adresáře \texttt{cmd/} a \texttt{internal/}).
-    \item \texttt{services/} -- Zahrnuje .NET projekty představující systémovou službu, která běží na pozadí.
+    \item \texttt{client/} -- Tato složka představuje zdrojové kódy původního grafického klienta postaveného na technologiích Electron a React. Byť není primárním předmětem této práce, jeho přítomnost v repozitáři usnadňuje sdílení prostředků.
+    
+    \item \texttt{cli/} -- Zde se nachází kompletní implementace nového terminálového klienta (frontendu) v jazyce Go.
     \begin{itemize}
-        \item \texttt{CLIService/} -- Nově vytvořený modul určený primárně pro obsluhu IPC komunikace s CLI klientem a řízení jeho požadavků.
-        \item \texttt{GoodAccessService/} -- Původní jádro služby obstarávající infrastrukturu a samotné sestavování tunelů (např. OpenVPN, WireGuard).
+        \item \texttt{cmd/} -- Obsahuje definice jednotlivých CLI příkazů využívajících framework Cobra (např. \texttt{login.go}, \texttt{connect.go}, \texttt{status.go}). Soubor \texttt{root.go} slouží jako vstupní bod pro parsování uživatelských vstupů.
+        \item \texttt{internal/} -- Zapouzdřuje interní logiku aplikace, kterou nelze importovat z externích balíčků.
+        \begin{itemize}
+            \item \texttt{ipc/} -- Implementuje komunikační vrstvu, konkrétně klienta pro Unix Domain Sockets a definici zpráv (tzv. \textit{protocol}).
+            \item \texttt{tui/} -- Zastřešuje interaktivní textové uživatelské rozhraní postavené na frameworku Bubble Tea. Každá obrazovka (např. \texttt{login/}, \texttt{connect/}) je zde oddělena do vlastní složky obsahující modely (\texttt{model.go}), zpracování událostí (\texttt{update.go}) a vykreslovací logiku (\texttt{view.go}).
+        \end{itemize}
     \end{itemize}
-    \item \texttt{GoodAccess.Shared/} -- Sdílené doménové modely, rozhraní a utility využívané napříč různými .NET službami.
+
+    \item \texttt{services/} -- Obsahuje .NET projekty představující backend vrstvu, neboli systémové služby běžící na pozadí s vyššími právy.
+    \begin{itemize}
+        \item \texttt{CLIService/} -- Zcela nově vytvořený projekt v rámci této práce. Funguje jako dedikovaná \textit{wrapper} služba (tzv. obálka) pro CLI klienta. Hlavním úkolem \texttt{CLIService} je naslouchat na IPC socketu (\texttt{SenderReader.cs}), přijímat požadavky od frontend klienta a směrovat je pomocí komponenty \texttt{CliMessenger.cs} k příslušným výkonným vrstvám.
+        \item \texttt{GoodAccess.Shared/} -- Obsahuje sdílenou doménovou logiku, kterou využívají různé části backendu. Nachází se zde klientské třídy pro komunikaci s centrálním REST API (\texttt{ApiClient.cs}) a abstraktní implementace VPN protokolů (\texttt{ProtoService.cs}, \texttt{VpnManager.cs}).
+        \item \texttt{GoodAccessService/} -- Původní a hlavní jádro síťové infrastruktury (daemon). Využívá konfigurace z předchozích vrstev k fyzickému sestavení a správě tunelů na daném operačním systému.
+    \end{itemize}
 \end{itemize}
 
-Architektura je tak striktně rozdělena na tenkého klienta (Thin Client v jazyce Go), který se stará pouze o prezentaci dat uživateli, a komplexní systémovou službu (.NET), jež zapouzdřuje doménovou logiku aplikace.
+Tato architektura je tak striktně rozdělena na takzvaného tenkého klienta (Thin Client), jenž je zodpovědný výhradně za prezentaci dat a odesílání uživatelských povelů, a robustní systémovou službu, která si ponechává komplexní aplikační logiku. Navíc obě tyto logické vrstvy (Go aplikace a .NET služby) mají vlastní nezávislé procesy pro sestavení a distribuci.
+
+Pro názornější představu o komplexnosti řešení a vzájemných vazbách jsou níže uvedeny dvě doplňující vizualizace. Obrázek~\ref{fig:mindmap_structure} nabízí pohled na strukturu repozitáře ve formě myšlenkové mapy, zatímco Obrázek~\ref{fig:wbs_structure} představuje stejnou hierarchii formou WBS (Work Breakdown Structure) diagramu pro detailnější dekompozici jednotlivých submodulů.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/implementation/diagrams/mindmap-file-structure.png}
+    \caption{Struktura repozitáře (Mindmap)}
+    \label{fig:mindmap_structure}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/implementation/diagrams/wbs-file-structure.png}
+    \caption{Struktura repozitáře (WBS)}
+    \label{fig:wbs_structure}
+\end{figure}
 
 \section{Implementace systémové služby (.NET)}
 Aby bylo možné efektivně zpracovávat požadavky přicházející od CLI klienta, bylo nutné infrastrukturu na straně služby patřičně rozšířit. Vývoj probíhal iterativně počínaje zajištěním bezpečného úložiště a zprovozněním lokálního komunikačního kanálu.
