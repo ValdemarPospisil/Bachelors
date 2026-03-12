@@ -30,6 +30,7 @@ Architektura Go klienta navíc úzce reflektuje principy takzvané \textit{Clean
 %\end{figure}
 
 \section{Návrh komunikace IPC}
+\label{sec:navrh_ipc}
 Pro výměnu dat mezi Go klientem a .NET službou bylo nutné zvolit vhodný mechanismus meziprocesní komunikace (IPC). Jak bylo popsáno v teoretické části (viz sekce \ref{sec:ipc_theory}), pro lokální komunikaci v systému Linux jsou nejvhodnějším nástrojem Unix Domain Sockets (UDS). Ty nabízejí vyšší bezpečnost díky souborovým oprávněním a lepší výkon oproti síťovým socketům (TCP/IP), protože nedochází k režii spojené se síťovým stackem.
 
 \subsection{Volba formátu dat}
@@ -106,7 +107,7 @@ Aktuální hierarchii příkazů znázorňuje Obrázek \ref{fig:command_tree}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{images/command-tree.png}
+    \includegraphics[width=0.6\textwidth]{images/command-tree.png}
     \caption{Hierarchická struktura příkazů (Command Tree) aplikace ga-cli.}
     \label{fig:command_tree}
 \end{figure}
@@ -171,7 +172,7 @@ Klíčovým bezpečnostním prvkem celého mechanismu je správa samotných šif
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{images/security-component.png}
+    \includegraphics[width=1.0\textwidth]{images/security-component.png}
     \caption{Architektura zabezpečeného úložiště a správy klíčů}
     \label{fig:security_component}
 \end{figure}

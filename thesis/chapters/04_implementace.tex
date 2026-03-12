@@ -51,26 +51,43 @@ Pro názornější představu o komplexnosti řešení a vzájemných vazbách j
 Aby bylo možné efektivně zpracovávat požadavky přicházející od CLI klienta, bylo nutné infrastrukturu na straně služby patřičně rozšířit. Vývoj probíhal iterativně počínaje zajištěním bezpečného úložiště a zprovozněním lokálního komunikačního kanálu.
 
 \subsection{Bezpečné úložiště (Secure Storage)}
-Aplikace potřebuje uchovávat citlivá data jako jsou autentizační tokeny a privátní klíče. Původní implementace pro grafické rozhraní ukládala některá data do prostoru uživatele. Jelikož CLI je navrženo s možností trvalého spojení běžícího čistě na úrovni systému, muselo být úložiště přesunuto do bezpečného systémového adresáře. Byla vytvořena třída reprezentující \textit{Secure Storage}. Fyzické uložení dat využívá soubory zabezpečené restriktivními přístupovými právy (\texttt{chmod 700}), čímž je zaručeno, že k souborům má přístup pouze vlastník procesu (v tomto případě uživatel \texttt{root}, pod kterým služba běží). Samotná data uvnitř souborů jsou navíc šifrována pomocí \texttt{DataProtection API}.
+Aplikace potřebuje uchovávat citlivá data jako jsou autentizační tokeny a privátní klíče. Jak bylo definováno v kapitole~\ref{sec:data_a_bezpecnost}, původní implementace pro grafické rozhraní ukládala některá data do prostoru uživatele. Jelikož je CLI klient navržen s možností trvalého spojení běžícího čistě na úrovni systému, muselo být úložiště přesunuto do bezpečného systémového adresáře (\texttt{/opt/GoodAccess/configs/DataProtection-Keys}).
+
+Byla vytvořena třída \texttt{CliStorage} reprezentující zabezpečené úložiště. Fyzické uložení dat využívá soubory zabezpečené restriktivními přístupovými právy, čímž je zaručeno, že k souborům má přístup pouze vlastník procesu (v tomto případě uživatel \texttt{root}, pod kterým služba běží). Samotná data uvnitř souborů jsou navíc šifrována na úrovni .NET frameworku pomocí \texttt{IDataProtectionProvider}. Třída umožňuje čtení a zápis serializovaných JSON objektů (\texttt{CliStorageRoot}) do tohoto chráněného souboru.
 
 \noindent\begin{minipage}{\linewidth}
 \lstinputlisting[language=C, stringstyle=\itshape, firstline=155, lastline=161]{../doc/code/CliStorage.cs}
 \end{minipage}
 
 \subsection{IPC Server (Unix Domain Sockets)}
-Základním kamenem architektury je nově vytvořený modul \texttt{CLIService}. Tento modul slouží jako most mezi uživatelskými vstupy a jádrem služby. Komunikace probíhá přes Unix Domain Sockets (UDS), což je na platformě Linux standardní a vysoce výkonný způsob výměny dat mezi lokálními procesy. Služba vytvoří pojmenovanou rouru (named pipe), na které asynchronně naslouchá příchozím spojením od klienta. Požadavky jsou zasílány a vraceny ve formátu JSON, což usnadňuje deserializaci dat na obou stranách.
+Základním kamenem architektury je nově vytvořený modul \texttt{CLIService}. Tento modul slouží jako most mezi uživatelskými vstupy a jádrem služby. Jak bylo navrženo v kapitole~\ref{sec:navrh_ipc}, komunikace probíhá přes Unix Domain Sockets (UDS), což je na platformě Linux standardní a vysoce výkonný způsob výměny dat mezi lokálními procesy. Služba vytvoří pojmenovanou rouru (named pipe), na které asynchronně naslouchá příchozím spojením od klienta. Požadavky jsou zasílány a vraceny ve formátu JSON, což usnadňuje deserializaci dat na obou stranách.
 
 \noindent\begin{minipage}{\linewidth}
 \lstinputlisting[language=C, stringstyle=\itshape, firstline=36, lastline=42]{../doc/code/SenderReader.cs}
 \end{minipage}
 
-% TODO: [DIAGRAM: Flow parsování požadavku ze socketu, validace a odeslání JSON odpovědi]
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/implementation/diagrams/ipc-diagram.png}
+    \caption{Architektura IPC komunikace}
+    \label{fig:ipc_diagram_impl}
+\end{figure}
 
 \subsection{Zpracování příkazů (CliMessenger)}
-Za samotné odbavování příchozích zpráv zodpovídá komponenta \texttt{CliMessenger}. Každý požadavek ve formátu JSON obsahuje specifikaci příkazu (např. \texttt{login}, \texttt{connect}) a příslušné argumenty. \texttt{CliMessenger} tyto požadavky směruje na specifické služby v rámci .NET backendu. V raných fázích vývoje, kdy ještě nebyla zcela implementována veškerá produkční logika a klientská aplikace se teprve formovala, vracela metoda \texttt{CliMessenger} provizorní, pevně definované hodnoty (tzv. hardcoded data). Tento přístup umožnil paralelní vývoj -- uživatelské rozhraní se mohlo designovat a testovat proti konzistentnímu API bez čekání na dokončení komplexní aplikační logiky. Postupem času byly tyto provizorní odpovědi nahrazovány reálným napojením na síťové a autentizační subsystémy.
+Za samotné odbavování příchozích zpráv zodpovídá komponenta \texttt{CliMessenger}. Jak bylo definováno v podkapitole~\ref{sec:navrh_ipc} (včetně konkrétních JSON příkladů), každý požadavek ve formátu JSON obsahuje specifikaci příkazu (např. \texttt{login}, \texttt{connect}) a příslušné argumenty. \texttt{CliMessenger} tyto požadavky zpracovává a směruje je na specifické služby v rámci .NET backendu. Jak ukazuje následující ukázka kódu, třída pomocí konstrukce \texttt{switch} analyzuje přijatý příkaz a asynchronně volá odpovídající obslužné metody.
+
+\noindent\begin{minipage}{\linewidth}
+\lstinputlisting[language=C, stringstyle=\itshape, firstline=194, lastline=226]{../doc/code/CliMessenger.cs}
+\end{minipage}
+
+V raných fázích vývoje, kdy ještě nebyla zcela implementována veškerá produkční logika a klientská aplikace se teprve formovala, vracela metoda \texttt{CliMessenger} provizorní, pevně definované hodnoty (tzv. hardcoded data). Tento přístup umožnil paralelní vývoj -- uživatelské rozhraní se mohlo designovat a testovat proti konzistentnímu API bez čekání na dokončení komplexní aplikační logiky. Postupem času byly tyto provizorní odpovědi nahrazovány reálným napojením na síťové a autentizační subsystémy.
 
 \subsection{Životní cyklus a integrace se systemd}
-Pro zajištění běhu služby na pozadí a správnou instalaci na Linuxu byl využit modul \texttt{Microsoft.\allowbreak Extensions.\allowbreak Hosting.\allowbreak Systemd}. Definice \texttt{goodaccess-cli.service} zajišťuje automatické spuštění po startu systému a \textit{graceful shutdown} proces pro bezpečné odpojení VPN před vypnutím.
+Pro zajištění běhu služby na pozadí a správnou instalaci na Linuxu byl využit modul \texttt{Microsoft.\allowbreak Extensions.\allowbreak Hosting.\allowbreak Systemd}. Díky tomuto modulu se celá aplikace může chovat jako nativní \texttt{systemd} služba. Definice \texttt{goodaccess-cli.service} zajišťuje automatické spuštění po startu systému a \textit{graceful shutdown} proces pro bezpečné odpojení VPN před vypnutím. Následující ukázka kódu z konfigurační třídy \texttt{Program.cs} demonstruje inicializaci hostitele, kde metoda \texttt{UseSystemd()} registruje životní cyklus služby a zároveň probíhá konfigurace \texttt{DataProtection} API z předchozí podkapitoly a registrace hlavní pracovní třídy \texttt{Worker}, která obstarává chod aplikace v pozadí.
+
+\noindent\begin{minipage}{\linewidth}
+\lstinputlisting[language=C, stringstyle=\itshape, firstline=33, lastline=46]{../doc/code/Program.cs}
+\end{minipage}
 
 \section{Implementace klientské aplikace (Go)}
 Na straně klienta bylo zvoleno využití jazyka Go, a to především pro jeho vynikající vlastnosti při vývoji CLI aplikací a schopnost kompilace do jediné statické binární formy nezávislé na externích knihovnách na koncovém systému.
