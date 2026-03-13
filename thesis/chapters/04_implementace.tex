@@ -125,7 +125,7 @@ Následující ukázka kódu z \texttt{view.go} demonstruje, jak je definován v
 \end{figure}
 
 \subsection{Komunikace se službou (IPC Klient)}
-Odesílání a přijímání JSON dat z Unix Domain Socketu je zajištěno IPC klientem na straně Go aplikace. Klient navazuje spojení přes systémové volání s definovaným \texttt{unix} socketem. Pro zajištění konzistence je každá odesílaná zpráva zabalena do tzv. \textit{Request Envelope}. Tato obálka (implementovaná jako Go struktura) obsahuje nejen samotný povel, ale také kontextové informace, jako je ID Linuxového uživatele, který příkaz vyvolal, a flag určující, zda byl příkaz spuštěn s právy administrátora (root). Tyto údaje jsou nezbytné pro správné ověření oprávnění na straně služby (viz podkapitola 4.3.2). Následně klient formátuje tyto požadavky do JSON struktur a přijímá odpovědi od .NET služby, čímž překlenuje mezeru mezi frontendem a backendem.
+Odesílání a přijímání JSON dat z Unix Domain Socketu je zajištěno IPC klientem na straně Go aplikace. Klient navazuje spojení přes systémové volání s definovaným \texttt{unix} socketem. Pro zajištění konzistence je každá odesílaná zpráva zabalena do tzv. \textit{Request Envelope}. Tato obálka (implementovaná jako Go struktura) obsahuje nejen samotný povel, ale také kontextové informace, jako je ID Linuxového uživatele, který příkaz vyvolal, a flag určující, zda byl příkaz spuštěn s právy administrátora (root). Tyto údaje jsou nezbytné pro správné ověření oprávnění na straně služby . Následně klient formátuje tyto požadavky do JSON struktur a přijímá odpovědi od .NET služby, čímž překlenuje mezeru mezi frontendem a backendem.
 
 \noindent\begin{minipage}{\linewidth}
 \lstinputlisting[language=C, stringstyle=\itshape, firstline=42, lastline=58]{../doc/code/unix_client.go}
@@ -138,10 +138,70 @@ Během integrace stěžejních funkčních celků do architektury se objevilo n�
 Samotné vytvoření šifrovaného tunelu skrze protokol OpenVPN těží z již existující architektury modulu \texttt{ProtoService}, který je nasazen na ostatních platformách. Pro potřeby CLI klienta tak stačilo mapovat požadavky z UDS rozhraní do podoby interních struktur sítě a volat sdílenou aplikační logiku. Modul automaticky vygeneruje odpovídající konfiguraci, sestaví spojení a na pozadí monitoruje stabilitu relace.
 
 \subsection{Persistentní relace a vícero uživatelů}
-Jednou z definovaných funkčností byla možnost navázání persistentního (trvalého) spojení, kdy VPN zůstává aktivní i po odhlášení aktuálního systémového uživatele nebo po restartu zařízení. Tento požadavek si vyžádal řešení problému týkajícího se izolace více Linuxových uživatelů. Jelikož je sestavené VPN spojení systémového charakteru (routování přes rozhraní tunelu ovlivňuje globální směrovací tabulky stroje), mohlo by dojít k situaci, kdy jeden uživatel sestaví persistentní spojení a jiný uživatel po přihlášení nemá oprávnění jej modifikovat či ukončit, přestože je jeho síťový provoz rovněž šifrován. Z toho důvodu bylo nutné obohatit komunikační protokol IPC o explicitní předávání systémového kontextu a identifikaci uživatele, který požadavek vznáší. Pokud je aktivní persistentní tunel spuštěný jiným uživatelem a nejedná se o autorizovanou operaci, je akce zamítnuta na úrovni služby. Administrátor pak musí relaci manuálně ukončit přes příkaz vyžadující superuživatelská práva, např. voláním \texttt{sudo ga-cli disconnect}.
+Jednou z definovaných funkčností v rámci funkčních požadavků (kapitola~\ref{sec:funkcni_pozadavky}) byla možnost navázání persistentního (trvalého) spojení, kdy VPN zůstává aktivní i po odhlášení aktuálního systémového uživatele nebo po restartu zařízení. Tento požadavek si vyžádal řešení problému týkajícího se izolace více Linuxových uživatelů. Jelikož je sestavené VPN spojení systémového charakteru (routování přes rozhraní tunelu ovlivňuje globální směrovací tabulky stroje), mohlo by dojít k situaci, kdy jeden uživatel sestaví persistentní spojení a jiný uživatel po přihlášení nemá oprávnění jej modifikovat či ukončit, přestože je jeho síťový provoz rovněž šifrován. Z toho důvodu bylo nutné obohatit komunikační protokol IPC o explicitní předávání systémového kontextu a identifikaci uživatele, který požadavek vznáší. Pokud je aktivní persistentní tunel spuštěný jiným uživatelem a nejedná se o autorizovanou operaci, je akce zamítnuta na úrovni služby (Obrázek~\ref{fig:another_user_connected}). Administrátor pak musí relaci manuálně ukončit přes příkaz vyžadující superuživatelská práva voláním \texttt{sudo ga-cli disconnect}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/implementation/screenshots/another-user-connected.png}
+    \caption{Chybové hlášení při pokusu o úpravu relace jiného uživatele}
+    \label{fig:another_user_connected}
+\end{figure}
 
 \subsection{Implementace protokolu WireGuard}
 Moderní protokol WireGuard představoval v kontextu architektury významnou výzvu, jelikož práce zahrnovala implementaci samotného agenta (sestavování sítě) cíleně pouze pro prostředí Linux s využitím statických konfigurací. Na rozdíl od uceleného řízení (životní cyklus přes operační systém, dynamické doporučování gateway, automatické znovupřipojení), které přesahuje rámec této bakalářské práce a je paralelně vyvíjeno ostatními členy týmu na různých platformách, se tato konkrétní implementace zaměřuje primárně na fundamentální logiku navázání komunikace přes nativní systémové nástroje (\texttt{ip link}, \texttt{wg}). Tyto operace jsou vloženy do kontextu služeb \texttt{ProtoService} a tvoří základ budoucí robustní síťové logiky.
 
 \subsection{Vylepšení uživatelské přívětivosti (UX)}
-S cílem maximalizovat komfort koncových uživatelů při interakci v terminálu byl klient postupně doplňován o podpůrné funkce a takzvané přepínače (flags). Příkladem je plná podpora pro strojově čitelné formátování výstupů prostřednictvím flagu \texttt{--json}, jenž zajišťuje, že aplikace nebude vracet interaktivní textové uživatelské rozhraní, ale naopak striktně strukturovaný JSON výstup. Tato funkcionalita je klíčová pro případnou integraci CLI nástroje do CI/CD řetězců (pipelines) a automatizačních skriptů, kde je vyžadováno bezobslužné řízení celého procesu připojení. Další UX optimalizace zahrnovaly vylepšení asynchronního logování stavu a přehlednější zpracování konfiguračních interakcí.
+S cílem maximalizovat komfort koncových uživatelů při interakci v terminálu byl klient postupně doplňován o podpůrné funkce a vizuální prvky definované v kapitole~\ref{sec:vizualni_styl}. Byly implementovány kontextové nápovědy (tzv. \textit{hints}), které uživateli po dokončení operace nebo při kontrole stavu navrhují další logický krok. Například, je-li uživatel odhlášen, příkaz \texttt{status} nejen zobrazí aktuální stav, ale zároveň nabídne spuštění příkazu \texttt{ga-cli login}. Dalším důležitým UX prvkem je okamžitá vizuální odezva u déletrvajících operací (např. sestavování VPN spojení), jež byla realizována pomocí animovaných načítacích elementů (spinnerů).
+
+Důležitým přepínačem (flag) je plná podpora pro strojově čitelné formátování výstupů prostřednictvím \texttt{--json}. Tento flag zajišťuje, že aplikace nebude vracet interaktivní textové uživatelské rozhraní ani barevně formátovaný text, ale striktně strukturovaný JSON výstup. Tato funkcionalita je klíčová pro případnou integraci CLI nástroje do CI/CD řetězců (pipelines) a automatizačních skriptů, kde je vyžadováno bezobslužné řízení celého procesu připojení a zpracování jeho výsledků.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/implementation/screenshots/status-disconnected.png}
+        \caption{Zobrazení stavu s nápovědou pro další krok}
+        \label{fig:ux_status_hint}
+    \end{minipage}\hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/implementation/screenshots/connecting-spinner.png}
+        \caption{Okamžitá odezva (spinner) při připojování}
+        \label{fig:ux_spinner}
+    \end{minipage}
+    \vspace{0.5cm} % Add some vertical space between the rows
+    
+    \begin{minipage}{0.6\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/implementation/screenshots/status-json.png}
+        \caption{Strojově čitelný výstup pomocí flagu \texttt{--json}}
+        \label{fig:ux_json_output}
+    \end{minipage}
+\end{figure}
+\\subsection{Rozdíly ve správě stavu: GUI vs. CLI}
+Jedním z nejvýznamnějších architektonických rozdílů mezi grafickým klientem (GUI) a klientem v příkazovém řádku (CLI) je způsob správy stavu a ošetření uživatelských akcí. V GUI aplikaci je běžnou praxí vizuálně omezit akce, které neodpovídají aktuálnímu stavu. Například tlačítko „Připojit“ je deaktivováno nebo skryto, dokud se uživatel úspěšně nepřihlásí. Uživatel tak nemá možnost vyvolat neplatný stav pouhým kliknutím.
+
+Naproti tomu CLI prostředí je ze své podstaty bezstavové z pohledu samotného vstupu. Uživatel může kdykoliv napsat jakýkoliv příkaz nezávisle na aktuálním stavu aplikace na pozadí. Proto je nezbytné, aby CLI klient na každý takový příkaz reagoval předvídatelně a v případě neplatného stavu poskytl jasnou chybovou hlášku s návodem k nápravě. Například, pokusí-li se nepřihlášený uživatel o připojení k VPN (\texttt{ga-cli connect}), aplikace musí požadavek zachytit a korektně odmítnout s výzvou k přihlášení.
+
+Tato odlišnost si vyžádala pečlivé zmapování všech možných kombinací příkazů a stavů aplikace. Následující tabulka ukazuje, jak se různé příkazy chovají v různých stavech služby.
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{|p{0.15\textwidth}|p{0.2\textwidth}|p{0.2\textwidth}|p{0.2\textwidth}|p{0.15\textwidth}|}
+        \hline
+        \textbf{Příkaz} & \textbf{Stav: Nepřihlášen} & \textbf{Stav: Přihlášen, odpojen} & \textbf{Stav: Připojen (VPN)} & \textbf{Stav: Jiný uživatel} \\
+        \hline
+        \texttt{login} & Provede přihlášení. & \textit{Zamítnuto:} Již přihlášen. & \textit{Zamítnuto:} Již přihlášen. & \textit{Zamítnuto:} Chybí práva. \\
+        \hline
+        \texttt{connect} & \textit{Zamítnuto:} Nutno se přihlásit. & Sestaví VPN spojení. & \textit{Zamítnuto:} Již připojen. & \textit{Zamítnuto:} Chybí práva. \\
+        \hline
+        \texttt{disconnect} & \textit{Zamítnuto:} Nutno se přihlásit. & \textit{Zamítnuto:} Není připojeno. & Odpojí VPN. & \textit{Zamítnuto} (mimo sudo). \\
+        \hline
+        \texttt{logout} & \textit{Zamítnuto:} Není přihlášen. & Provede odhlášení. & \textit{Zamítnuto:} Nutno se odpojit. & \textit{Zamítnuto:} Chybí práva. \\
+        \hline
+        \texttt{status} & Zobrazí stav a nápovědu. & Zobrazí stav a nápovědu. & Zobrazí detail spojení. & Zobrazí stav relace. \\
+        \hline
+    \end{tabular}
+    \caption{Chování CLI příkazů závislé na stavu aplikace a relace}
+    \label{tab:cli_states}
+\end{table}

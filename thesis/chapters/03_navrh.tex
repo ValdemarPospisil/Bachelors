@@ -131,6 +131,7 @@ V tomto režimu aplikace využívá framework \texttt{Bubble Tea} (viz sekce \re
 Pro účely automatizace a volání z jiných programů aplikace podporuje přepínač \texttt{--json}. V tomto režimu je potlačeno veškeré interaktivní vykreslování (TUI), barvy a spinners. Výstupem příkazů je pak čistý a validní JSON objekt (viz sekce \ref{sec:formats_theory}), který lze snadno zpracovat nástroji jako \texttt{jq}. Pokud aplikace detekuje, že výstup je přesměrován do roury (pipe) nebo souboru a přepínač \texttt{--json} není přítomen, automaticky vypíná barvy, aby nedocházelo ke znečištění textu ANSI únikovými kódy.
 
 \subsection{Vizuální styl a UX principy}
+label{sec:vizualni_styl}
 Pro zajištění konzistentního a profesionálního vzhledu v terminálu využívá aplikace knihovnu \texttt{Lip Gloss} pro definici stylů a barevné palety. Zvolené barvy nejsou náhodné, ale plní specifickou sémantickou roli:
 
 \begin{itemize}
