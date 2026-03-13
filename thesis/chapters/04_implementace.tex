@@ -193,13 +193,15 @@ Tato odlišnost si vyžádala pečlivé zmapování všech možných kombinací 
         \hline
         \texttt{login} & Provede přihlášení. & \textit{Zamítnuto:} Již přihlášen. & \textit{Zamítnuto:} Již přihlášen. & \textit{Zamítnuto:} Chybí práva. \\
         \hline
+        \texttt{setup} & Provede přihlášení. & Spustí průvodce nastavením. & Dotaz na odpojení, poté průvodce. & \textit{Zamítnuto:} Chybí práva. \\
+        \hline
         \texttt{connect} & \textit{Zamítnuto:} Nutno se přihlásit. & Sestaví VPN spojení. & \textit{Zamítnuto:} Již připojen. & \textit{Zamítnuto:} Chybí práva. \\
         \hline
         \texttt{disconnect} & \textit{Zamítnuto:} Nutno se přihlásit. & \textit{Zamítnuto:} Není připojeno. & Odpojí VPN. & \textit{Zamítnuto} (mimo sudo). \\
         \hline
         \texttt{logout} & \textit{Zamítnuto:} Není přihlášen. & Provede odhlášení. & \textit{Zamítnuto:} Nutno se odpojit. & \textit{Zamítnuto:} Chybí práva. \\
         \hline
-        \texttt{status} & Zobrazí stav a nápovědu. & Zobrazí stav a nápovědu. & Zobrazí detail spojení. & Zobrazí stav relace. \\
+        \texttt{status} & Zobrazí stav a nápovědu. & Zobrazí stav a nápovědu. & Zobrazí detail spojení. & \textit{Zamítnuto:} Chybí práva. \\
         \hline
     \end{tabular}
     \caption{Chování CLI příkazů závislé na stavu aplikace a relace}
