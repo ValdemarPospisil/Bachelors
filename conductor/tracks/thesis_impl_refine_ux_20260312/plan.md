@@ -17,3 +17,6 @@
 - [x] Task: Apply the drafted text and table updates to `thesis/chapters/04_implementace.tex`.
 - [x] Task: Compile the LaTeX document to ensure there are no compilation errors (e.g., using `latexmk` or `pdflatex`).
 - [x] Task: Conductor - User Manual Verification 'Integration into LaTeX' (Protocol in workflow.md)
+
+## Phase: Review Fixes
+- [x] Task: Apply review suggestions f39094d
