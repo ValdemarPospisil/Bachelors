@@ -84,7 +84,7 @@ func (m Model) View() string {
 			s += fmt.Sprintf("%s%s\n", cursor, st.Render(opt))
 		}
 
-		s += "\n" + style.SubtleStyle.Render("[↑/↓] Select • [Enter] Confirm")
+		s += "\n" + style.SubtleStyle.Render("[up/down] Select - [Enter] Confirm")
 
 	case StepDisconnecting:
 		s += m.Spinner.View() + " Disconnecting...\n"
@@ -103,7 +103,7 @@ func (m Model) View() string {
 			s += fmt.Sprintf("%s%s\n", cursor, st.Render(p))
 		}
 
-		s += "\n" + style.SubtleStyle.Render("[↑/↓] Select • [Enter] Confirm")
+		s += "\n" + style.SubtleStyle.Render("[up/down] Select - [Enter] Confirm")
 
 	case StepFetchGateways:
 		s += m.Spinner.View() + " Fetching available gateways...\n"
@@ -129,7 +129,7 @@ func (m Model) View() string {
 
 				s += fmt.Sprintf("%s%s\n", cursor, st.Render(gw.Label()))
 			}
-			s += "\n" + style.SubtleStyle.Render("[↑/↓] Select • [Enter] Confirm")
+			s += "\n" + style.SubtleStyle.Render("[up/down] Select - [Enter] Confirm")
 		}
 
 	case StepPersistent:
@@ -146,7 +146,7 @@ func (m Model) View() string {
 			s += fmt.Sprintf("%s%s\n", cursor, st.Render(opt))
 		}
 
-		s += "\n" + style.SubtleStyle.Render("[↑/↓] Select • [Enter] Confirm")
+		s += "\n" + style.SubtleStyle.Render("[up/down] Select - [Enter] Confirm")
 
 	case StepSaving:
 		s += m.Spinner.View() + " Saving configuration...\n"
@@ -165,7 +165,7 @@ func (m Model) View() string {
 			s += fmt.Sprintf("%s%s\n", cursor, st.Render(opt))
 		}
 
-		s += "\n" + style.SubtleStyle.Render("[↑/↓] Select • [Enter] Confirm")
+		s += "\n" + style.SubtleStyle.Render("[up/down] Select - [Enter] Confirm")
 
 	case StepConnecting:
 		s += m.Spinner.View() + " Connecting...\n"
