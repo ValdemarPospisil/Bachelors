@@ -178,7 +178,7 @@ Důležitým přepínačem (flag) je plná podpora pro strojově čitelné form�
         \label{fig:ux_json_output}
     \end{minipage}
 \end{figure}
-\\subsection{Rozdíly ve správě stavu: GUI vs. CLI}
+\subsection{Rozdíly ve správě stavu: GUI vs. CLI}
 Jedním z nejvýznamnějších architektonických rozdílů mezi grafickým klientem (GUI) a klientem v příkazovém řádku (CLI) je způsob správy stavu a ošetření uživatelských akcí. V GUI aplikaci je běžnou praxí vizuálně omezit akce, které neodpovídají aktuálnímu stavu. Například tlačítko „Připojit“ je deaktivováno nebo skryto, dokud se uživatel úspěšně nepřihlásí. Uživatel tak nemá možnost vyvolat neplatný stav pouhým kliknutím.
 
 Naproti tomu CLI prostředí je ze své podstaty bezstavové z pohledu samotného vstupu. Uživatel může kdykoliv napsat jakýkoliv příkaz nezávisle na aktuálním stavu aplikace na pozadí. Proto je nezbytné, aby CLI klient na každý takový příkaz reagoval předvídatelně a v případě neplatného stavu poskytl jasnou chybovou hlášku s návodem k nápravě. Například, pokusí-li se nepřihlášený uživatel o připojení k VPN (\texttt{ga-cli connect}), aplikace musí požadavek zachytit a korektně odmítnout s výzvou k přihlášení.
