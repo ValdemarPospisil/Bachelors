@@ -35,5 +35,4 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [x] **Track: Refine the third subchapter in implementation chapter (Go Client), adding code examples and screenshots.**
-*Link: [./tracks/thesis_impl_refine_go_20260312/](./tracks/thesis_impl_refine_go_20260312/)*
+---
