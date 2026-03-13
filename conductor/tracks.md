@@ -35,4 +35,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
----
+- [ ] **Track: Refine the final subchapter in implementation chapter (Advanced features and UX), adding screenshots and a state management table.**
+*Link: [./tracks/thesis_impl_refine_ux_20260312/](./tracks/thesis_impl_refine_ux_20260312/)*
