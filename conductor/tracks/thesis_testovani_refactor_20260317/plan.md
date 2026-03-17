@@ -27,8 +27,8 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Refactor Chapter 5' (Protocol in workflow.md) cbb5cf0
 
 ## Phase 3: Final Compilation and Review
-- [~] Task: Verify Thesis Compilation
+- [x] Task: Verify Thesis Compilation 9dea789
     - [ ] Run `pdflatex thesis.tex` or `make` in the `thesis/` directory to ensure no LaTeX errors occur.
     - [ ] Run `biber` to resolve citations, then run `pdflatex` again.
     - [ ] Check that references and citations are correctly resolved.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Final Compilation and Review' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Phase 3: Final Compilation and Review' (Protocol in workflow.md)
