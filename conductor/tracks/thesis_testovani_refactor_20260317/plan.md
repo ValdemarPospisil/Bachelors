@@ -8,16 +8,16 @@
     - [ ] Locate the "Technologie a Nástroje" section, specifically after "Architektura Elm a bubble tea".
     - [ ] Add a new subsection `\subsection{Testovací knihovny}`.
     - [ ] Write content introducing Go `testing` and `testify`, and .NET `xUnit`, including citations to the newly added bibliography entries.
-- [~] Task: Conductor - User Manual Verification 'Phase 1: Bibliography and Chapter 1 Updates' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Bibliography and Chapter 1 Updates' (Protocol in workflow.md) bf6cd96
 
 ## Phase 2: Refactor Chapter 5
-- [ ] Task: Update Section 5.1 (Metodika testování)
+- [x] Task: Update Section 5.1 (Metodika testování) 3253749
     - [ ] Open `thesis/chapters/05_testovani.tex`.
     - [ ] Locate Section 5.1.
     - [ ] Remove book citations for the "Testovací pyramida".
     - [ ] Add a cross-reference to the theory chapter (`01_teorie.tex`) where "Testovací pyramida" is explained.
     - [ ] Add a brief explanation of TDD and reference the XP book.
-- [ ] Task: Update Section 5.2 (Jednotkové testování a mockování)
+- [~] Task: Update Section 5.2 (Jednotkové testování a mockování)
     - [ ] In `thesis/chapters/05_testovani.tex`, locate Section 5.2.
     - [ ] Add a reference to the new "Testovací knihovny" subsection from Chapter 1.
     - [ ] Remove the text stating that unit tests for the .NET backend were not fully implemented.
