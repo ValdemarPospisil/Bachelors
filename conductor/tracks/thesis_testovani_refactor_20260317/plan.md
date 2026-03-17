@@ -17,14 +17,14 @@
     - [ ] Remove book citations for the "Testovací pyramida".
     - [ ] Add a cross-reference to the theory chapter (`01_teorie.tex`) where "Testovací pyramida" is explained.
     - [ ] Add a brief explanation of TDD and reference the XP book.
-- [~] Task: Update Section 5.2 (Jednotkové testování a mockování)
+- [x] Task: Update Section 5.2 (Jednotkové testování a mockování) 561f4a1
     - [ ] In `thesis/chapters/05_testovani.tex`, locate Section 5.2.
     - [ ] Add a reference to the new "Testovací knihovny" subsection from Chapter 1.
     - [ ] Remove the text stating that unit tests for the .NET backend were not fully implemented.
     - [ ] Create a dummy xUnit code file `doc/code/dummy_xunit_test.cs` containing a basic test for `CliStorage`.
     - [ ] Include the dummy snippet in the text using `\lstinputlisting`.
     - [ ] Ensure the tone matches Chapter 4.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Refactor Chapter 5' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Phase 2: Refactor Chapter 5' (Protocol in workflow.md)
 
 ## Phase 3: Final Compilation and Review
 - [ ] Task: Verify Thesis Compilation
