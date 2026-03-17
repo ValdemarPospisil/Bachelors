@@ -35,4 +35,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
+- [ ] **Track: Refactor chapter 5 testing and update chapter 1 with testing libraries (Testify, Go Testing, xUnit).**
+*Link: [./tracks/thesis_testovani_refactor_20260317/](./tracks/thesis_testovani_refactor_20260317/)*
+
 ---
