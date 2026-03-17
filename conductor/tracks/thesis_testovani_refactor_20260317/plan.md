@@ -3,12 +3,12 @@
 ## Phase 1: Bibliography and Chapter 1 Updates
 - [x] Task: Add new bibliography entries 3e2f783
     - [ ] Add `@online` entries for `testify`, `go testing`, and `xUnit` to `thesis/thesis.bib`.
-- [~] Task: Add "Testovací knihovny" section to Chapter 1
+- [x] Task: Add "Testovací knihovny" section to Chapter 1 18be313
     - [ ] Open `thesis/chapters/01_teorie.tex`.
     - [ ] Locate the "Technologie a Nástroje" section, specifically after "Architektura Elm a bubble tea".
     - [ ] Add a new subsection `\subsection{Testovací knihovny}`.
     - [ ] Write content introducing Go `testing` and `testify`, and .NET `xUnit`, including citations to the newly added bibliography entries.
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Bibliography and Chapter 1 Updates' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Phase 1: Bibliography and Chapter 1 Updates' (Protocol in workflow.md)
 
 ## Phase 2: Refactor Chapter 5
 - [ ] Task: Update Section 5.1 (Metodika testování)
