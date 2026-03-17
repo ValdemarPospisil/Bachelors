@@ -31,4 +31,7 @@
     - [ ] Run `pdflatex thesis.tex` or `make` in the `thesis/` directory to ensure no LaTeX errors occur.
     - [ ] Run `biber` to resolve citations, then run `pdflatex` again.
     - [ ] Check that references and citations are correctly resolved.
-- [~] Task: Conductor - User Manual Verification 'Phase 3: Final Compilation and Review' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Final Compilation and Review' (Protocol in workflow.md) dbbc3bc
+
+## Phase: Review Fixes
+- [x] Task: Apply review suggestions 93feb4e
