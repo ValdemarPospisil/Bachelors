@@ -4,14 +4,45 @@
 Ověření funkčnosti a stability aplikace probíhalo v souladu s metodikou Extrémního programování průběžně během vývoje.
 
 \section{Metodika testování}
-% Zde:
-% - Testovací pyramida (Unit -> Integration -> System).
-% - Zmínka o TDD (pokud jsi ho použil alespoň někde).
+\label{sec:metodika_testovani}
 
-\section{Jednotkové testy (Unit Testing)}
-% Zde:
-% - Testování Go kódu (mockování socketu).
-% - Ukázka jednoho testu (např. parsování argumentů).
+V souladu s principy agilního vývoje, zejména metodiky Extrémního programování (XP), bylo testování integrální součástí celého vývojového cyklu, nikoliv až jeho závěrečnou fází. Uplatňován byl přístup TDD (Test-Driven Development), kdy byly pro klíčové logické celky psány testy ještě před samotnou implementací. Tento postup nejenže zajistil vysoké pokrytí kódu, ale zároveň sloužil jako živá specifikace chování jednotlivých komponent \cite{beck_xp}.
+
+Strategie testování byla založena na osvědčeném modelu testovací pyramidy, jak jej definoval Mike Cohn. Cílem bylo maximalizovat počet rychlých a levných jednotkových testů, které poskytují okamžitou zpětnou vazbu, a minimalizovat množství pomalých a křehkých end-to-end testů \cite{cohn_succeeding}.
+
+\begin{itemize}
+    \item \textbf{Jednotkové testy (Unit Tests):} Tvoří základnu pyramidy a ověřují funkčnost izolovaných komponent (funkcí, tříd) bez závislosti na externích systémech, jako je síťová komunikace nebo souborový systém.
+    \item \textbf{Integrační testy (Integration Tests):} Testují spolupráci mezi jednotlivými moduly, například správnost komunikace mezi CLI klientem a systémovou službou přes IPC rozhraní.
+    \item \textbf{End-to-End (E2E) testy:} Manuálně prováděné scénáře simulující kompletní uživatelskou cestu -- od spuštění příkazu v terminálu, přes sestavení VPN tunelu až po ověření síťové konektivity.
+\end{itemize}
+
+\section{Jednotkové testy a mockování}
+\label{sec:unit_testing}
+
+Největší důraz byl kladen na jednotkové testy, které umožňují rychlou a spolehlivou verifikaci aplikační logiky.
+
+\subsection{Testování klienta v Go}
+Pro testování CLI klienta napsaného v jazyce Go byl využit standardní vestavěný balíček \texttt{testing} v kombinaci s populární knihovnou \texttt{testify}, která poskytuje bohatší sadu nástrojů pro aserce (\texttt{assert}) a především pro mockování závislostí (\texttt{mock}).
+
+Klíčovou technikou bylo mockování (vytváření atrap) pro rozhraní meziprocesové komunikace (IPC). Jelikož frontendová aplikace v Go komunikuje se backendovou službou v .NET přes Unix Domain Socket, bylo pro účely testování nezbytné tuto závislost odstranit. Tímto způsobem bylo možné testovat logiku a vzhled textového uživatelského rozhraní (TUI) zcela izolovaně, bez nutnosti mít spuštěnou a nakonfigurovanou systémovou službu.
+
+Byl vytvořen mock klient \texttt{MockClient}, který implementuje stejné rozhraní jako reálný IPC klient. Pomocí knihovny \texttt{testify/mock} bylo možné předdefinovat očekávané chování -- tedy jakou odpověď má mock vrátit, když je zavolána jeho metoda \texttt{Send} s určitými parametry.
+
+\lstinputlisting[language=Go, caption={Ukázka mock klienta pro IPC komunikaci}, label={lst:mock_client}]{../doc/code/mock_client.go}
+
+Tento \texttt{MockClient} byl následně v testovacích scénářích (např. v souboru \texttt{setup\_test.go}) injektován do komponenty TUI namísto reálného klienta. Test tak mohl snadno simulovat různé scénáře, jako je úspěšné přihlášení, chyba spojení nebo příjem dat ze služby, a ověřit, že se uživatelské rozhraní chová dle očekávání.
+
+\subsection{Testování služby v .NET}
+Na straně systémové služby v .NET byly jednotkové testy navrženy s využitím frameworku xUnit. Ačkoliv nebyly plně implementovány v rámci této práce, jejich návrh počítal s testováním jednotlivých tříd v izolaci. Příkladem může být testování třídy \texttt{CliStorage}, která zodpovídá za bezpečné ukládání dat.
+
+Příklad fiktivních testovacích scénářů pro třídu \texttt{CliStorage}:
+\begin{itemize}
+    \item \texttt{SavePreferences\_ShouldStoreCorrectData()}: Test ověří, že po zavolání metody \texttt{SavePreferences} je do souboru zapsán správně naformátovaný a zašifrovaný JSON objekt.
+    \item \texttt{GetRefreshToken\_ShouldThrowOnMissingToken()}: Test zajistí, že pokud se metoda pokusí přečíst neexistující token, je vyhozena očekávaná výjimka.
+    \item \texttt{SetRefreshToken\_ShouldUpdateSession()}: Ověří, že zavolání metody pro nastavení nového obnovovacího tokenu správně aktualizuje data v úložišti.
+\end{itemize}
+
+Tento přístup, založený na striktním oddělení závislostí a jejich mockování, je základním předpokladem pro udržitelný a spolehlivý vývoj komplexních systémových nástrojů.
 
 \section{Integrační a systémové testy}
 % Zde:
