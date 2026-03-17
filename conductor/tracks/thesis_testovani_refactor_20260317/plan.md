@@ -24,10 +24,10 @@
     - [ ] Create a dummy xUnit code file `doc/code/dummy_xunit_test.cs` containing a basic test for `CliStorage`.
     - [ ] Include the dummy snippet in the text using `\lstinputlisting`.
     - [ ] Ensure the tone matches Chapter 4.
-- [~] Task: Conductor - User Manual Verification 'Phase 2: Refactor Chapter 5' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Refactor Chapter 5' (Protocol in workflow.md) cbb5cf0
 
 ## Phase 3: Final Compilation and Review
-- [ ] Task: Verify Thesis Compilation
+- [~] Task: Verify Thesis Compilation
     - [ ] Run `pdflatex thesis.tex` or `make` in the `thesis/` directory to ensure no LaTeX errors occur.
     - [ ] Run `biber` to resolve citations, then run `pdflatex` again.
     - [ ] Check that references and citations are correctly resolved.
