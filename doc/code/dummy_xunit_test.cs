@@ -18,7 +18,7 @@ namespace GoodAccess.CLI.Tests
             storage.SavePreferences(prefs);
 
             // Assert
-            // Ověření, že data byla předána k šifrování a následně uložena
+            // Verify that data was passed to the protection provider and then stored
             mockProtector.Verify(p => p.Protect(It.IsAny<byte[]>()), Times.Once);
         }
     }
