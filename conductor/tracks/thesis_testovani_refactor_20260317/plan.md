@@ -1,9 +1,9 @@
 # Implementation Plan: Refactor Chapter 5 and Update Chapter 1 Testing Tools
 
 ## Phase 1: Bibliography and Chapter 1 Updates
-- [ ] Task: Add new bibliography entries
+- [x] Task: Add new bibliography entries 3e2f783
     - [ ] Add `@online` entries for `testify`, `go testing`, and `xUnit` to `thesis/thesis.bib`.
-- [ ] Task: Add "Testovací knihovny" section to Chapter 1
+- [~] Task: Add "Testovací knihovny" section to Chapter 1
     - [ ] Open `thesis/chapters/01_teorie.tex`.
     - [ ] Locate the "Technologie a Nástroje" section, specifically after "Architektura Elm a bubble tea".
     - [ ] Add a new subsection `\subsection{Testovací knihovny}`.
