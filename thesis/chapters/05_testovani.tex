@@ -28,7 +28,7 @@ Klíčovou technikou bylo mockování (vytváření atrap) pro rozhraní mezipro
 
 Byl vytvořen mock klient \texttt{MockClient}, který implementuje stejné rozhraní jako reálný IPC klient. Pomocí knihovny \texttt{testify/mock} bylo možné předdefinovat očekávané chování -- tedy jakou odpověď má mock vrátit, když je zavolána jeho metoda \texttt{Send} s určitými parametry.
 
-\lstinputlisting[language=Go, caption={Ukázka mock klienta pro IPC komunikaci}, label={lst:mock_client}]{../doc/code/mock_client.go}
+\lstinputlisting[language=C, stringstyle=\itshape, caption={Ukázka mock klienta pro IPC komunikaci}, label={lst:mock_client}]{../doc/code/mock_client.go}
 
 Tento \texttt{MockClient} byl následně v testovacích scénářích (např. v souboru \texttt{setup\_test.go}) injektován do komponenty TUI namísto reálného klienta. Test tak mohl snadno simulovat různé scénáře, jako je úspěšné přihlášení, chyba spojení nebo příjem dat ze služby, a ověřit, že se uživatelské rozhraní chová dle očekávání.
 
@@ -51,7 +51,7 @@ Pro ověření, že se aplikace chová v souladu s očekáváním uživatele, by
 
 Tento přístup zajistil, že vývoj byl neustále v souladu s požadavky a že finální produkt odpovídá zadaným cílům. Příkladem takové specifikace je scénář pro přihlášení uživatele, uvedený v souboru \texttt{login.feature}.
 
-\lstinputlisting[language=Gherkin, caption={Ukázka akceptačního testu pro přihlášení v jazyce Gherkin}, label={lst:login_feature}]{../doc/specs/login.feature}
+\lstinputlisting[language=C, stringstyle=\itshape, caption={Ukázka akceptačního testu pro přihlášení v jazyce Gherkin}, label={lst:login_feature}]{../doc/specs/login.feature}
 
 Každý scénář se skládá z kroků \texttt{Given} (daný stav), \texttt{When} (když nastane akce) a \texttt{Then} (pak se ověří výsledek), které přesně a jednoznačně popisují interakci uživatele se systémem a očekávaný výsledek.
 
