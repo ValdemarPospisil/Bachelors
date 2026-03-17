@@ -204,6 +204,16 @@ V oblasti interaktivních textových rozhraní (TUI) představuje špičku frame
 \end{enumerate}
 Zásadním přínosem tohoto přístupu je determinismus a snadná testovatelnost. Veškeré změny stavu probíhají asynchronně skrze zasílání zpráv, což zabraňuje vzniku \textit{race conditions}. Framework Bubble Tea se stará o efektivní překreslování terminálu (tzv. \textit{diffing}), kdy jsou aktualizovány pouze ty části obrazovky, které se skutečně změnily. To umožňuje vytvářet plynulá a reaktivní rozhraní, která uživateli poskytují okamžitou zpětnou vazbu bez problikávání či zpoždění.
 
+\subsubsection{Testovací knihovny a nástroje}
+\label{sec:testovani_nastroje}
+Pro implementaci automatizovaných testů v různých programovacích jazycích a vrstvách aplikace byly zvoleny následující nástroje:
+
+\begin{itemize}
+    \item \textbf{Go testing:} Standardní knihovna jazyka Go poskytuje základní mechanismy pro psaní, spouštění a orchestraci jednotkových testů bez nutnosti instalace externích závislostí \cite{go_testing}.
+    \item \textbf{Testify:} Tato nadstavba nad standardním Go testováním rozšiřuje jeho možnosti o pokročilé aserce a především o robustní podporu pro mockování (vytváření atrap) závislostí, což je klíčové pro izolované testování komponent \cite{testify}.
+    \item \textbf{xUnit:} Pro ekosystém .NET představuje xUnit moderní a vysoce rozšiřitelný framework pro psaní jednotkových a integračních testů, který klade důraz na čistotu a jednoduchost testovacího kódu \cite{xunit}.
+\end{itemize}
+
 \subsection{Serializace dat a transportní formáty}
 \label{sec:formats_theory}
 Efektivní výměna dat mezi procesy (IPC) vyžaduje volbu vhodného formátu pro serializaci, který balancuje mezi výkonem, čitelností a snadnou údržbou.
