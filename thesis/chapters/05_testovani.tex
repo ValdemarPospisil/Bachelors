@@ -44,12 +44,32 @@ Příklad fiktivních testovacích scénářů pro třídu \texttt{CliStorage}:
 
 Tento přístup, založený na striktním oddělení závislostí a jejich mockování, je základním předpokladem pro udržitelný a spolehlivý vývoj komplexních systémových nástrojů.
 
-\section{Integrační a systémové testy}
-% Zde:
-% - Testování komunikace Client <-> Service.
-% - Ověření, že se VPN skutečně připojí (ping, ip route).
+\section{Akceptační testování}
+\label{sec:acceptance_testing}
 
-\section{Testování na různých distribucích}
-% Zde:
-% - Tabulka kompatibility (Debian, Fedora, Ubuntu).
-% - Zkušenosti z "reálného provozu" (pokud jsi to někomu dal zkusit).
+Pro ověření, že se aplikace chová v souladu s očekáváním uživatele, byla využita metodika BDD (Behavior-Driven Development). Specifikace chování byly psány v jazyce Gherkin, který je snadno čitelný i pro netechnické členy týmu. Tyto specifikace, uložené v souborech s příponou \texttt{.feature}, sloužily jako formální akceptační kritéria, která byla manuálně ověřována před každým vydáním.
+
+Tento přístup zajistil, že vývoj byl neustále v souladu s požadavky a že finální produkt odpovídá zadaným cílům. Příkladem takové specifikace je scénář pro přihlášení uživatele, uvedený v souboru \texttt{login.feature}.
+
+\lstinputlisting[language=Gherkin, caption={Ukázka akceptačního testu pro přihlášení v jazyce Gherkin}, label={lst:login_feature}]{../doc/specs/login.feature}
+
+Každý scénář se skládá z kroků \texttt{Given} (daný stav), \texttt{When} (když nastane akce) a \texttt{Then} (pak se ověří výsledek), které přesně a jednoznačně popisují interakci uživatele se systémem a očekávaný výsledek.
+
+\section{Systémové a integrační testování v prostředí Linux}
+\label{sec:system_integration_testing}
+
+Kromě jednotkových a akceptačních testů bylo klíčové ověřit funkčnost celé aplikace v reálném prostředí. Testování probíhalo na dvou hlavních distribucích Linuxu:
+\begin{itemize}
+    \item \textbf{Fedora} jako primární vývojové prostředí.
+    \item \textbf{Ubuntu (VM)} jako čisté prostředí pro QA (Quality Assurance) a ověření kompatibility.
+\end{itemize}
+
+Cílem systémového testu bylo ověřit celý životní cyklus aplikace z pohledu uživatele:
+\begin{enumerate}
+    \item \textbf{Instalace:} Úspěšná instalace balíčku (\texttt{.rpm} pro Fedoru, \texttt{.deb} pro Ubuntu).
+    \item \textbf{Oprávnění:} Kontrola, že hlavní spustitelný soubor \texttt{ga-cli} má po instalaci správně nastavená oprávnění (očekáváno \texttt{700}), aby se zamezilo neoprávněnému spuštění jinými uživateli.
+    \item \textbf{Připojení:} Spuštění příkazu \texttt{ga-cli connect} a úspěšné navázání VPN spojení.
+    \item \textbf{Validace konektivity:} Po úspěšném připojení bylo provedeno ověření funkčnosti tunelu pomocí příkazu \texttt{ping} na interní firemní zdroj, který není dostupný z veřejného internetu.
+\end{enumerate}
+
+Tento proces manuálního testování na různých distribucích zajistil, že aplikace je nejen funkční, ale i správně nakonfigurovaná a bezpečná pro nasazení v cílovém prostředí.
