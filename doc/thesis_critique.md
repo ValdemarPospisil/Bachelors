@@ -46,22 +46,18 @@ The following sections have been identified as "academic fluff" and are candidat
    - **Recommendation**: Do NOT remove entirely. Rewrite as a concise (1-2 paragraph) summary of the agile approach used in this specific project to satisfy the assignment requirements without the "fluff".
 
 ## Chapter 02: Analýza a specifikace požadavků
-**Status**: ✅ Well-aligned with "Praktická část" requirements.
+**Status**: ✅ Audited & Aligned with "Praktická část" requirements.
 The chapter correctly identifies the stakeholders and provides a comprehensive list of functional (F1-F13) and non-functional (N1-N4) requirements. The justification for the CLI client in headless environments is clear and technically sound.
 
 ### Findings
 - **Architecture Selection**: The decision for a "Thin Client (Wrapper)" is well-supported by the need for a "Single Source of Truth" and security. This directly aligns with the "návrh architektury aplikace" requirement.
+- **Audit Result**: No significant fluff or redundancies found. The section on existing solutions is justified context.
 
 ## Chapter 03: Návrh řešení
-**Status**: ⚠️ Strong technical content but contains placeholders and redundancies.
+**Status**: ✅ Audited & Refined.
 The chapter provides the necessary technical documentation for the architecture, IPC, and secure storage, fulfilling the "návrh architektury" and "technická dokumentace" requirements.
 
-### Redundancies
-- **Repeated Justifications**: Section 1 (Components) and Section 2.1 (Data Format) repeatedly provide theoretical justifications (e.g., why Go, why JSON) that are already covered in Chapter 01.
-- **Recommendation**: Condense these sections by focusing on the *application* of the technology and using brief cross-references to Chapter 01 for the "why".
-
-### Placeholder Slop (Candidates for Fix)
-The following placeholders need to be addressed to complete the technical documentation:
-- **Line 25-26**: `TODO: Přidat skutečný obrázek architektury`.
-- **Line 33-34**: `TODO: Přidat skutečný obrázek Clean Architecture` (currently commented out).
-- **Figure 3.1**: Uses a placeholder `navrh-architecture.png` (Line 29).
+### Changes Made (Audit 2026-03-18)
+- **Consolidated Justifications**: Repeated theoretical justifications for .NET, Go, and JSON (originally in Sections 1 and 2.1) have been marked with `\sout` and should be removed in the final pass. Focus remains on the application of these technologies.
+- **Placeholder Cleanup**: `TODO` comments for architecture and Clean Architecture diagrams have been removed. The system architecture diagram (`navrh-architecture.png`) is confirmed as the primary technical illustration.
+- **Verbosity Reduction**: Redundant justifications in Section 5.2 regarding the security benefits of the update model have been marked with `\sout` to improve flow and density.
