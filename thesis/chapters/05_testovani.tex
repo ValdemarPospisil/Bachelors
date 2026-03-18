@@ -6,9 +6,9 @@ Ověření funkčnosti a stability aplikace probíhalo v souladu s metodikou Ext
 \section{Metodika testování}
 \label{sec:metodika_testovani}
 
-V souladu s principy agilního vývoje, zejména metodiky Extrémního programování (XP), bylo testování integrální součástí celého vývojového cyklu, nikoliv až jeho závěrečnou fází. Uplatňován byl přístup TDD (Test-Driven Development), kdy byly pro klíčové logické celky psány testy ještě před samotnou implementací. \sout{Tento postup nejenže zajistil vysoké pokrytí kódu, ale zároveň sloužil jako živá specifikace chování jednotlivých komponent \cite{beck_xp}. Metodika TDD v XP klade důraz na krátké vývojové cykly, které začínají napsáním selhávajícího testu (fáze \textit{Red}), následuje implementace minimálního množství kódu pro jeho splnění (fáze \textit{Green}) a proces je zakončen refaktoringem kódu při zachování funkčnosti testů. Tento iterativní proces umožňuje udržet vysokou kvalitu kódu, minimalizovat technický dluh a poskytuje vývojáři okamžitou zpětnou vazbu o správnosti řešení.}
+V souladu s principy agilního vývoje, zejména metodiky Extrémního programování (XP), bylo testování integrální součástí celého vývojového cyklu, nikoliv až jeho závěrečnou fází. Uplatňován byl přístup TDD (Test-Driven Development), kdy byly pro klíčové logické celky psány testy ještě před samotnou implementací.
 
-Strategie testování vychází z konceptu testovací pyramidy, který byl detailně popsán v teoretické části práce (viz podkapitola \ref{sec:test_pyramida_teorie}). \sout{Tato hierarchie zajišťuje, že chyby jsou detekovány v co nejranější fázi vývoje, kdy je jejich oprava nejméně nákladná.} V rámci této práce byly realizovány testy na všech úrovních pyramidy, od rychlých jednotkových testů až po komplexní akceptační scénáře.
+Strategie testování vychází z konceptu testovací pyramidy, který byl detailně popsán v teoretické části práce (viz podkapitola \ref{sec:test_pyramida_teorie}). V rámci této práce byly realizovány testy na všech úrovních pyramidy, od rychlých jednotkových testů až po komplexní akceptační scénáře.
 
 \section{Jednotkové testy a mockování}
 \label{sec:unit_testing}
@@ -44,18 +44,14 @@ Další testovací scénáře pro třídu \texttt{CliStorage} zahrnují:
     \item \texttt{SetRefreshToken\_ShouldUpdateSession()}: Ověří, že zavolání metody pro nastavení nového obnovovacího tokenu správně aktualizuje data v úložišti.
 \end{itemize}
 
-\sout{Tento přístup, založený na striktním oddělení závislostí a jejich mockování, je základním předpokladem pro udržitelný a spolehlivý vývoj komplexních systémových nástrojů. Tato implementace navazuje na principy popsané v kapitole \ref{chap:implementace}, kde byla zdůrazněna modularita a bezpečnost.}
-
 \section{Akceptační testování}
 \label{sec:acceptance_testing}
 
 Pro ověření, že se aplikace chová v souladu s očekáváním uživatele, byla využita metodika BDD (Behavior-Driven Development). Specifikace chování byly psány v jazyce Gherkin, který je snadno čitelný i pro netechnické členy týmu. Tyto specifikace, uložené v souborech s příponou \texttt{.feature}, sloužily jako formální akceptační kritéria, která byla manuálně ověřována před každým vydáním.
 
-\sout{Tento přístup zajistil, že vývoj byl neustále v souladu s požadavky a že finální produkt odpovídá zadaným cílům.} Příkladem takové specifikace je scénář pro přihlášení uživatele, uvedený v souboru \texttt{login.feature}.
+Příkladem takové specifikace je scénář pro přihlášení uživatele, uvedený v souboru \texttt{login.feature}.
 
 \lstinputlisting[language=C, stringstyle=\itshape, caption={Ukázka akceptačního testu pro přihlášení v jazyce Gherkin}, label={lst:login_feature}, firstline=1, lastline=18]{../doc/specs/login.feature}
-
-\sout{Jednotlivé scénáře využívají klíčová slova Gherkinu, jejichž sémantika byla popsána v teoretické části práce (viz podkapitola \ref{sec:bdd_teorie}). Tento formát přesně a jednoznačně popisuje interakci uživatele se systémem a očekávaný výsledek.}
 
 \section{Systémové a integrační testování v prostředí Linux}
 \label{sec:system_integration_testing}

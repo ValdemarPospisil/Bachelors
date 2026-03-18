@@ -4,7 +4,7 @@
 V této kapitole je detailně rozebrán samotný proces implementace navrženého řešení. Pozornost je věnována struktuře celého projektu a následně specifickým technickým výzvám spojeným s vývojem klientské aplikace v jazyce Go a úpravám systémové služby na platformě .NET.
 
 \section{Struktura projektu a vývojové prostředí}
-Jelikož se výsledný produkt skládá z několika oddělených, avšak úzce spolupracujících částí, bylo zásadní správně navrhnout strukturu repozitáře. Repozitář je koncipován jako monorepo, které zastřešuje zdrojové kódy pro všechny klientské i systémové komponenty. \sout{Tento přístup výrazně zjednodušuje správu závislostí a zajišťuje konzistentní verzování napříč celým projektem.}
+Jelikož se výsledný produkt skládá z několika oddělených, avšak úzce spolupracujících částí, bylo zásadní správně navrhnout strukturu repozitáře. Repozitář je koncipován jako monorepo, které zastřešuje zdrojové kódy pro všechny klientské i systémové komponenty. Tento přístup výrazně zjednodušuje správu závislostí a zajišťuje konzistentní verzování napříč celým projektem.
 
 Hlavní rozdělení kořenového adresáře odráží oddělení jednotlivých technologických a logických domén:
 
@@ -52,7 +52,7 @@ Byla vytvořena třída \texttt{CliStorage} reprezentující zabezpečené úlo�
 \end{minipage}
 
 \subsection{IPC Server (Unix Domain Sockets)}
-Základním kamenem architektury je nově vytvořený modul \texttt{CLIService}. Tento modul slouží jako most mezi uživatelskými vstupy a jádrem služby. Jak bylo navrženo v kapitole~\ref{sec:navrh_ipc}, komunikace probíhá přes Unix Domain Sockets (UDS)\sout{, což je na platformě Linux standardní a vysoce výkonný způsob výměny dat mezi lokálními procesy}. Služba vytvoří pojmenovanou rouru (named pipe), na které asynchronně naslouchá příchozím spojením od klienta. Požadavky jsou zasílány a vraceny ve formátu JSON, což usnadňuje deserializaci dat na obou stranách.
+Základním kamenem architektury je nově vytvořený modul \texttt{CLIService}. Tento modul slouží jako most mezi uživatelskými vstupy a jádrem služby. Jak bylo navrženo v kapitole~\ref{sec:navrh_ipc}, komunikace probíhá přes Unix Domain Sockets (UDS), což je na platformě Linux standardní a vysoce výkonný způsob výměny dat mezi lokálními procesy. Služba vytvoří pojmenovanou rouru (named pipe), na které asynchronně naslouchá příchozím spojením od klienta. Požadavky jsou zasílány a vraceny ve formátu JSON, což usnadňuje deserializaci dat na obou stranách.
 
 \noindent\begin{minipage}{\linewidth}
 \lstinputlisting[language=C, stringstyle=\itshape, firstline=36, lastline=42]{../doc/code/SenderReader.cs}
@@ -72,7 +72,7 @@ Za samotné odbavování příchozích zpráv zodpovídá komponenta \texttt{Cli
 \lstinputlisting[language=C, stringstyle=\itshape, firstline=194, lastline=204]{../doc/code/CliMessenger.cs}
 \end{minipage}
 
-V raných fázích vývoje, kdy ještě nebyla zcela implementována veškerá produkční logika a klientská aplikace se teprve formovala, vracela metoda \texttt{CliMessenger} provizorní, pevně definované hodnoty (tzv. hardcoded data). \sout{Tento přístup umožnil paralelní vývoj -- uživatelské rozhraní se mohlo designovat a testovat proti konzistentnímu API bez čekání na dokončení komplexní aplikační logiky.} Postupem času byly tyto provizorní odpovědi nahrazovány reálným napojením na síťové a autentizační subsystémy.
+V raných fázích vývoje, kdy ještě nebyla zcela implementována veškerá produkční logika a klientská aplikace se teprve formovala, vracela metoda \texttt{CliMessenger} provizorní, pevně definované hodnoty (tzv. hardcoded data). Tento přístup umožnil paralelní vývoj -- uživatelské rozhraní se mohlo designovat a testovat proti konzistentnímu API bez čekání na dokončení komplexní aplikační logiky. Postupem času byly tyto provizorní odpovědi nahrazovány reálným napojením na síťové a autentizační subsystémy.
 
 \subsection{Životní cyklus a integrace se systemd}
 Pro zajištění běhu služby na pozadí a správnou instalaci na Linuxu byl využit modul \texttt{Microsoft.\allowbreak Extensions.\allowbreak Hosting.\allowbreak Systemd}. Díky tomuto modulu se celá aplikace může chovat jako nativní \texttt{systemd} služba. Definice \texttt{goodaccess-cli.service} zajižduje automatické spuštění po startu systému a \textit{graceful shutdown} proces pro bezpečné odpojení VPN před vypnutím. Následující ukázka kódu z konfigurační třídy \texttt{Program.cs} demonstruje inicializaci hostitele, kde metoda \texttt{UseSystemd()} registruje životní cyklus služby a zároveň probíhá konfigurace \texttt{DataProtection} API z předchozí podkapitoly a registrace hlavní pracovní třídy \texttt{Worker}, která obstarává chod aplikace v pozadí.
@@ -82,10 +82,11 @@ Pro zajištění běhu služby na pozadí a správnou instalaci na Linuxu byl vy
 \end{minipage}
 
 \section{Implementace klientské aplikace (Go)}
-Na straně klienta bylo zvoleno využití jazyka Go\sout{, a to především pro jeho vynikající vlastnosti při vývoji CLI aplikací a schopnost kompilace do jediné statické binární formy nezávislé na externích knihovnách na koncovém systému}.
+Na straně klienta bylo zvoleno využití jazyka Go, a to především pro jeho vynikající vlastnosti při vývoji CLI aplikací a schopnost kompilace do jediné statické binární formy nezávislé na externích knihovnách na koncovém systému.
 
 \subsection{Parsování příkazů (Cobra)}
-Základní aplikační kostra byla postavena na populárním frameworku Cobra. \sout{Tento nástroj umožňuje velmi snadno deklarovat stromovou strukturu příkazů, definovat argumenty (tzv. flags) a automaticky generovat nápovědu pro uživatele.} Stromová struktura návrhu byla prezentována již v kapitole~\ref{sec:technologie} (Obrázek~\ref{fig:command_tree}). Hlavní příkaz \texttt{ga-cli} byl inicializován jako kořenový uzel (Root Command), ke kterému byly postupně přidávány dílčí příkazy odpovídající požadovaným akcím (login, setup, connect a další). Architektura frameworku Cobra navíc vybízí k přehlednému uspořádání kódu, kdy má každý příkaz svůj vlastní soubor v adresáři \texttt{cmd/}.
+Základní aplikační kostra byla postavena na populárním frameworku Cobra. Tento nástroj umožňuje velmi snadno deklarovat stromovou strukturu příkazů, definovat argumenty (tzv. flags) a automaticky generovat nápovědu pro uživatele.
+ Stromová struktura návrhu byla prezentována již v kapitole~\ref{sec:technologie} (Obrázek~\ref{fig:command_tree}). Hlavní příkaz \texttt{ga-cli} byl inicializován jako kořenový uzel (Root Command), ke kterému byly postupně přidávány dílčí příkazy odpovídající požadovaným akcím (login, setup, connect a další). Architektura frameworku Cobra navíc vybízí k přehlednému uspořádání kódu, kdy má každý příkaz svůj vlastní soubor v adresáři \texttt{cmd/}.
 
 Následující ukázka kódu ze souboru \texttt{connect.go} ilustruje typickou definici příkazu v Cobra frameworku. Vlastnost \texttt{Use} definuje, jak se příkaz volá z terminálu. \texttt{Short} a \texttt{Long} poskytují texty pro automaticky generovanou nápovědu (Obrázek~\ref{fig:ga_cli_help}). Samotná výkonná logika je pak svěřena funkci pod klíčem \texttt{RunE}, která v tomto případě inicializuje IPC klienta a odesílá požadavek na připojení.
 
