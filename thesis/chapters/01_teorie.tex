@@ -269,17 +269,18 @@ Pyramida se skládá ze tří hlavních úrovní:
     \item \textbf{End-to-End testy (E2E):} Vrchol pyramidy. Simulují reálné chování uživatele a testují systém jako celek od vstupu v CLI až po vytvoření VPN tunelu v jádře. Jsou nejpomalejší a nejvíce náchylné k chybám v konfiguraci prostředí (tzv. flakiness).
 \end{itemize}
 
-\subsection{\sout{Behavior-Driven Development (BDD) a Gherkin}}
-\sout{Vývoj řízený chováním (BDD – Behavior-Driven Development) je metodika, která rozšiřuje principy TDD o zaměření na uživatelský pohled a čitelnost scénářů pro netechnické členy týmu }\cite{bubble_tea_intro}\sout{. Specifikace jsou psány v přirozeném jazyce pomocí syntaxe \textbf{Gherkin}.}
+\subsection{Behavior-Driven Development (BDD) a Gherkin}
+\label{sec:bdd_teorie}
+Vývoj řízený chováním (BDD – Behavior-Driven Development) je metodika, která rozšiřuje principy TDD o zaměření na uživatelský pohled a čitelnost scénářů pro netechnické členy týmu \cite{bubble_tea_intro}. Specifikace jsou psány v přirozeném jazyce pomocí syntaxe \textbf{Gherkin}.
 
-\sout{Scénáře v Gherkinu využívají klíčová slova:}
+Scénáře v Gherkinu využívají klíčová slova:
 \begin{itemize}
-    \item \sout{\textbf{Given (Za předpokladu):} Definice výchozího stavu systému.}
-    \item \sout{\textbf{When (Když):} Akce, kterou uživatel nebo systém provede.}
-    \item \sout{\textbf{Then (Pak):} Očekávaný výsledek operace.}
+    \item \textbf{Given (Za předpokladu):} Definice výchozího stavu systému.
+    \item \textbf{When (Když):} Akce, kterou uživatel nebo systém provede.
+    \item \textbf{Then (Pak):} Očekávaný výsledek operace.
 \end{itemize}
 
-\sout{Tento přístup umožňuje vytvořit tzv. „živou dokumentaci“, která je zároveň spustitelným testem. V rámci moderního inženýrství jsou Gherkin scénáře často využity pro precizní definici požadavků na rozhraní a chování systému, což zajišťuje, že implementace přesně odpovídá navržené specifikaci.}
+Tento přístup umožňuje vytvořit tzv. „živou dokumentaci“, která je zároveň spustitelným testem. V rámci moderního inženýrství jsou Gherkin scénáře často využity pro precizní definici požadavků na rozhraní a chování systému, což zajišťuje, že implementace přesně odpovídá navržené specifikaci. Praktické využití této metodiky pro definici akceptačních kritérií je detailně rozebráno v kapitole \ref{chap:testovani}.
 
 \section{Distribuce softwaru a balíčkovací systémy}
 \label{sec:distribuce}
