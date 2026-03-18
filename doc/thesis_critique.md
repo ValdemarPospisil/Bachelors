@@ -74,9 +74,29 @@ Chapter 04 provides a comprehensive technical breakdown of the implementation, a
 - **State Management**: Section 4.5 (GUI vs CLI state) is a high-quality technical contribution that addresses the fundamental differences in user interaction models.
 
 ### Changes Made (Audit 2026-03-18)
-- **Redundancy Reduction**: Marked redundant "why we used X" sentences with `\sout` in Sections 1 (Monorepo), 2.2 (UDS), 2.3 (Parallel dev), 3 (Go advantages), and 3.1 (Cobra features). These justifications were either obvious or already covered in earlier chapters.
+- **Gap Fill**: Added Section 4.6 "Distribuce a automatizace aktualizací" to address the mandatory requirement for distribution packages and update systems. Documented the `nfpm` workflow and the `UpdateAvailable` detection logic.
+- **Redundancy Reduction**: Marked redundant "why we used X" sentences with `\sout` in Sections 1 (Monorepo), 2.2 (UDS), 2.3 (Parallel dev), 3 (Go advantages), and 3.1 (Cobra features).
 - **Technical Focus**: Streamlined the explanation of the development process to focus on the *how* rather than the *why*, particularly in the IPC and systemd integration sections.
 
 ### Recommendations
 - **Preservation**: Section 4.5 (GUI vs CLI state) and Section 4.2 (Multi-user isolation) should be preserved in full as they represent the most significant original technical insights in this chapter.
 - **Verification**: Ensure all `lstinputlisting` references point to valid code files in the final build to prevent LaTeX compilation errors.
+
+## Chapter 05: Testování a validace
+**Status**: ✅ Audited & Refined.
+The chapter correctly identifies the testing methodologies (TDD, BDD) and levels (Unit, System) required by the assignment.
+
+### Changes Made (Audit 2026-03-18)
+- **Fluff Removal**: Redundant theoretical descriptions of the XP development cycle and TDD mechanics in Section 5.1 have been marked with `\sout`. 
+- **Verbiage Pruning**: Marked several non-essential filler sentences in Sections 5.2.2 (mocking justification) and 5.3 (Gherkin/BDD context) with `\sout` to improve density.
+- **Section 5.4 Streamlining**: Section 5.4 (System Testing) was streamlined to focus on the technical results and key verification steps (installation, connectivity) rather than the organizational process.
+- **Requirement Verification**: Confirmed that the "automatizované testy" requirement is met via unit tests for auth and secure storage, and handled via logic tests for connection status (as seen in `status_test.go`).
+
+## Chapter 06: Závěr
+**Status**: ✅ Completed.
+The conclusion has been transformed from a skeleton into a comprehensive summary that explicitly addresses all points from the assignment (`zadání.txt`).
+
+### Findings
+- **Alignment**: The "Shrnutí výsledků" section now maps directly to the mandatory deliverables (auth, VPN, secure storage, distribution, testing).
+- **Impact**: The "Diskuse a přínos" section correctly highlights the value of the CLI for headless and automated environments (CI/CD).
+- **Future Work**: Provides realistic paths for development (Split Tunneling, notifications) without being overly speculative.

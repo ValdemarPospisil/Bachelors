@@ -1,19 +1,37 @@
 \addchap{Závěr}
 \label{chap:zaver}
 
-Cílem této bakalářské práce byl návrh a implementace nativního CLI klienta GoodAccess pro OS Linux.
+Cílem této bakalářské práce byl návrh a implementace funkčního prototypu nativního CLI klienta GoodAccess pro OS Linux. Práce provází celým inženýrským procesem od analýzy a návrhu až po realizaci a distribuci.
 
 \section*{Shrnutí výsledků}
-% Zde:
-% - Stručně: Povedlo se to. Máme klienta, umí WireGuard, je bezpečný.
-% - Porovnání se zadáním (všechny body splněny).
+
+V rámci práce byly splněny všechny cíle stanovené v zadání. Podařilo se navrhnout a implementovat architekturu založenou na striktním oddělení tenkého klienta v jazyce Go a systémové služby na platformě .NET Core, což zajišťuje vysokou úroveň bezpečnosti a modularity systému. 
+
+Klíčové výstupy práce zahrnují:
+\begin{itemize}
+    \item Implementaci autentizačního mechanismu integrovaného s centrálním API.
+    \item Realizaci správy VPN připojení s využitím moderního protokolu WireGuard i osvědčeného OpenVPN.
+    \item Návrh a implementaci zabezpečeného systémového úložiště (\textit{Secure Storage}) pro citlivá data.
+    \item Vytvoření automatizovaného testovacího rámce pokrývajícího kritické funkce systému.
+    \item Přípravu a otestování distribučních balíčků pro majoritní linuxové rodiny (Debian, Red Hat).
+\end{itemize}
+
+Výsledná aplikace \texttt{ga-cli} poskytuje plnohodnotnou alternativu ke stávajícímu grafickému klientovi a otevírá nové možnosti využití produktu GoodAccess v prostředích, kde je kladen důraz na automatizaci a skriptování.
 
 \section*{Diskuse a přínos}
-% Zde:
-% - V čem je toto řešení lepší než to, co tam bylo (nebo nebylo) předtím.
-% - Jak to pomůže adminům (automatizace).
+
+Přínos práce spočívá především v zaplnění kritického místa v produktové nabídce společnosti GoodAccess na platformě Linux. Zatímco grafické rozhraní je vhodné pro běžné koncové uživatele, administrátoři a DevOps inženýři vyžadovali nástroj, který lze snadno integrovat do stávajících pracovních postupů a CI/CD řetězců.
+
+Díky zvolené architektuře, která využívá Unix Domain Sockets pro meziprocesovou komunikaci, je systém připraven na budoucí rozšiřování bez nutnosti zásadních zásahů do jádra aplikace. Implementace podpory pro strojově čitelný formát JSON (\texttt{--json}) navíc výrazně zjednodušuje automatizaci správy síťové infrastruktury.
 
 \section*{Možnosti budoucího rozvoje}
-% Zde:
-% - Co se nestihlo nebo nebylo v zadání.
-% - Např. podpora pro Split Tunneling v TUI, notifikace na desktopu, podpora dalších dister (Arch).
+
+Ačkoliv prototyp splňuje všechna zadaná kritéria, existuje prostor pro další vylepšení. Mezi hlavní směry rozvoje patří:
+\begin{itemize}
+    \item Rozšíření podpory pro pokročilé síťové funkce, jako je \textit{Split Tunneling} přímo v uživatelském rozhraní klienta.
+    \item Integrace systémových notifikací na desktopu pro informování uživatele o stavu spojení v reálném čase.
+    \item Podpora dalších linuxových distribucí a alternativních správců balíčků.
+    \item Implementace pokročilé diagnostiky sítě přímo v rámci příkazu \texttt{status}.
+\end{itemize}
+
+Vytvořený prototyp tak představuje stabilní základ, na kterém může společnost GoodAccess dále stavět při rozvoji své síťové infrastruktury pro moderní linuxová prostředí.
