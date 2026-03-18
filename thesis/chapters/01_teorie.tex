@@ -11,8 +11,8 @@ Rozhraní příkazové řádky (CLI – Command Line Interface) představuje jed
 \subsubsection{Efektivita a automatizace}
 Hlavním důvodem preference příkazové řádky v profesionálním prostředí je efektivita, rychlost a snadná automatizace. Zatímco grafické rozhraní je navrženo pro intuitivní objevování funkcí pomocí vizuálních prvků, CLI se zaměřuje na precizní a opakovatelné provádění úkolů. Administrátor může pomocí jediného příkazu nebo krátkého skriptu provést operaci na stovkách serverů současně, což je v rámci GUI prakticky neproveditelné \cite{raymond_unix}.
 
-\subsubsection{Vzdálená správa a cloud}
-Dalším kritickým faktorem je vzdálená správa. Protokol SSH (Secure Shell), který je de facto standardem pro správu linuxových serverů, je primárně textově orientovaný. Přenos textových příkazů a jejich výstupů vyžaduje minimální síťovou propustnost, což umožňuje spolehlivou správu systémů i přes nestabilní nebo pomalé připojení \cite{ward_linux}. V prostředí cloudu a kontejnerizace (např. Docker, Kubernetes), kde systémy často nemají žádné grafické výstupní zařízení (headless režim), je CLI jedinou možností interakce.
+\subsubsection{\sout{Vzdálená správa a cloud}}
+\sout{Dalším kritickým faktorem je vzdálená správa. Protokol SSH (Secure Shell), který je de facto standardem pro správu linuxových serverů, je primárně textově orientovaný. Přenos textových příkazů a jejich výstupů vyžaduje minimální síťovou propustnost, což umožňuje spolehlivou správu systémů i přes nestabilní nebo pomalé připojení \cite{ward_linux}. V prostředí cloudu a kontejnerizace (např. Docker, Kubernetes), kde systémy často nemají žádné grafické výstupní zařízení (headless režim), je CLI jedinou možností interakce.}
 
 \subsection{Principy návrhu a standardy CLI aplikací}
 Kvalitní CLI aplikace se řídí souborem ustálených principů, které zajišťují jejich předvídatelnost a vzájemnou spolupráci. Eric S. Raymond ve své knize \textit{The Art of Unix Programming} definuje tzv. „Unixovou filosofii“, jejímž základem je tvorba malých, jednoúčelových nástrojů, které spolu efektivně komunikují \cite{raymond_unix}. Tento přístup umožňuje skládat komplexní operace z jednoduchých komponent pomocí mechanismu rour (pipes).
@@ -30,32 +30,32 @@ Základním stavebním kamenem interakce v CLI jsou standardní datové proudy, 
 Důležitou roli hraje také syntaxe příkazů. Moderní nástroje se snaží dodržovat standardy jako POSIX nebo GNU konvence pro argumenty a přepínače (flags). Krátké přepínače (např. \texttt{-v}) jsou určeny pro rychlé psaní, zatímco dlouhé varianty (např. \texttt{--verbose}) zvyšují čitelnost skriptů a dokumentace \cite{raymond_unix}.
 
 \subsubsection{Syntaxe a standardy}
-\subsection{CLI versus TUI}
-V rámci terminálu se můžeme setkat také s textovým uživatelským rozhraním (TUI – Text User Interface). Na rozdíl od klasického CLI, které vypisuje řádky textu v sekvenčním pořadí, TUI využívá celou plochu terminálu k vykreslování vizuálních prvků, jako jsou okna, menu, tabulky nebo interaktivní grafy, často s využitím knihoven jako \texttt{ncurses} nebo moderních frameworků v jazyce Go (např. \texttt{Bubble Tea} \cite{bubble_tea_intro}).
+\subsection{\sout{CLI versus TUI}}
+\sout{V rámci terminálu se můžeme setkat také s textovým uživatelským rozhraním (TUI – Text User Interface). Na rozdíl od klasického CLI, které vypisuje řádky textu v sekvenčním pořadí, TUI využívá celou plochu terminálu k vykreslování vizuálních prvků, jako jsou okna, menu, tabulky nebo interaktivní grafy, často s využitím knihoven jako \texttt{ncurses} nebo moderních frameworků v jazyce Go (např. \texttt{Bubble Tea} \cite{bubble_tea_intro}).}
 
-Hlavní rozdíl spočívá v komplexitě a způsobu interakce. CLI je ideální pro jednorázové příkazy a automatizaci v nekonečném proudu (batch processing). TUI je naproti tomu vhodnější pro interaktivní nástroje, kde uživatel potřebuje neustálý přehled o stavu systému nebo kde je navigace v datech pomocí klávesových zkratek efektivnější než vypisování parametrů (např. textové editory, správci souborů nebo dashboardy pro monitoring).
+\sout{Hlavní rozdíl spočívá v komplexitě a způsobu interakce. CLI je ideální pro jednorázové příkazy a automatizaci v nekonečném proudu (batch processing). TUI je naproti tomu vhodnější pro interaktivní nástroje, kde uživatel potřebuje neustálý přehled o stavu systému nebo kde je navigace v datech pomocí klávesových zkratek efektivnější než vypisování parametrů (např. textové editory, správci souborů nebo dashboardy pro monitoring).}
 
 \section{Architektura VPN a principy Zero Trust}
 \label{sec:vpn_zero_trust}
 Tradiční pojetí zabezpečení sítě, založené na ochraně perimetru, prochází v posledních letech zásadní transformací. Tato sekce popisuje evoluci od klasických VPN tunelů k moderní architektuře Zero Trust Network Access (ZTNA). Tento vývoj je v současnosti silně ovlivněn nejen technologickým pokrokem, ale i legislativními rámci, jako je evropská směrnice NIS2, která klade zvýšený důraz na odolnost kritické infrastruktury a doporučuje principy Zero Trust jako součást moderní strategie kybernetické bezpečnosti \cite{goodaccess_ztna_explained}.
 
 \subsection{Tradiční VPN a perimetrová bezpečnost}
-\subsubsection{Tunelování a enkapsulace}
-Virtuální privátní síť (VPN) je technologie, která umožňuje vytvořit bezpečné, šifrované spojení (tunel) mezi dvěma body v rámci nezabezpečené sítě, jako je internet. Princip tunelování spočívá v zapouzdření (enkapsulaci) síťových paketů do jiného protokolu, který zajišťuje integritu a důvěrnost přenášených dat \cite{wireguard_paper}.
-\subsubsection{Model hrad a příkop}
-Historicky se organizace spoléhaly na model „hrad a příkop“ (Castle-and-Moat). V tomto modelu je vnitřní síť považována za důvěryhodnou zónu, která je od vnějšího světa oddělena firewallem (příkopem) \cite{cloudflare_castle_moat}. VPN v tomto kontextu slouží jako „padací most“, který umožňuje vzdáleným uživatelům vstoupit do vnitřní sítě. Jakmile však uživatel získá přístup, má často široký dosah k mnoha zdrojům v rámci sítě. Tento přístup trpí kritickou slabinou: pokud útočník kompromituje jediné zařízení uvnitř perimetru, může se v síti volně pohybovat (laterální pohyb) a napadat další systémy, protože vnitřní síť mu implicitně důvěřuje \cite{nist_800_207}.
+\subsubsection{\sout{Tunelování a enkapsulace}}
+\sout{Virtuální privátní síť (VPN) je technologie, která umožňuje vytvořit bezpečné, šifrované spojení (tunel) mezi dvěma body v rámci nezabezpečené sítě, jako je internet. Princip tunelování spočívá v zapouzdření (enkapsulaci) síťových paketů do jiného protokolu, který zajišťuje integritu a důvěrnost přenášených dat \cite{wireguard_paper}.}
+\subsubsection{\sout{Model hrad a příkop}}
+\sout{Historicky se organizace spoléhaly na model „hrad a příkop“ (Castle-and-Moat). V tomto modelu je vnitřní síť považována za důvěryhodnou zónu, která je od vnějšího světa oddělena firewallem (příkopem) \cite{cloudflare_castle_moat}. VPN v tomto kontextu slouží jako „padací most“, který umožňuje vzdáleným uživatelům vstoupit do vnitřní sítě. Jakmile však uživatel získá přístup, má často široký dosah k mnoha zdrojům v rámci sítě. Tento přístup trpí kritickou slabinou: pokud útočník kompromituje jediné zařízení uvnitř perimetru, může se v síti volně pohybovat (laterální pohyb) a napadat další systémy, protože vnitřní síť mu implicitně důvěřuje} \cite{nist_800_207}\sout{.}
 
-\begin{figure}[H]
+\sout{\begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{images/castle-and-moat.png}
     \caption{Vizualizace modelu Castle-and-Moat \cite{cloudflare_castle_moat}}
     \label{fig:castle_moat}
-\end{figure}
+\end{figure}}
 
 \subsubsection{Koncept Zero Trust}
 Filozofie Zero Trust (nulová důvěra) model „hrad a příkop“ opouští a vychází z principu „nikdy nedůvěřuj, vždy prověřuj“ (Never trust, always verify). Samotný koncept není nový; termín „Zero Trust“ zpopularizoval již v roce 2010 John Kindervag (v té době analytik společnosti Forrester Research), který prosazoval myšlenku, že bezpečnost musí být nedílnou součástí architektury sítě, nikoliv pouze jejím vnějším obalem \cite{goodaccess_ztna_explained}. V konceptu Zero Trust není důvěra nikdy udělena automaticky na základě fyzického umístění uživatele nebo jeho IP adresy. Každý pokus o přístup k jakémukoliv zdroji musí být individuálně autentizován, autorizován a šifrován \cite{goodaccess_ztna_explained}.
 
-\begin{table}[!htbp]
+\sout{\begin{table}[!htbp]
     \centering
     \caption{Srovnání modelů Castle-and-Moat a Zero Trust \cite{cloudflare_zero_trust}}
     \label{tab:castle_zero}
@@ -70,7 +70,7 @@ Filozofie Zero Trust (nulová důvěra) model „hrad a příkop“ opouští a 
         Škálovatelnost & Omezená hardwarem & Vysoká (cloud-native) \\ \hline
         Viditelnost & Omezená (logy na bráně) & Detailní (každá relace) \\ \hline
     \end{tabular}
-\end{table}
+\end{table}}
 
 \subsection{Zero Trust Network Access (ZTNA) a GoodAccess}
 
@@ -171,8 +171,8 @@ Platforma .NET 8 (dříve .NET Core) představuje moderní, multiplatformní vý
 \subsubsection{Generic Host a životní cyklus služeb}
 Základním architektonickým prvkem pro běh aplikací na pozadí je tzv. \textbf{Generic Host}. Tento vzor poskytuje standardizované rozhraní pro správu životního cyklu aplikace, konfiguraci, logování a delegování úloh skrze mechanismus \textit{Dependency Injection} (DI) \cite{microsoft_generic_host}. Generic Host sjednocuje způsob, jakým jsou spravovány různé typy služeb, od webových serverů až po jednoduché úlohy běžící na pozadí. V kontextu systémových služeb umožňuje precizní řízení procesu ukončení (\textit{graceful shutdown}), kdy aplikace při přijetí signálu k ukončení (např. SIGTERM) korektně uvolní prostředky a ukončí běžící operace, čímž předchází nekonzistenci dat.
 
-\subsubsection{Integrace se systémem systemd}
-Pro hlubší integraci s linuxovým inicializačním systémem \texttt{systemd} poskytuje platforma specializovaný modul \texttt{Microsoft.Extensions.Hosting.Systemd} \cite{microsoft_generic_host}. Tato komponenta umožňuje .NET aplikaci nativně komunikovat s inicializačním systémem \texttt{systemd}. Díky této integraci může služba odesílat stavová hlášení (např. o úspěšném spuštění) přímo do \texttt{systemd} a využívat pokročilé funkce správy služeb, jako je automatické obnovení po havárii nebo logování skrze systémový žurnál (\texttt{journald}).
+\subsubsection{\sout{Integrace se systémem systemd}}
+\sout{Pro hlubší integraci s linuxovým inicializačním systémem \texttt{systemd} poskytuje platforma specializovaný modul \texttt{Microsoft.Extensions.Hosting.Systemd} \cite{microsoft_generic_host}. Tato komponenta umožňuje .NET aplikaci nativně komunikovat s inicializačním systémem \texttt{systemd}. Díky této integraci může služba odesílat stavová hlášení (např. o úspěšném spuštění) přímo do \texttt{systemd} a využívat pokročilé funkce správy služeb, jako je automatické obnovení po havárii nebo logování skrze systémový žurnál (\texttt{journald}).}
 
 \subsubsection{ASP.NET Core Data Protection}
 Kritickou součástí moderních systémů je ochrana citlivých dat, kterou v ekosystému .NET zajišťuje stack \textbf{ASP.NET Core Data Protection} \cite{microsoft_data_protection}. Tento mechanismus je navržen k šifrování dat „v klidu“ (encryption at rest) a k bezpečné správě kryptografických klíčů. Architektura stacku je založena na hierarchickém systému klíčů, kde je každý datový prvek šifrován unikátním klíčem odvozeným z hlavního klíče (master key).
@@ -194,15 +194,15 @@ Hlavní předností Go v oblasti systémových nástrojů je jeho schopnost stat
 \subsubsection{Framework Cobra}
 Pro tvorbu rozhraní příkazové řádky (CLI) se v ekosystému Go prosadil framework \textbf{Cobra} \cite{cobra_philosophy}. Ten definuje standardizované strukturu pro definici příkazů, podřízených příkazů a jejich parametrů (včetně rozlišení mezi globálními a lokálními přepínači). Cobra je de facto standardem, na kterém staví nástroje jako Docker či Kubernetes. Framework automatizuje generování nápovědy, validaci argumentů a poskytuje rozhraní pro generování manuálových stránek nebo skriptů pro automatické doplňování v shellu, čímž zajišťuje konzistentní uživatelský zážitek.
 
-\subsubsection{Architektura Elm a framework Bubble Tea}
+\subsubsection{\sout{Architektura Elm a framework Bubble Tea}}
 \label{sec:elm_bubbletea}
-V oblasti interaktivních textových rozhraní (TUI) představuje špičku framework \textbf{Bubble Tea} \cite{bubble_tea_intro}. Ten je unikátní tím, že do terminálového prostředí přináší principy funkcionálního programování skrze vzor \textbf{The Elm Architecture} \cite{bubble_tea_elm}. Tato architektura definuje tři základní komponenty:
+\sout{V oblasti interaktivních textových rozhraní (TUI) představuje špičku framework \textbf{Bubble Tea} \cite{bubble_tea_intro}. Ten je unikátní tím, že do terminálového prostředí přináší principy funkcionálního programování skrze vzor \textbf{The Elm Architecture} \cite{bubble_tea_elm}. Tato architektura definuje tři základní komponenty:}
 \begin{enumerate}
-    \item \textbf{Model:} Datová struktura reprezentující aktuální stav aplikace.
-    \item \textbf{Update:} Čistá funkce, která přijímá zprávu (\textit{Message}) a aktuální model a vrací model nový společně s případnými příkazy (\textit{Commands}).
-    \item \textbf{View:} Funkce, která na základě modelu vygeneruje textovou reprezentaci rozhraní pro terminál.
+    \item \sout{\textbf{Model:} Datová struktura reprezentující aktuální stav aplikace.}
+    \item \sout{\textbf{Update:} Čistá funkce, která přijímá zprávu (\textit{Message}) a aktuální model a vrací model nový společně s případnými příkazy (\textit{Commands}).}
+    \item \sout{\textbf{View:} Funkce, která na základě modelu vygeneruje textovou reprezentaci rozhraní pro terminál.}
 \end{enumerate}
-Zásadním přínosem tohoto přístupu je determinismus a snadná testovatelnost. Veškeré změny stavu probíhají asynchronně skrze zasílání zpráv, což zabraňuje vzniku \textit{race conditions}. Framework Bubble Tea se stará o efektivní překreslování terminálu (tzv. \textit{diffing}), kdy jsou aktualizovány pouze ty části obrazovky, které se skutečně změnily. To umožňuje vytvářet plynulá a reaktivní rozhraní, která uživateli poskytují okamžitou zpětnou vazbu bez problikávání či zpoždění.
+\sout{Zásadním přínosem tohoto přístupu je determinismus a snadná testovatelnost. Veškeré změny stavu probíhají asynchronně skrze zasílání zpráv, což zabraňuje vzniku \textit{race conditions}. Framework Bubble Tea se stará o efektivní překreslování terminálu (tzv. \textit{diffing}), kdy jsou aktualizovány pouze ty části obrazovky, které se skutečně změnily. To umožňuje vytvářet plynulá a reaktivní rozhraní, která uživateli poskytují okamžitou zpětnou vazbu bez problikávání či zpoždění.}
 
 \subsubsection{Testovací knihovny a nástroje}
 \label{sec:testovani_nastroje}
@@ -218,16 +218,16 @@ Pro implementaci automatizovaných testů v různých programovacích jazycích 
 \label{sec:formats_theory}
 Efektivní výměna dat mezi procesy (IPC) vyžaduje volbu vhodného formátu pro serializaci, který balancuje mezi výkonem, čitelností a snadnou údržbou.
 
-\subsubsection{Formát JSON}
-\textbf{JSON} (JavaScript Object Notation) je široce rozšířený, textově orientovaný formát \cite{rfc_json}. Jeho hlavní výhodou je transparentnost – přenášená data lze snadno monitorovat a analyzovat běžnými systémovými nástroji. JSON nevyžaduje definici schématu předem, což usnadňuje agilní vývoj a integraci s webovými API. Navzdory textové povaze je parsování moderními knihovnami extrémně rychlé a pro většinu IPC scénářů na jednom hostiteli je režie zanedbalelná.
+\subsubsection{\sout{Formát JSON}}
+\sout{\textbf{JSON} (JavaScript Object Notation) je široce rozšířený, textově orientovaný formát \cite{rfc_json}. Jeho hlavní výhodou je transparentnost – přenášená data lze snadno monitorovat a analyzovat běžnými systémovými nástroji. JSON nevyžaduje definici schématu předem, což usnadňuje agilní vývoj a integraci s webovými API. Navzdory textové povaze je parsování moderními knihovnami extrémně rychlé a pro většinu IPC scénářů na jednom hostiteli je režie zanedbalelná.}
 
-\subsubsection{Protokol gRPC a Protocol Buffers}
-Naproti tomu \textbf{gRPC} je binární framework využívající \textbf{Protocol Buffers} jako mechanismus pro definici dat (\textit{Interface Definition Language}) \cite{grpc_vs_rest}. Je navržen pro maximální propustnost a minimální režii, čehož dosahuje díky binárnímu kódování a generování silně typovaného kódu pro různé programovací jazyky. gRPC vyniká v systémech s vysokým zatížením a v prostředí mikroslužeb, kde redukce velikosti zpráv vede k úspoře síťových prostředků.
+\subsubsection{\sout{Protokol gRPC a Protocol Buffers}}
+\sout{Naproti tomu \textbf{gRPC} je binární framework využívající \textbf{Protocol Buffers} jako mechanismus pro definici dat (\textit{Interface Definition Language}) \cite{grpc_vs_rest}. Je navržen pro maximální propustnost a minimální režii, čehož dosahuje díky binárnímu kódování a generování silně typovaného kódu pro různé programovací jazyky. gRPC vyniká v systémech s vysokým zatížením a v prostředí mikroslužeb, kde redukce velikosti zpráv vede k úspoře síťových prostředků.}
 
-\subsubsection{Srovnání a volba transportní vrstvy}
-Srovnání těchto technologií ukazuje na odlišné priority. gRPC dominuje v oblasti čistého výkonu a typové bezpečnosti, vyžaduje však složitější proces sestavení aplikace a ztěžuje manuální inspekci dat \cite{grpc_vs_rest}. JSON naopak zůstává preferovanou volbou pro systémy, kde je kladen důraz na diagnostiku a jednoduchost implementace.
+\subsubsection{\sout{Srovnání a volba transportní vrstvy}}
+\sout{Srovnání těchto technologií ukazuje na odlišné priority. gRPC dominuje v oblasti čistého výkonu a typové bezpečnosti, vyžaduje však složitější proces sestavení aplikace a ztěžuje manuální inspekci dat \cite{grpc_vs_rest}. JSON naopak zůstává preferovanou volbou pro systémy, kde je kladen důraz na diagnostiku a jednoduchost implementace.}
 
-\begin{table}[htbp]
+\sout{\begin{table}[htbp]
     \centering
     \caption{Srovnání formátů JSON a gRPC \cite{grpc_vs_rest}}
     \label{tab:json_grpc}
@@ -240,47 +240,47 @@ Srovnání těchto technologií ukazuje na odlišné priority. gRPC dominuje v o
         Čitelnost & Výborná pro člověka & Vyžaduje dekodér \\ \hline
         Podpora prohlížečů & Nativní & Vyžaduje proxy \\ \hline
     \end{tabular}
-\end{table}
+\end{table}}
 
 V rámci lokální komunikace mezi systémovými nástroji, kde je důležitá možnost nahlédnout do komunikace mezi klientem a službou bez nutnosti binární dešifrace, představuje JSON optimální kompromis mezi technickou efektivitou a vývojovou udržitelností.
 
-\section{Zajištění kvality a testování softwaru}
+\section{\sout{Zajištění kvality a testování softwaru}}
 \label{sec:testovani_teorie}
-Kvalita softwaru není náhodným výsledkem, ale důsledkem systematického procesu, který doprovází celý životní cyklus vývoje (SDLC – Software Development Life Cycle). V moderním inženýrství, zejména u systémových nástrojů, které manipulují se síťovým nastavením a vyžadují vysoká oprávnění, je verifikace správnosti klíčovým prvkem pro zajištění stability a bezpečnosti systému.
+\sout{Kvalita softwaru není náhodným výsledkem, ale důsledkem systematického procesu, který doprovází celý životní cyklus vývoje (SDLC – Software Development Life Cycle). V moderním inženýrství, zejména u systémových nástrojů, které manipulují se síťovým nastavením a vyžadují vysoká oprávnění, je verifikace správnosti klíčovým prvkem pro zajištění stability a bezpečnosti systému.}
 
-\subsection{Kvalita softwaru v SDLC}
-Tradiční pohled na testování jako na oddělenou fázi na konci vývoje je v agilním prostředí nahrazen integrací testů přímo do procesu tvorby kódu. Zajištění kvality (QA – Quality Assurance) zahrnuje nejen detekci chyb, ale především prevenci jejich vzniku skrze statickou analýzu, code review a automatizované testování \cite{cohn_succeeding}. Automatizace v tomto procesu umožňuje rychlou regresní analýzu při jakýchkoliv změnách v systému.
+\subsection{\sout{Kvalita softwaru v SDLC}}
+\sout{Tradiční pohled na testování jako na oddělenou fázi na konci vývoje je v agilním prostředí nahrazen integrací testů přímo do procesu tvorby kódu. Zajištění kvality (QA – Quality Assurance) zahrnuje nejen detekci chyb, ale především prevenci jejich vzniku skrze statickou analýzu, code review a automatizované testování \cite{cohn_succeeding}. Automatizace v tomto procesu umožňuje rychlou regresní analýzu při jakýcholiv změnách v systému.}
 
-\subsection{Testovací pyramida}
+\subsection{\sout{Testovací pyramida}}
 \label{sec:test_pyramida_teorie}
-Koncept testovací pyramidy, který poprvé popularizoval Mike Cohn v knize \textit{Succeeding with Agile}, definuje ideální distribuci různých typů automatizovaných testů \cite{cohn_succeeding}. Cílem je vytvořit robustní základnu rychlých a levných testů, které jsou doplněny menším množstvím komplexnějších a pomalejších scénářů.
+\sout{Koncept testovací pyramidy, který poprvé popularizoval Mike Cohn v knize \textit{Succeeding with Agile}, definuje ideální distribuci různých typů automatizovaných testů \cite{cohn_succeeding}. Cílem je vytvořit robustní základnu rychlých a levných testů, které jsou doplněny menším množstvím komplexnějších a pomalejších scénářů.}
 
-\begin{figure}[H]
+\sout{\begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{../doc/images/tests.jpg}
+    \includegraphics[width=0.7\textwidth]{images/pyramid-cost.jpg}
     \caption{Model testovací pyramidy podle Mikea Cohna \cite{cohn_succeeding}}
     \label{fig:test_pyramid}
-\end{figure}
+\end{figure}}
 
-Pyramida se skládá ze tří hlavních úrovní:
+\sout{Pyramida se skládá ze tří hlavních úrovní:}
 \begin{itemize}
-    \item \textbf{Jednotkové testy (Unit Tests):} Tvoří základnu pyramidy. Testují jednotlivé funkce nebo třídy v izolaci od okolního prostředí (např. pomocí mockování). Jsou extrémně rychlé a poskytují vývojáři okamžitou zpětnou vazbu.
-    \item \textbf{Integrační testy (Integration Tests):} Zaměřují se na interakci mezi různými moduly nebo externími službami, čímž ověřují správnou komunikaci mezi komponentami systému.
-    \item \textbf{End-to-End testy (E2E):} Vrchol pyramidy. Simulují reálné chování uživatele a testují systém jako celek od vstupu v CLI až po vytvoření VPN tunelu v jádře. Jsou nejpomalejší a nejvíce náchylné k chybám v konfiguraci prostředí (tzv. flakiness).
+    \item \sout{\textbf{Jednotkové testy (Unit Tests):} Tvoří základnu pyramidy. Testují jednotlivé funkce nebo třídy v izolaci od okolního prostředí (např. pomocí mockování). Jsou extrémně rychlé a poskytují vývojáři okamžitou zpětnou vazbu.}
+    \item \sout{\textbf{Integrační testy (Integration Tests):} Zaměřují se na interakci mezi různými moduly nebo externími službami, čímž ověřují správnou komunikaci mezi komponentami systému.}
+    \item \sout{\textbf{End-to-End testy (E2E):} Vrchol pyramidy. Simulují reálné chování uživatele a testují systém jako celek od vstupu v CLI až po vytvoření VPN tunelu v jádře. Jsou nejpomalejší a nejvíce náchylné k chybám v konfiguraci prostředí (tzv. flakiness).}
 \end{itemize}
 
-\subsection{Behavior-Driven Development (BDD) a Gherkin}
+\subsection{\sout{Behavior-Driven Development (BDD) a Gherkin}}
 \label{sec:bdd_teorie}
-Vývoj řízený chováním (BDD – Behavior-Driven Development) je metodika, která rozšiřuje principy TDD o zaměření na uživatelský pohled a čitelnost scénářů pro netechnické členy týmu \cite{bubble_tea_intro}. Specifikace jsou psány v přirozeném jazyce pomocí syntaxe \textbf{Gherkin}.
+\sout{Vývoj řízený chováním (BDD – Behavior-Driven Development) je metodika, která rozšiřuje principy TDD o zaměření na uživatelský pohled a čitelnost scénářů pro netechnické členy týmu \cite{bubble_tea_intro}. Specifikace jsou psány v přirozeném jazyce pomocí syntaxe \textbf{Gherkin}.}
 
-Scénáře v Gherkinu využívají klíčová slova:
+\sout{Scénáře v Gherkinu využívají klíčová slova:}
 \begin{itemize}
-    \item \textbf{Given (Za předpokladu):} Definice výchozího stavu systému.
-    \item \textbf{When (Když):} Akce, kterou uživatel nebo systém provede.
-    \item \textbf{Then (Pak):} Očekávaný výsledek operace.
+    \item \sout{\textbf{Given (Za předpokladu):} Definice výchozího stavu systému.}
+    \item \sout{\textbf{When (Když):} Akce, kterou uživatel nebo systém provede.}
+    \item \sout{\textbf{Then (Pak):} Očekávaný výsledek operace.}
 \end{itemize}
 
-Tento přístup umožňuje vytvořit tzv. „živou dokumentaci“, která je zároveň spustitelným testem. V rámci moderního inženýrství jsou Gherkin scénáře často využity pro precizní definici požadavků na rozhraní a chování systému, což zajišťuje, že implementace přesně odpovídá navržené specifikaci.
+\sout{Tento přístup umožňuje vytvořit tzv. „živou dokumentaci“, která je zároveň spustitelným testem. V rámci moderního inženýrství jsou Gherkin scénáře často využity pro precizní definici požadavků na rozhraní a chování systému, což zajišťuje, že implementace přesně odpovídá navržené specifikaci.}
 
 \section{Distribuce softwaru a balíčkovací systémy}
 \label{sec:distribuce}
