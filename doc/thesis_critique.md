@@ -61,3 +61,22 @@ The chapter provides the necessary technical documentation for the architecture,
 - **Consolidated Justifications**: Repeated theoretical justifications for .NET, Go, and JSON (originally in Sections 1 and 2.1) have been marked with `\sout` and should be removed in the final pass. Focus remains on the application of these technologies.
 - **Placeholder Cleanup**: `TODO` comments for architecture and Clean Architecture diagrams have been removed. The system architecture diagram (`navrh-architecture.png`) is confirmed as the primary technical illustration.
 - **Verbosity Reduction**: Redundant justifications in Section 5.2 regarding the security benefits of the update model have been marked with `\sout` to improve flow and density.
+
+## Chapter 04: Implementace
+**Status**: ✅ Audited & Aligned with "Praktická část" requirements.
+Chapter 04 provides a comprehensive technical breakdown of the implementation, addressing all core requirements from the assignment.
+
+### Findings
+- **Authentication**: Covered via `CliMessenger` and `connect.go` examples. Aligns with "implementace autentizace".
+- **VPN Management**: Covered in Sections 4.1 (OpenVPN) and 4.3 (WireGuard). Aligns with "implementace správy VPN připojení".
+- **Secure Storage**: Detailed in Section 2.1 using `CliStorage` and `IDataProtectionProvider`. Aligns with "implementace secure storage".
+- **IPC Implementation**: Well-documented JSON-over-UDS mechanism in Sections 2.2 and 3.3, providing clear execution flow documentation.
+- **State Management**: Section 4.5 (GUI vs CLI state) is a high-quality technical contribution that addresses the fundamental differences in user interaction models.
+
+### Changes Made (Audit 2026-03-18)
+- **Redundancy Reduction**: Marked redundant "why we used X" sentences with `\sout` in Sections 1 (Monorepo), 2.2 (UDS), 2.3 (Parallel dev), 3 (Go advantages), and 3.1 (Cobra features). These justifications were either obvious or already covered in earlier chapters.
+- **Technical Focus**: Streamlined the explanation of the development process to focus on the *how* rather than the *why*, particularly in the IPC and systemd integration sections.
+
+### Recommendations
+- **Preservation**: Section 4.5 (GUI vs CLI state) and Section 4.2 (Multi-user isolation) should be preserved in full as they represent the most significant original technical insights in this chapter.
+- **Verification**: Ensure all `lstinputlisting` references point to valid code files in the final build to prevent LaTeX compilation errors.
