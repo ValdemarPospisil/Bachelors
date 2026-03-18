@@ -53,9 +53,9 @@ Pro ověření, že se aplikace chová v souladu s očekáváním uživatele, by
 
 Tento přístup zajistil, že vývoj byl neustále v souladu s požadavky a že finální produkt odpovídá zadaným cílům. Příkladem takové specifikace je scénář pro přihlášení uživatele, uvedený v souboru \texttt{login.feature}.
 
-\lstinputlisting[language=C, stringstyle=\itshape, caption={Ukázka akceptačního testu pro přihlášení v jazyce Gherkin}, label={lst:login_feature}]{../doc/specs/login.feature}
+\lstinputlisting[language=C, stringstyle=\itshape, caption={Ukázka akceptačního testu pro přihlášení v jazyce Gherkin}, label={lst:login_feature}, firstline=1, lastline=18]{../doc/specs/login.feature}
 
-Každý scénář se skládá z kroků \texttt{Given} (daný stav), \texttt{When} (když nastane akce) a \texttt{Then} (pak se ověří výsledek), které přesně a jednoznačně popisují interakci uživatele se systémem a očekávaný výsledek.
+Jednotlivé scénáře využívají klíčová slova Gherkinu, jejichž sémantika byla popsána v teoretické části práce (viz podkapitola \ref{sec:bdd_teorie}). Tento formát přesně a jednoznačně popisuje interakci uživatele se systémem a očekávaný výsledek.
 
 \section{Systémové a integrační testování v prostředí Linux}
 \label{sec:system_integration_testing}
