@@ -35,7 +35,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Refine thesis chapter 5 (testing), uncross BDD in chapter 1, and add Arch Linux support with QA verification.**
+- [~] **Track: Refine thesis chapter 5 (testing), uncross BDD in chapter 1, and add Arch Linux support with QA verification.**
 *Link: [./tracks/thesis_ch5_refinement_20260318/](./tracks/thesis_ch5_refinement_20260318/)*
 
 ---
