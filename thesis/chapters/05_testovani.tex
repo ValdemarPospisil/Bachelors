@@ -60,18 +60,19 @@ Jednotlivé scénáře využívají klíčová slova Gherkinu, jejichž sémanti
 \section{Systémové a integrační testování v prostředí Linux}
 \label{sec:system_integration_testing}
 
-Kromě jednotkových a akceptačních testů bylo klíčové ověřit funkčnost celé aplikace v reálném prostředí. Testování probíhalo na dvou hlavních distribucích Linuxu:
+Kromě jednotkových a akceptačních testů bylo klíčové ověřit funkčnost celé aplikace v reálném prostředí a potvrdit splnění nefunkčních požadavků na kompatibilitu (viz podkapitola \ref{sec:nefunkcni_pozadavky}). Testování probíhalo na třech hlavních distribucích Linuxu, které pokrývají nejrozšířenější balíčkovací systémy:
 \begin{itemize}
     \item \textbf{Fedora} jako primární vývojové prostředí.
-    \item \textbf{Ubuntu (VM)} jako čisté prostředí pro QA (Quality Assurance) a ověření kompatibility.
+    \item \textbf{Ubuntu (VM)} reprezentující rodinu Debian.
+    \item \textbf{Arch Linux} pro ověření funkčnosti na distribucích typu rolling-release.
 \end{itemize}
 
-Cílem systémového testu bylo ověřit celý životní cyklus aplikace z pohledu uživatele:
+Cílem systémového testu bylo ověřit celý životní cyklus aplikace z pohledu uživatele. Pro zajištění objektivity a nezávislosti nebyla tato fáze prováděna autorem práce, ale byla verifikována profesionálním QA (Quality Assurance) testerem. Proces zahrnoval:
 \begin{enumerate}
-    \item \textbf{Instalace:} Úspěšná instalace balíčku (\texttt{.rpm} pro Fedoru, \texttt{.deb} pro Ubuntu).
+    \item \textbf{Instalace:} Úspěšná instalace balíčku (\texttt{.rpm} pro Fedoru, \texttt{.deb} pro Ubuntu, manuální kompilace/AUR pro Arch Linux).
     \item \textbf{Oprávnění:} Kontrola, že hlavní spustitelný soubor \texttt{ga-cli} má po instalaci správně nastavená oprávnění (očekáváno \texttt{700}), aby se zamezilo neoprávněnému spuštění jinými uživateli.
     \item \textbf{Připojení:} Spuštění příkazu \texttt{ga-cli connect} a úspěšné navázání VPN spojení.
     \item \textbf{Validace konektivity:} Po úspěšném připojení bylo provedeno ověření funkčnosti tunelu pomocí příkazu \texttt{ping} na interní firemní zdroj, který není dostupný z veřejného internetu.
 \end{enumerate}
 
-Tento proces manuálního testování na různých distribucích zajistil, že aplikace je nejen funkční, ale i správně nakonfigurovaná a bezpečná pro nasazení v cílovém prostředí.
+Tento proces testování na různých distribucích pod dohledem QA testera zajistil, že aplikace je nejen funkční, ale i správně nakonfigurovaná a bezpečná pro nasazení v cílovém prostředí.
