@@ -76,6 +76,43 @@
   stringstyle=\itshape,         % string literal style
 }
 
+\lstdefinelanguage{Go}{
+  keywords={break, default, func, interface, select, case, defer, go, map, struct, chan, else, goto, package, switch, const, fallthrough, if, range, type, continue, for, import, return, var},
+  keywordstyle=\bfseries,
+  ndkeywords={bool, int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, uintptr, float32, float64, complex64, complex128, byte, rune, string, error},
+  ndkeywordstyle=\bfseries,
+  sensitive=true,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\rmfamily,
+  stringstyle=\itshape,
+  morestring=[b]',
+  morestring=[b]",
+  morestring=[b]`
+}
+
+\lstdefinelanguage{CSharp}{
+  keywords={abstract, as, base, bool, break, byte, case, catch, char, checked, class, const, continue, decimal, default, delegate, do, double, else, enum, event, explicit, extern, false, finally, fixed, float, for, foreach, goto, if, implicit, in, int, interface, internal, is, lock, long, namespace, new, null, object, operator, out, override, params, private, protected, public, readonly, ref, return, sbyte, sealed, short, sizeof, stackalloc, static, string, struct, switch, this, throw, true, try, typeof, uint, ulong, unchecked, unsafe, ushort, using, virtual, void, volatile, while, add, alias, ascending, async, await, by, descending, dynamic, equals, from, get, global, group, into, join, let, nameof, on, orderby, partial, remove, select, set, unmanaged, value, var, when, where, yield},
+  keywordstyle=\bfseries,
+  sensitive=true,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\rmfamily,
+  stringstyle=\itshape,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstdefinelanguage{Gherkin}{
+  keywords={Feature, Background, Scenario, Given, When, Then, And, But},
+  keywordstyle=\bfseries,
+  sensitive=true,
+  comment=[l]{\#},
+  commentstyle=\rmfamily,
+  stringstyle=\itshape,
+  morestring=[b]"
+}
+
 % barevné zvýraznění textů, které je nutno nahradit
 \newcommand{\ZT}[1]{\colorbox{yellow}{\color{red}{#1}}}
 
