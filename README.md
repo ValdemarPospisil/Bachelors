@@ -42,13 +42,14 @@ Tento projekt je zaměřen na vývoj nativního CLI klienta pro službu GoodAcce
 ### 4. Implementace
 - [x] 4.1 Struktura projektu a vývojové prostředí
 - [x] 4.2 Implementace systémové služby (.NET)
-- [ ] 4.3 Implementace klientské aplikace (Go)
-- [ ] 4.4 Pokročilé funkce a technické výzvy
+- [x] 4.3 Implementace klientské aplikace (Go)
+- [x] 4.4 Pokročilé funkce a technické výzvy
 
 ### 5. Testování a nasazení
-- [ ] 5.1 Jednotkové testování
-- [ ] 5.2 Akceptační testování
-- [ ] 5.3 Proces balíčkování (.deb, .rpm)
+- [x] 5.1 Metodika testování
+- [x] 5.2 Jednotkové testy a mockování
+- [x] 5.3 Akceptační testování
+- [x] 5.4 Systémové a integrační testování v prostředí Linux
 
 ### 6. Závěr
 - [ ] Shrnutí výsledků a budoucí rozvoj
