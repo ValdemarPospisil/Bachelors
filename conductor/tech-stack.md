@@ -6,6 +6,11 @@
 - **IPC (Inter-process Communication):** Unix Domain Sockets (UDS) – meziprocesní komunikace mezi Go CLI a .NET backendem.
 - **Data Format:** JSON – textový formát pro výměnu zpráv mezi komponentami.
 
+## Testovací nástroje a knihovny
+- **Go:** `testing` (standardní knihovna), `testify` (nadstavba pro aserce a mockování).
+- **.NET:** `xUnit` (testovací framework), `Moq` (framework pro mockování).
+- **BDD:** Gherkin (pro definici akceptačních kritérií).
+
 ## VPN a síťové technologie
 - **Protokoly:** 
     - **OpenVPN:** Stávající a ověřený protokol integrovaný v GoodAccess infrastruktuře.

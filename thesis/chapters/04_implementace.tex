@@ -25,27 +25,19 @@ Hlavní rozdělení kořenového adresáře odráží oddělení jednotlivých t
     \begin{itemize}
         \item \texttt{CLIService/} -- Zcela nově vytvořený projekt v rámci této práce. Funguje jako dedikovaná \textit{wrapper} služba (tzv. obálka) pro CLI klienta. Hlavním úkolem \texttt{CLIService} je naslouchat na IPC socketu (\texttt{SenderReader.cs}), přijímat požadavky od frontend klienta a směrovat je pomocí komponenty \texttt{CliMessenger.cs} k příslušným výkonným vrstvám.
         \item \texttt{GoodAccess.Shared/} -- Obsahuje sdílenou doménovou logiku, kterou využívají různé části backendu. Nachází se zde klientské třídy pro komunikaci s centrálním REST API (\texttt{ApiClient.cs}) a abstraktní implementace VPN protokolů (\texttt{ProtoService.cs}, \texttt{VpnManager.cs}).
-        \item \texttt{GoodAccessService/} -- Původní a hlavní jádro síťové infrastruktury (daemon). Využívá konfigurace z předchozích vrstev k fyzickému sestavení a správě tunelů na daném operačním systému.
+        \item \texttt{GoodAccessService/} -- Původní a hlavní jádro síťové infrastruktury (daemon). Využívá konfigurace z předchových vrstev k fyzickému sestavení a správě tunelů na daném operačním systému.
     \end{itemize}
 \end{itemize}
 
 Tato architektura je tak striktně rozdělena na takzvaného tenkého klienta (Thin Client), jenž je zodpovědný výhradně za prezentaci dat a odesílání uživatelských povelů, a robustní systémovou službu, která si ponechává komplexní aplikační logiku. Navíc obě tyto logické vrstvy (Go aplikace a .NET služby) mají vlastní nezávislé procesy pro sestavení a distribuci.
 
-Pro názornější představu o komplexnosti řešení a vzájemných vazbách jsou níže uvedeny dvě doplňující vizualizace. Obrázek~\ref{fig:mindmap_structure} nabízí pohled na strukturu repozitáře ve formě myšlenkové mapy, zatímco Obrázek~\ref{fig:wbs_structure} představuje stejnou hierarchii formou WBS (Work Breakdown Structure) diagramu pro detailnější dekompozici jednotlivých submodulů.
-
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{images/implementation/diagrams/mindmap-file-structure.png}
-    \caption{Struktura repozitáře (Mindmap)}
+    \caption{Struktura repozitáře}
     \label{fig:mindmap_structure}
 \end{figure}
 
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=\textwidth]{images/implementation/diagrams/wbs-file-structure.png}
-    \caption{Struktura repozitáře (WBS)}
-    \label{fig:wbs_structure}
-\end{figure}
 
 \section{Implementace systémové služby (.NET)}
 Aby bylo možné efektivně zpracovávat požadavky přicházející od CLI klienta, bylo nutné infrastrukturu na straně služby patřičně rozšířit. Vývoj probíhal iterativně počínaje zajištěním bezpečného úložiště a zprovozněním lokálního komunikačního kanálu.
@@ -83,7 +75,7 @@ Za samotné odbavování příchozích zpráv zodpovídá komponenta \texttt{Cli
 V raných fázích vývoje, kdy ještě nebyla zcela implementována veškerá produkční logika a klientská aplikace se teprve formovala, vracela metoda \texttt{CliMessenger} provizorní, pevně definované hodnoty (tzv. hardcoded data). Tento přístup umožnil paralelní vývoj -- uživatelské rozhraní se mohlo designovat a testovat proti konzistentnímu API bez čekání na dokončení komplexní aplikační logiky. Postupem času byly tyto provizorní odpovědi nahrazovány reálným napojením na síťové a autentizační subsystémy.
 
 \subsection{Životní cyklus a integrace se systemd}
-Pro zajištění běhu služby na pozadí a správnou instalaci na Linuxu byl využit modul \texttt{Microsoft.\allowbreak Extensions.\allowbreak Hosting.\allowbreak Systemd}. Díky tomuto modulu se celá aplikace může chovat jako nativní \texttt{systemd} služba. Definice \texttt{goodaccess-cli.service} zajišťuje automatické spuštění po startu systému a \textit{graceful shutdown} proces pro bezpečné odpojení VPN před vypnutím. Následující ukázka kódu z konfigurační třídy \texttt{Program.cs} demonstruje inicializaci hostitele, kde metoda \texttt{UseSystemd()} registruje životní cyklus služby a zároveň probíhá konfigurace \texttt{DataProtection} API z předchozí podkapitoly a registrace hlavní pracovní třídy \texttt{Worker}, která obstarává chod aplikace v pozadí.
+Pro zajištění běhu služby na pozadí a správnou instalaci na Linuxu byl využit modul \texttt{Microsoft.\allowbreak Extensions.\allowbreak Hosting.\allowbreak Systemd}. Díky tomuto modulu se celá aplikace může chovat jako nativní \texttt{systemd} služba. Definice \texttt{goodaccess-cli.service} zajižduje automatické spuštění po startu systému a \textit{graceful shutdown} proces pro bezpečné odpojení VPN před vypnutím. Následující ukázka kódu z konfigurační třídy \texttt{Program.cs} demonstruje inicializaci hostitele, kde metoda \texttt{UseSystemd()} registruje životní cyklus služby a zároveň probíhá konfigurace \texttt{DataProtection} API z předchozí podkapitoly a registrace hlavní pracovní třídy \texttt{Worker}, která obstarává chod aplikace v pozadí.
 
 \noindent\begin{minipage}{\linewidth}
 \lstinputlisting[language=C, stringstyle=\itshape, firstline=33, lastline=46]{../doc/code/Program.cs}
@@ -93,7 +85,8 @@ Pro zajištění běhu služby na pozadí a správnou instalaci na Linuxu byl vy
 Na straně klienta bylo zvoleno využití jazyka Go, a to především pro jeho vynikající vlastnosti při vývoji CLI aplikací a schopnost kompilace do jediné statické binární formy nezávislé na externích knihovnách na koncovém systému.
 
 \subsection{Parsování příkazů (Cobra)}
-Základní aplikační kostra byla postavena na populárním frameworku Cobra. Tento nástroj umožňuje velmi snadno deklarovat stromovou strukturu příkazů, definovat argumenty (tzv. flags) a automaticky generovat nápovědu pro uživatele. Stromová struktura návrhu byla prezentována již v kapitole~\ref{sec:technologie} (Obrázek~\ref{fig:command_tree}). Hlavní příkaz \texttt{ga-cli} byl inicializován jako kořenový uzel (Root Command), ke kterému byly postupně přidávány dílčí příkazy odpovídající požadovaným akcím (login, setup, connect a další). Architektura frameworku Cobra navíc vybízí k přehlednému uspořádání kódu, kdy má každý příkaz svůj vlastní soubor v adresáři \texttt{cmd/}.
+Základní aplikační kostra byla postavena na populárním frameworku Cobra. Tento nástroj umožňuje velmi snadno deklarovat stromovou strukturu příkazů, definovat argumenty (tzv. flags) a automaticky generovat nápovědu pro uživatele.
+ Stromová struktura návrhu byla prezentována již v kapitole~\ref{sec:technologie} (Obrázek~\ref{fig:command_tree}). Hlavní příkaz \texttt{ga-cli} byl inicializován jako kořenový uzel (Root Command), ke kterému byly postupně přidávány dílčí příkazy odpovídající požadovaným akcím (login, setup, connect a další). Architektura frameworku Cobra navíc vybízí k přehlednému uspořádání kódu, kdy má každý příkaz svůj vlastní soubor v adresáři \texttt{cmd/}.
 
 Následující ukázka kódu ze souboru \texttt{connect.go} ilustruje typickou definici příkazu v Cobra frameworku. Vlastnost \texttt{Use} definuje, jak se příkaz volá z terminálu. \texttt{Short} a \texttt{Long} poskytují texty pro automaticky generovanou nápovědu (Obrázek~\ref{fig:ga_cli_help}). Samotná výkonná logika je pak svěřena funkci pod klíčem \texttt{RunE}, která v tomto případě inicializuje IPC klienta a odesílá požadavek na připojení.
 
@@ -178,7 +171,9 @@ Důležitým přepínačem (flag) je plná podpora pro strojově čitelné form�
         \label{fig:ux_json_output}
     \end{minipage}
 \end{figure}
-\subsection{Rozdíly ve správě stavu: GUI vs. CLI}
+
+\section{Rozdíly ve správě stavu: GUI vs. CLI}
+\label{sec:gui_vs_cli_state}
 Jedním z nejvýznamnějších architektonických rozdílů mezi grafickým klientem (GUI) a klientem v příkazovém řádku (CLI) je způsob správy stavu a ošetření uživatelských akcí. V GUI aplikaci je běžnou praxí vizuálně omezit akce, které neodpovídají aktuálnímu stavu. Například tlačítko „Připojit“ je deaktivováno nebo skryto, dokud se uživatel úspěšně nepřihlásí. Uživatel tak nemá možnost vyvolat neplatný stav pouhým kliknutím.
 
 Naproti tomu CLI prostředí je ze své podstaty bezstavové z pohledu samotného vstupu. Uživatel může kdykoliv napsat jakýkoliv příkaz nezávisle na aktuálním stavu aplikace na pozadí. Proto je nezbytné, aby CLI klient na každý takový příkaz reagoval předvídatelně a v případě neplatného stavu poskytl jasnou chybovou hlášku s návodem k nápravě. Například, pokusí-li se nepřihlášený uživatel o připojení k VPN (\texttt{ga-cli connect}), aplikace musí požadavek zachytit a korektně odmítnout s výzvou k přihlášení.
@@ -207,3 +202,29 @@ Tato odlišnost si vyžádala pečlivé zmapování všech možných kombinací 
     \caption{Chování CLI příkazů závislé na stavu aplikace a relace}
     \label{tab:cli_states}
 \end{table}
+
+\section{Distribuce a automatizace aktualizací}
+\label{sec:impl_distribuce}
+
+Aby bylo dosaženo plné integrace do linuxového ekosystému, jak bylo navrženo v kapitole \ref{sec:distribuce_aktualizace}, bylo nutné implementovat proces sestavení distribučních balíčků a mechanismus pro detekci nových verzí.
+
+\subsection{Příprava distribučních balíčků (.deb, .rpm)}
+Pro automatizaci procesu balíčkování byl využit nástroj \texttt{nfpm} (teoreticky rozbor balíčkovacích systémů viz sekce \ref{sec:distribuce}), který umožňuje deklarativně popsat obsah a metadata balíčku v jediném konfiguračním souboru. Tímto způsobem bylo možné z jediného zdroje generovat balíčky pro rodinu Debian (\texttt{.deb}) i Red Hat (\texttt{.rpm}).
+
+Klíčovou součástí balíčků jsou takzvané \textit{maintainer scripts} (viz sekce \ref{sec:distribuce}), které zajišťují správnou registraci a spuštění systémové služby. V rámci balíčku pro GoodAccess CLI byly implementovány skripty \texttt{postinst} (pro Debian) a \texttt{post} (pro RPM), které po instalaci:
+\begin{enumerate}
+    \item Reloadují konfiguraci \texttt{systemd} (\texttt{systemctl daemon-reload}).
+    \item Aktivují a spustí službu \texttt{goodaccess-cli.service}.
+    \item Nastaví restriktivní oprávnění (\texttt{chmod 700}) pro hlavní binární soubor klienta, aby se zamezilo neautorizovanému spuštění.
+\end{enumerate}
+
+\subsection{Implementace detekce aktualizací}
+Jak bylo navrženo v kapitole \ref{sec:distribuce_aktualizace}, aplikace se spoléhá na proaktivní detekci nových verzí. Tato logika byla implementována v rámci komunikace se službou. Služba při každém požadavku na zobrazení stavu (\texttt{ga-cli status}) asynchronně porovnává lokální verzi s verzí dostupnou na centrálním API.
+
+Pokud je zjištěna novější verze, je v odpovědi ze služby nastaven příznak \texttt{UpdateAvailable}. Klientská aplikace v Go následně tuto informaci interpretuje a zobrazí uživateli upozornění přímo v terminálu.
+
+\noindent\begin{minipage}{\linewidth}
+\lstinputlisting[language=C, stringstyle=\itshape, firstline=45, lastline=55]{../doc/code/state.go}
+\end{minipage}
+
+Tento přístup kombinuje bezpečnost nativní správy balíčků s uživatelským komfortem okamžité informovanosti o dostupných vylepšeních.

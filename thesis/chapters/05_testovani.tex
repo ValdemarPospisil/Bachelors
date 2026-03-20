@@ -4,21 +4,70 @@
 Ověření funkčnosti a stability aplikace probíhalo v souladu s metodikou Extrémního programování průběžně během vývoje.
 
 \section{Metodika testování}
-% Zde:
-% - Testovací pyramida (Unit -> Integration -> System).
-% - Zmínka o TDD (pokud jsi ho použil alespoň někde).
+\label{sec:metodika_testovani}
 
-\section{Jednotkové testy (Unit Testing)}
-% Zde:
-% - Testování Go kódu (mockování socketu).
-% - Ukázka jednoho testu (např. parsování argumentů).
+V souladu s principy agilního vývoje, zejména metodiky Extrémního programování (XP), bylo testování integrální součástí celého vývojového cyklu, nikoliv až jeho závěrečnou fází. Uplatňován byl přístup TDD (Test-Driven Development), kdy byly pro klíčové logické celky psány testy ještě před samotnou implementací.
 
-\section{Integrační a systémové testy}
-% Zde:
-% - Testování komunikace Client <-> Service.
-% - Ověření, že se VPN skutečně připojí (ping, ip route).
+Strategie testování vychází z konceptu testovací pyramidy, který byl detailně popsán v teoretické části práce (viz podkapitola \ref{sec:test_pyramida_teorie}). V rámci této práce byly realizovány testy na všech úrovních pyramidy, od rychlých jednotkových testů až po komplexní akceptační scénáře.
 
-\section{Testování na různých distribucích}
-% Zde:
-% - Tabulka kompatibility (Debian, Fedora, Ubuntu).
-% - Zkušenosti z "reálného provozu" (pokud jsi to někomu dal zkusit).
+\section{Jednotkové testy a mockování}
+\label{sec:unit_testing}
+
+Největší důraz byl kladen na jednotkové testy, které umožňují rychlou a spolehlivou verifikaci aplikační logiky.
+
+\subsection{Testování klienta v Go}
+Pro testování CLI klienta napsaného v jazyce Go byl využit standardní vestavěný balíček \texttt{testing} v kombinaci s knihovnou \texttt{testify} (teoretický rozbor viz podkapitola \ref{sec:testovani_nastroje}). Tato kombinace poskytuje bohatší sadu nástrojů pro aserce a především pro mockování závislostí.
+
+Klíčovou technikou bylo mockování pro rozhraní meziprocesové komunikace (IPC). Jelikož frontendová aplikace v Go komunikuje se backendovou službou v .NET přes Unix Domain Socket, bylo pro účely testování nezbytné tuto závislost odstranit. Tímto způsobem bylo možné testovat logiku a vzhled textového uživatelského rozhraní (TUI) zcela izolovaně, bez nutnosti mít spuštěnou a nakonfigurovanou systémovou službu.
+
+Byl vytvořen mock klient \texttt{MockClient}, který implementuje stejné rozhraní jako reálný IPC klient. Pomocí knihovny \texttt{testify/mock} bylo možné předdefinovat očekávané chování -- tedy jakou odpověď má mock vrátit, když je zavolána jeho metoda \texttt{Send} s určitými parametry.
+
+\noindent\begin{minipage}{\linewidth}
+\lstinputlisting[language=C, stringstyle=\itshape, caption={Ukázka mock klienta pro IPC komunikaci}, label={lst:mock_client}]{../doc/code/mock_client.go}
+\end{minipage}
+
+Tento \texttt{MockClient} byl následně v testovacích scénářích (např. v souboru \texttt{setup\_test.go} nebo \texttt{status\_test.go}) injektován do komponenty TUI namísto reálného klienta. Test tak mohl snadno simulovat různé scénáře, jako je úspěšné přihlášení, chyba spojení nebo příjem dat ze služby (včetně situace, kdy je již připojen jiný uživatel), a ověřit, že se uživatelské rozhraní chová dle očekávání.
+
+\subsection{Testování služby v .NET}
+Na straně systémové služby v .NET byly jednotkové testy implementovány s využitím frameworku xUnit (viz podkapitola \ref{sec:testovani_nastroje}). Návrh počítal s testováním jednotlivých tříd v izolaci, přičemž pro odstranění závislostí byl využit framework Moq. Příkladem může být testování třídy \texttt{CliStorage}, která zodpovídá za bezpečné ukládání dat.
+
+Následující ukázka kódu demonstruje testovací scénář pro třídu \texttt{CliStorage}, kde je pomocí mockování ověřeno, že jsou data před uložení správně šifrována.
+
+\noindent\begin{minipage}{\linewidth}
+\lstinputlisting[language=C, stringstyle=\itshape, caption={Ukázka jednotkového testu v .NET pomocí xUnit a Moq}, label={lst:xunit_test}]{../doc/code/dummy_xunit_test.cs}
+\end{minipage}
+
+Další testovací scénáře pro třídu \texttt{CliStorage} zahrnují:
+\begin{itemize}
+    \item \texttt{SavePreferences\_ShouldStoreCorrectData()}: Test ověří, že po zavolání metody \texttt{SavePreferences} je do souboru zapsán správně naformátovaný a zašifrovaný JSON objekt.
+    \item \texttt{GetRefreshToken\_ShouldThrowOnMissingToken()}: Test zajistí, že pokud se metoda pokusí přečíst neexistující token, je vyhozena očekávaná výjimka.
+    \item \texttt{SetRefreshToken\_ShouldUpdateSession()}: Ověří, že zavolání metody pro nastavení nového obnovovacího tokenu správně aktualizuje data v úložišti.
+\end{itemize}
+
+\section{Akceptační testování}
+\label{sec:acceptance_testing}
+
+Pro ověření, že se aplikace chová v souladu s očekáváním uživatele, byla využita metodika BDD (Behavior-Driven Development). Specifikace chování byly psány v jazyce Gherkin, který je snadno čitelný i pro netechnické členy týmu. Tyto specifikace, uložené v souborech s příponou \texttt{.feature}, sloužily jako formální akceptační kritéria, která byla manuálně ověřována před každým vydáním.
+
+Příkladem takové specifikace je scénář pro přihlášení uživatele, uvedený v souboru \texttt{login.feature}.
+
+\lstinputlisting[language=C, stringstyle=\itshape, caption={Ukázka akceptačního testu pro přihlášení v jazyce Gherkin}, label={lst:login_feature}, firstline=1, lastline=18]{../doc/specs/login.feature}
+
+\section{Systémové a integrační testování v prostředí Linux}
+\label{sec:system_integration_testing}
+
+Kromě jednotkových a akceptačních testů bylo klíčové ověřit funkčnost celé aplikace v reálném prostředí a potvrdit splnění nefunkčních požadavků na kompatibilitu (viz podkapitola \ref{sec:nefunkcni_pozadavky}). Testování probíhalo na třech hlavních distribucích Linuxu, které pokrývají nejrozšířenější balíčkovací systémy:
+\begin{itemize}
+    \item \textbf{Fedora} jako primární vývojové prostředí.
+    \item \textbf{Ubuntu (VM)} reprezentující rodinu Debian.
+    \item \textbf{Arch Linux} pro ověření funkčnosti na distribucích typu rolling-release.
+\end{itemize}
+
+Cílem systémového testování bylo ověřit celý životní cyklus aplikace v reálném prostředí a potvrdit splnění funkčních i nefunkčních požadavků. Proces se zaměřil na následující klíčové aspekty:
+\begin{enumerate}
+    \item \textbf{Instalace a oprávnění:} Byla ověřena úspěšná instalace balíčků (\texttt{.rpm} i \texttt{.deb}) a korektní nastavení restriktivních oprávnění (\texttt{700}) hlavního binárního souboru \texttt{ga-cli}.
+    \item \textbf{Navázání spojení:} Testování potvrdilo schopnost aplikace korektně inicializovat IPC komunikaci a následně vyvolat sestavení VPN tunelu.
+    \item \textbf{Validace konektivity:} Po úspěšném připojení byla ověřena funkčnost tunelu pomocí příkazu \texttt{ping} na interní firemní zdroje, které jsou dostupné výhradně skrze VPN GoodAccess.
+\end{enumerate}
+
+Tato fáze verifikace potvrdila, že aplikace je plně funkční a stabilní napříč cílovými linuxovými distribucemi.

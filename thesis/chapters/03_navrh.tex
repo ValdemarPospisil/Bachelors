@@ -11,11 +11,11 @@ Celý systém je v souladu se zvoleným návrhem rozdělen na dvě hlavní, tech
     \item \textbf{Klient (Client - Go):} Běží v uživatelském prostoru (bez \texttt{root} oprávnění) a zajišťuje čistě interakci s uživatelem. Zodpovídá za parsování argumentů příkazové řádky pomocí frameworku \texttt{Cobra}, obsluhu interaktivních TUI prvků prostřednictvím \texttt{Bubble Tea} a finální formátování výstupu. Jazyk Go byl pro vývoj CLI zvolen díky svým vlastnostem pro systémové programování, rychlému startu a statické kompilaci do jediné binárky, což radikálně zjednodušuje distribuci (viz sekce \ref{sec:technologie} a \ref{sec:cli_teorie}).
 \end{itemize}
 
+
 Architektura Go klienta navíc úzce reflektuje principy takzvané \textit{Clean Architecture}. Celá kódová základna klienta je rozdělena do logických vrstev, kde uživatelské rozhraní (UI a parsování příkazů) je zcela odděleno od aplikační logiky a transportní vrstvy (IPC komunikace přes Unix Domain Sockets). Toto vrstvení zaručuje vysokou testovatelnost komponent a možnost nezávisle upravovat vizuální prezentaci bez vlivu na způsob, jakým klient komunikuje s .NET službou.
 
 \begin{figure}[H]
     \centering
-    % TODO: Přidat skutečný obrázek architektury
     \includegraphics[width=0.8\textwidth]{images/navrh-architecture.png}
     \caption{Architektura systému znázorňující hranici mezi .NET Službou a Go Klientem skrze IPC (Unix Domain Sockets).}
     \label{fig:architecture_ipc}
@@ -23,7 +23,6 @@ Architektura Go klienta navíc úzce reflektuje principy takzvané \textit{Clean
 
 %\begin{figure}[H]
 %    \centering
-    % TODO: Přidat skutečný obrázek Clean Architecture
 %    \includegraphics[width=0.8\textwidth]{images/clean-architecture.png}
 %    \caption{Struktura vrstev Go klienta v souladu s principy Clean Architecture.}
 %    \label{fig:clean_architecture_go}
@@ -37,7 +36,7 @@ Pro výměnu dat mezi Go klientem a .NET službou bylo nutné zvolit vhodný mec
 V teoretické kapitole (viz sekce \ref{sec:formats_theory}) byly porovnány formáty JSON a gRPC. Pro účely této práce byl zvolen formát \textbf{JSON}. Hlavním důvodem je jeho textová čitelnost, která výrazně usnadňuje ladění komunikace během vývoje, a nativní podpora v obou použitých jazycích (Go i C\#) bez nutnosti generovat složité stuby, což odpovídá agilnímu principu jednoduchosti.
 
 \subsection{Protokol a struktura zpráv}
-Komunikace probíhá podle modelu Request-Response. Klient otevře spojení k socketu služby (typicky \texttt{/tmp/ga-cli.sock}), odešle požadavek v JSON formátu a čeká na odpověď, po které spojení uzavře.
+Komunikace probíhá podle modelu Request-Response. Klient otevře spojení k socketu služby (typicky \texttt{/tmp/CoreFxPipe_ga-cli.sock}), odešle požadavek v JSON formátu a čeká na odpověď, po které spojení uzavře.
 
 Průběh typické komunikace pro přihlášení uživatele znázorňuje následující sekvenční diagram (Obrázek \ref{fig:ipcsequence}).
 
@@ -203,4 +202,4 @@ Instalační balíček funkčně zapouzdřuje obě klíčové komponenty systém
 
 Ačkoliv je samotný proces povýšení verze (upgrade) ponechán na operačním systému, aplikace aktivně detekuje dostupnost nových vydání, aby zajistila informovanost uživatele. Tato proaktivní detekce je implementována primárně v rámci příkazu \texttt{ga-cli version} (a podpůrně též v příkazu \texttt{ga-cli status}). Služba při zavolání asynchronně dotazuje centrální API \mbox{GoodAccess}. Pokud odpověď ze serveru indikuje dostupnost novější verze (v datovém modelu reprezentováno příznakem \texttt{UpdateAvailable}), CLI klient tuto skutečnost vizuálně zdůrazní ve standardním výstupu a doporučí uživateli provést systémovou aktualizaci.
 
-\textbf{Bezpečnostní a architektonický přínos:} Tento model striktně odděluje informační povinnost klienta od výkonné moci nad souborovým systémem. Neprivilegovaný uživatel je upozorněn na novou verzi, avšak samotný přepis spustitelných souborů a nezbytný restart daemonu může provést pouze systémový administrátor (\texttt{root}) standardním voláním systémového správce balíčků (např. \texttt{sudo apt-get update \&\& sudo apt-get upgrade goodaccess-cli}). Tím je na architektonické úrovni zamezeno případnému narušení bezpečnosti (privilege escalation) skrze potenciální zranitelnosti v aktualizačním procesu samotné aplikace.
+\textbf{Bezpečnostní a architektonický přínos:} \sout{Tento model striktně odděluje informační povinnost klienta od výkonné moci nad souborovým systémem.} Neprivilegovaný uživatel je upozorněn na novou verzi, avšak samotný přepis spustitelných souborů a nezbytný restart daemonu může provést pouze systémový administrátor (\texttt{root}) standardním voláním systémového správce balíčků (např. \texttt{sudo apt-get update \&\& sudo apt-get upgrade goodaccess-cli}). \sout{Tím je na architektonické úrovni zamezeno případnému narušení bezpečnosti (privilege escalation) skrze potenciální zranitelnosti v aktualizačním procesu samotné aplikace.}
