@@ -23,7 +23,25 @@ Klíčovou technikou bylo mockování pro rozhraní meziprocesové komunikace (I
 Byl vytvořen mock klient \texttt{MockClient}, který implementuje stejné rozhraní jako reálný IPC klient. Pomocí knihovny \texttt{testify/mock} bylo možné předdefinovat očekávané chování -- tedy jakou odpověď má mock vrátit, když je zavolána jeho metoda \texttt{Send} s určitými parametry.
 
 \noindent\begin{minipage}{\linewidth}
-\lstinputlisting[language=C, stringstyle=\itshape, caption={Ukázka mock klienta pro IPC komunikaci}, label={lst:mock_client}]{../doc/code/mock_client.go}
+\begin{lstlisting}[language=Go, stringstyle=\itshape, caption={Ukázka mock klienta pro IPC komunikaci}, label={lst:mock_client}]
+package ipc
+
+import "github.com/stretchr/testify/mock"
+
+type MockClient struct {
+        mock.Mock
+}
+
+func (m *MockClient) Send(command string, payload any) (string, error) {
+        args := m.Called(command, payload)
+        return args.String(0), args.Error(1)
+}
+
+func (m *MockClient) Close() error {
+        args := m.Called()
+        return args.Error(0)
+}
+\end{lstlisting}
 \end{minipage}
 
 Tento \texttt{MockClient} byl následně v testovacích scénářích (např. v souboru \texttt{setup\_test.go} nebo \texttt{status\_test.go}) injektován do komponenty TUI namísto reálného klienta. Test tak mohl snadno simulovat různé scénáře, jako je úspěšné přihlášení, chyba spojení nebo příjem dat ze služby (včetně situace, kdy je již připojen jiný uživatel), a ověřit, že se uživatelské rozhraní chová dle očekávání.
@@ -34,7 +52,33 @@ Na straně systémové služby v .NET byly jednotkové testy implementovány s v
 Následující ukázka kódu demonstruje testovací scénář pro třídu \texttt{CliStorage}, kde je pomocí mockování ověřeno, že jsou data před uložení správně šifrována.
 
 \noindent\begin{minipage}{\linewidth}
-\lstinputlisting[language=C, stringstyle=\itshape, caption={Ukázka jednotkového testu v .NET pomocí xUnit a Moq}, label={lst:xunit_test}]{../doc/code/dummy_xunit_test.cs}
+\begin{lstlisting}[language=CSharp, stringstyle=\itshape, caption={Ukázka jednotkového testu v .NET pomocí xUnit a Moq}, label={lst:xunit_test}]
+using Xunit;
+using Moq;
+using GoodAccess.CLI.Storage;
+
+namespace GoodAccess.CLI.Tests
+{
+    public class CliStorageTests
+    {
+        [Fact]
+        public void SavePreferences_ShouldStoreCorrectData()
+        {
+            // Arrange
+            var mockProtector = new Mock<IDataProtectionProvider>();
+            var storage = new CliStorage(mockProtector.Object);
+            var prefs = new CliPreferences { LastUser = "test@example.com" };
+
+            // Act
+            storage.SavePreferences(prefs);
+
+            // Assert
+            // Verify that data was passed to the protection provider and then stored
+            mockProtector.Verify(p => p.Protect(It.IsAny<byte[]>()), Times.Once);
+        }
+    }
+}
+\end{lstlisting}
 \end{minipage}
 
 Další testovací scénáře pro třídu \texttt{CliStorage} zahrnují:
@@ -51,7 +95,25 @@ Pro ověření, že se aplikace chová v souladu s očekáváním uživatele, by
 
 Příkladem takové specifikace je scénář pro přihlášení uživatele, uvedený v souboru \texttt{login.feature}.
 
-\lstinputlisting[language=C, stringstyle=\itshape, caption={Ukázka akceptačního testu pro přihlášení v jazyce Gherkin}, label={lst:login_feature}, firstline=1, lastline=18]{../doc/specs/login.feature}
+\begin{lstlisting}[language=Gherkin, stringstyle=\itshape, caption={Ukázka akceptačního testu pro přihlášení v jazyce Gherkin}, label={lst:login_feature}]
+Feature: Login
+  As a user
+  I want to log in to the GoodAccess CLI
+  So that I can access the VPN network
+
+  Background:
+    Given the GoodAccess service is running
+
+  Scenario: Successful login
+    Given I am not logged in
+    When I run "ga-cli login"
+    And I enter a valid Team name
+    And I enter a valid Username
+    And I enter a valid Password
+    And I submit the form
+    Then the system should authenticate the user
+    And the application should exit with success
+\end{lstlisting}
 
 \section{Systémové a integrační testování v prostředí Linux}
 \label{sec:system_integration_testing}
