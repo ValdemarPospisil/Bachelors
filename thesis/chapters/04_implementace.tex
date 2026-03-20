@@ -48,14 +48,30 @@ Aplikace potřebuje uchovávat citlivá data jako jsou autentizační tokeny a p
 Byla vytvořena třída \texttt{CliStorage} reprezentující zabezpečené úložiště. Fyzické uložení dat využívá soubory zabezpečené restriktivními přístupovými právy, čímž je zaručeno, že k souborům má přístup pouze vlastník procesu (v tomto případě uživatel \texttt{root}, pod kterým služba běží). Samotná data uvnitř souborů jsou navíc šifrována na úrovni .NET frameworku pomocí \texttt{IDataProtectionProvider}. Třída umožňuje čtení a zápis serializovaných JSON objektů (\texttt{CliStorageRoot}) do tohoto chráněného souboru.
 
 \noindent\begin{minipage}{\linewidth}
-\lstinputlisting[language=C, stringstyle=\itshape, firstline=155, lastline=161]{../doc/code/CliStorage.cs}
+\begin{lstlisting}[language=CSharp, stringstyle=\itshape]
+private void WriteFile(object json)
+{
+    using (StreamWriter sw = File.CreateText(this._path))
+    {
+        sw.WriteLine(this._protector.Protect(JsonSerializer.Serialize(json)));
+    }
+}
+\end{lstlisting}
 \end{minipage}
 
 \subsection{IPC Server (Unix Domain Sockets)}
 Základním kamenem architektury je nově vytvořený modul \texttt{CLIService}. Tento modul slouží jako most mezi uživatelskými vstupy a jádrem služby. Jak bylo navrženo v kapitole~\ref{sec:navrh_ipc}, komunikace probíhá přes Unix Domain Sockets (UDS), což je na platformě Linux standardní a vysoce výkonný způsob výměny dat mezi lokálními procesy. Služba vytvoří pojmenovanou rouru (named pipe), na které asynchronně naslouchá příchozím spojením od klienta. Požadavky jsou zasílány a vraceny ve formátu JSON, což usnadňuje deserializaci dat na obou stranách.
 
 \noindent\begin{minipage}{\linewidth}
-\lstinputlisting[language=C, stringstyle=\itshape, firstline=36, lastline=42]{../doc/code/SenderReader.cs}
+\begin{lstlisting}[language=CSharp, stringstyle=\itshape]
+_serverStream = new NamedPipeServerStream(
+    _pipeName,
+    PipeDirection.InOut,
+    1, // Max 1 client 
+    PipeTransmissionMode.Byte,
+    PipeOptions.Asynchronous
+);
+\end{lstlisting}
 \end{minipage}
 
 \begin{figure}[htbp]
@@ -69,7 +85,19 @@ Základním kamenem architektury je nově vytvořený modul \texttt{CLIService}.
 Za samotné odbavování příchozích zpráv zodpovídá komponenta \texttt{CliMessenger}. Jak bylo definováno v podkapitole~\ref{sec:navrh_ipc} (včetně konkrétních JSON příkladů), každý požadavek ve formátu JSON obsahuje specifikaci příkazu (např. \texttt{login}, \texttt{connect}) a příslušné argumenty. \texttt{CliMessenger} tyto požadavky zpracovává a směruje je na specifické služby v rámci .NET backendu. Jak ukazuje následující ukázka kódu, třída pomocí konstrukce \texttt{switch} analyzuje přijatý příkaz a asynchronně volá odpovídající obslužné metody.
 
 \noindent\begin{minipage}{\linewidth}
-\lstinputlisting[language=C, stringstyle=\itshape, firstline=194, lastline=204]{../doc/code/CliMessenger.cs}
+\begin{lstlisting}[language=CSharp, stringstyle=\itshape]
+switch (command.ToLower())
+{
+
+    case "login":
+        await HandleLogin(payload, linuxId, responseWrapper);
+        break;
+
+    case "logout":
+        await HandleLogout(linuxId, responseWrapper);
+        break;
+
+\end{lstlisting}
 \end{minipage}
 
 V raných fázích vývoje, kdy ještě nebyla zcela implementována veškerá produkční logika a klientská aplikace se teprve formovala, vracela metoda \texttt{CliMessenger} provizorní, pevně definované hodnoty (tzv. hardcoded data). Tento přístup umožnil paralelní vývoj -- uživatelské rozhraní se mohlo designovat a testovat proti konzistentnímu API bez čekání na dokončení komplexní aplikační logiky. Postupem času byly tyto provizorní odpovědi nahrazovány reálným napojením na síťové a autentizační subsystémy.
@@ -78,7 +106,22 @@ V raných fázích vývoje, kdy ještě nebyla zcela implementována veškerá p
 Pro zajištění běhu služby na pozadí a správnou instalaci na Linuxu byl využit modul \texttt{Microsoft.\allowbreak Extensions.\allowbreak Hosting.\allowbreak Systemd}. Díky tomuto modulu se celá aplikace může chovat jako nativní \texttt{systemd} služba. Definice \texttt{goodaccess-cli.service} zajižduje automatické spuštění po startu systému a \textit{graceful shutdown} proces pro bezpečné odpojení VPN před vypnutím. Následující ukázka kódu z konfigurační třídy \texttt{Program.cs} demonstruje inicializaci hostitele, kde metoda \texttt{UseSystemd()} registruje životní cyklus služby a zároveň probíhá konfigurace \texttt{DataProtection} API z předchozí podkapitoly a registrace hlavní pracovní třídy \texttt{Worker}, která obstarává chod aplikace v pozadí.
 
 \noindent\begin{minipage}{\linewidth}
-\lstinputlisting[language=C, stringstyle=\itshape, firstline=33, lastline=46]{../doc/code/Program.cs}
+\begin{lstlisting}[language=CSharp, stringstyle=\itshape]
+IHost host = Host.CreateDefaultBuilder(args)
+.UseSystemd()
+.ConfigureServices(services =>
+{
+    services.AddDataProtection()
+        .PersistKeysToFileSystem(new DirectoryInfo(keysPath))
+        .SetApplicationName("CLIService");
+
+    services.AddSingleton(logger);
+    services.AddHostedService<Worker>();
+})
+.Build();
+
+await host.RunAsync();
+\end{lstlisting}
 \end{minipage}
 
 \section{Implementace klientské aplikace (Go)}
@@ -91,7 +134,15 @@ Základní aplikační kostra byla postavena na populárním frameworku Cobra. T
 Následující ukázka kódu ze souboru \texttt{connect.go} ilustruje typickou definici příkazu v Cobra frameworku. Vlastnost \texttt{Use} definuje, jak se příkaz volá z terminálu. \texttt{Short} a \texttt{Long} poskytují texty pro automaticky generovanou nápovědu (Obrázek~\ref{fig:ga_cli_help}). Samotná výkonná logika je pak svěřena funkci pod klíčem \texttt{RunE}, která v tomto případě inicializuje IPC klienta a odesílá požadavek na připojení.
 
 \noindent\begin{minipage}{\linewidth}
-\lstinputlisting[language=C, stringstyle=\itshape, firstline=18, lastline=24]{../doc/code/connect.go}
+\begin{lstlisting}[language=Go, stringstyle=\itshape]
+cmd := &cobra.Command{
+	Use:   "connect",
+	Short: "Connect to the VPN",
+	Long:  `Establishes a VPN connection to the default or specified gateway.`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		protoLower := strings.ToLower(protocol)
+		if protoLower != "wireguard" && protoLower != "openvpn" {
+\end{lstlisting}
 \end{minipage}
 
 \begin{figure}[htbp]
@@ -107,7 +158,24 @@ Pro složitější interakce, jako je průvodce nastavením (Setup wizard), bylo
 Následující ukázka kódu z \texttt{view.go} demonstruje, jak je definován vzhled jednoho konkrétního kroku průvodce (Obrázek~\ref{fig:setup_connect_step}) – dotaz na navázání spojení. Lze si povšimnout využití balíčku \texttt{lipgloss} (zde pod aliasem \texttt{style}) pro aplikování barev a formátování textu, což výrazně zlepšuje čitelnost v terminálu.
 
 \noindent\begin{minipage}{\linewidth}
-\lstinputlisting[language=C, stringstyle=\itshape, firstline=154, lastline=169]{../doc/code/view.go}
+\begin{lstlisting}[language=Go, stringstyle=\itshape]
+case StepConnect:
+	s += style.SubtleStyle.Render("Step 5: Connect") + "\n"
+	s += "Do you want to connect to the VPN now?\n\n"
+
+	for i, opt := range m.ConnectOptions {
+		cursor := "  "
+		st := style.SubtleStyle
+		if i == m.cursor {
+			cursor = "> "
+			st = style.ValueStyle
+		}
+		s += fmt.Sprintf("%s%s\n", cursor, st.Render(opt))
+	}
+
+	s += "\n" + style.SubtleStyle.Render("[up/down] Select - [Enter] Confirm")
+
+\end{lstlisting}
 \end{minipage}
 
 \begin{figure}[htbp]
@@ -121,7 +189,25 @@ Následující ukázka kódu z \texttt{view.go} demonstruje, jak je definován v
 Odesílání a přijímání JSON dat z Unix Domain Socketu je zajištěno IPC klientem na straně Go aplikace. Klient navazuje spojení přes systémové volání s definovaným \texttt{unix} socketem. Pro zajištění konzistence je každá odesílaná zpráva zabalena do tzv. \textit{Request Envelope}. Tato obálka (implementovaná jako Go struktura) obsahuje nejen samotný povel, ale také kontextové informace, jako je ID Linuxového uživatele, který příkaz vyvolal, a flag určující, zda byl příkaz spuštěn s právy administrátora (root). Tyto údaje jsou nezbytné pro správné ověření oprávnění na straně služby . Následně klient formátuje tyto požadavky do JSON struktur a přijímá odpovědi od .NET služby, čímž překlenuje mezeru mezi frontendem a backendem.
 
 \noindent\begin{minipage}{\linewidth}
-\lstinputlisting[language=C, stringstyle=\itshape, firstline=42, lastline=58]{../doc/code/unix_client.go}
+\begin{lstlisting}[language=Go, stringstyle=\itshape]
+IsRoot := os.Getuid() == 0  
+conn, err := net.DialTimeout("unix", c.socketPath, c.timeout)
+if err != nil {
+	return "", fmt.Errorf("connection failed: %w", err)
+}
+defer func() { _ = conn.Close() }()
+
+if err := conn.SetDeadline(time.Now().Add(c.timeout)); err != nil {
+	return "", fmt.Errorf("failed to set deadline: %w", err)
+}
+
+req := ipc.RequestEnvelope{
+	Command: command,
+	Payload: payload,
+	Context: &ipc.RequestContext{
+		LinuxId: getRealUserUID(),
+		IsRoot: IsRoot, 
+\end{lstlisting}
 \end{minipage}
 
 \section{Pokročilé funkce a technické výzvy}
@@ -224,7 +310,19 @@ Jak bylo navrženo v kapitole \ref{sec:distribuce_aktualizace}, aplikace se spol
 Pokud je zjištěna novější verze, je v odpovědi ze služby nastaven příznak \texttt{UpdateAvailable}. Klientská aplikace v Go následně tuto informaci interpretuje a zobrazí uživateli upozornění přímo v terminálu.
 
 \noindent\begin{minipage}{\linewidth}
-\lstinputlisting[language=C, stringstyle=\itshape, firstline=45, lastline=55]{../doc/code/state.go}
+\begin{lstlisting}[language=Go, stringstyle=\itshape]
+// returned by the background service.
+type AppStateResponse struct {
+	IsLoggedIn             bool   `json:"isLoggedIn"`
+	IsConnected            bool   `json:"isConnected"`
+	UserName               string `json:"userName"`
+	IsAnotherUserConnected bool   `json:"isAnotherUserConnected"`
+
+	// UpdateAvailable is set to true if the service detects 
+	// a newer version on the central API.
+	UpdateAvailable        bool   `json:"updateAvailable"`
+}
+\end{lstlisting}
 \end{minipage}
 
 Tento přístup kombinuje bezpečnost nativní správy balíčků s uživatelským komfortem okamžité informovanosti o dostupných vylepšeních.
