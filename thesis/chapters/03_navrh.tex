@@ -36,7 +36,7 @@ Pro výměnu dat mezi Go klientem a .NET službou bylo nutné zvolit vhodný mec
 V teoretické kapitole (viz sekce \ref{sec:formats_theory}) byly porovnány formáty JSON a gRPC. Pro účely této práce byl zvolen formát \textbf{JSON}. Hlavním důvodem je jeho textová čitelnost, která výrazně usnadňuje ladění komunikace během vývoje, a nativní podpora v obou použitých jazycích (Go i C\#) bez nutnosti generovat složité stuby, což odpovídá agilnímu principu jednoduchosti.
 
 \subsection{Protokol a struktura zpráv}
-Komunikace probíhá podle modelu Request-Response. Klient otevře spojení k socketu služby (typicky \texttt{/tmp/CoreFxPipe_ga-cli.sock}), odešle požadavek v JSON formátu a čeká na odpověď, po které spojení uzavře.
+Komunikace probíhá podle modelu Request-Response. Klient otevře spojení k socketu služby (typicky \texttt{/tmp/CoreFxPipe\_ga-cli.sock}), odešle požadavek v JSON formátu a čeká na odpověď, po které spojení uzavře.
 
 Průběh typické komunikace pro přihlášení uživatele znázorňuje následující sekvenční diagram (Obrázek \ref{fig:ipcsequence}).
 
@@ -162,7 +162,7 @@ Jelikož je navržený systém rozdělen na privilegovanou službu a neprivilego
 
 \subsection{Perzistence a struktura dat}
 
-Veškerý perzistentní stav aplikace je udržován systémovou službou (daemonem), zatímco CLI klient zůstává striktně bezestavový. Datový model je definován kořenovou strukturou, která sdružuje globální konfiguraci (\texttt{GlobalConfig}), aktivní uživatelské relace obsahující relační tokeny (\texttt{ActiveSessions}) a lokální mezipaměť známých bran (\texttt{KnownGateways}). Tato datová struktura je při ukládání serializována do textového formátu JSON. Aby však nedošlo k úniku citlivých dat (například při neoprávněném čtení souborového systému jiným procesem či uživatelem), je tento textový řetězec před samotným zápisem na disk kryptograficky chráněn.
+Veškerý perzistentní stav aplikace je udržován systémovou službou (daemonem), zatímco CLI klient zůstává striktně bezestavový. Datový model je definován kořenovou strukturou, která sdružuje globální konfiguraci (\texttt{GlobalConfig}), aktivní uživatelské relace obsahující relační tokeny (\texttt{ActiveSessions}) a lokální mezipaměť známých bran (\texttt{KnownGateways}). Tato datová struktura je při ukládání serializována do textového formátu JSON. Aby však nedocházelo k úniku citlivých dat (například při neoprávněném čtení souborového systému jiným procesem či uživatelem), je tento textový řetězec před samotným zápisem na disk kryptograficky chráněn.
 
 \subsection{Implementace zabezpečeného úložiště (Secure Storage)}
 
@@ -202,4 +202,4 @@ Instalační balíček funkčně zapouzdřuje obě klíčové komponenty systém
 
 Ačkoliv je samotný proces povýšení verze (upgrade) ponechán na operačním systému, aplikace aktivně detekuje dostupnost nových vydání, aby zajistila informovanost uživatele. Tato proaktivní detekce je implementována primárně v rámci příkazu \texttt{ga-cli version} (a podpůrně též v příkazu \texttt{ga-cli status}). Služba při zavolání asynchronně dotazuje centrální API \mbox{GoodAccess}. Pokud odpověď ze serveru indikuje dostupnost novější verze (v datovém modelu reprezentováno příznakem \texttt{UpdateAvailable}), CLI klient tuto skutečnost vizuálně zdůrazní ve standardním výstupu a doporučí uživateli provést systémovou aktualizaci.
 
-\textbf{Bezpečnostní a architektonický přínos:} \sout{Tento model striktně odděluje informační povinnost klienta od výkonné moci nad souborovým systémem.} Neprivilegovaný uživatel je upozorněn na novou verzi, avšak samotný přepis spustitelných souborů a nezbytný restart daemonu může provést pouze systémový administrátor (\texttt{root}) standardním voláním systémového správce balíčků (např. \texttt{sudo apt-get update \&\& sudo apt-get upgrade goodaccess-cli}). \sout{Tím je na architektonické úrovni zamezeno případnému narušení bezpečnosti (privilege escalation) skrze potenciální zranitelnosti v aktualizačním procesu samotné aplikace.}
+\textbf{Bezpečnostní a architektonický přínos:} \sout{Tento model striktně odděluje informační povinnost klienta od výkonné moci nad souborovým systémem.} Neprivilegovaný uživatel je upozorněn na novou verzi, avšak samotný přepis spustitelných souborů a nezbytný restart daemonu může provést pouze systémový administrátor (\texttt{root}) standardním voláním systémového správce balíčků (např. \texttt{sudo apt-get update \&\& sudo apt-get upgrade goodaccess-cli}). Tím je na architektonické úrovni zamezeno případnému narušení bezpečnosti (privilege escalation) skrze potenciální zranitelnosti v aktualizačním procesu samotné aplikace.

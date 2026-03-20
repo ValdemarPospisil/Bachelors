@@ -85,17 +85,6 @@ Linux dělí paměťový prostor na dvě privilegovaně odlišné části. Toto 
 
 Toto oddělení, často označované jako \textit{privilege separation}, zajišťuje, že chybný nebo škodlivý kód v uživatelské aplikaci nemůže přímo ohrozit integritu celého systému. Brian Ward ve své knize \textit{How Linux Works} zdůrazňuje, že zatímco uživatelský prostor je místem, kde probíhá většina „reálné akce“ aplikací, jádro slouží jako arbitr a správce všech hardwarových prostředků \cite{ward_linux}.
 
-\subsubsection{\sout{Systémová volání a přepnutí kontextu}}
-\sout{Aplikace v uživatelském prostoru nemohou přímo přistupovat k hardwaru. Musí využívat tzv. \textit{systémová volání} (syscalls) pro komunikaci s jádrem. Přechod mezi těmito prostory vyžaduje tzv. \textit{přepnutí kontextu} (context switch), což je operace s nenulovou režií. V kontextu VPN řešení je toto kritické při zpracování síťového provozu – například protokoly běžící v uživatelském prostoru musí každý paket kopírovat mezi prostory přes virtuální síťové rozhraní (TUN/TAP), což může omezovat propustnost při vysokém zatížení. Naopak implementace přímo v prostoru jádra tuto režii minimalizují a umožňují efektivnější zpracování datových toků }\cite{wireguard_paper}\sout{.}
-
-\subsection{\sout{Správa procesů a životní cyklus služeb}}
-\sout{Proces je v Linuxu definován jako instance běžícího programu v paměti. Každý proces má svůj unikátní identifikátor (PID) a je spravován jádrem, které mu přiděluje procesorový čas a paměťové prostředky.}
-
-\subsubsection{\sout{Procesy a daemony}}
-\sout{Vytváření nových procesů probíhá pomocí dvojice systémových volání \texttt{fork()} a \texttt{exec()}. Volání \texttt{fork()} vytvoří identickou kopii rodičovského procesu, zatímco \texttt{exec()} nahradí kód běžícího procesu novým programem. Tento mechanismus je základem pro spouštění všech aplikací v systému }\cite{ward_linux}\sout{.}
-
-\sout{Specifickou kategorií procesů jsou \textit{daemony}. Jedná se o procesy, které běží na pozadí, nejsou přímo spojeny s žádným terminálem a typicky čekají na určité události nebo poskytují systémové služby. V moderní architektuře systémových nástrojů bývá logika implementována právě jako daemon, který udržuje stav (např. VPN spojení) nezávisle na tom, zda je uživatelské rozhraní zrovna spuštěno. Tento přístup zajišťuje persistenci spojení a umožňuje bezpečné provádění privilegovaných operací (např. manipulaci se síťovými rozhraními) pod identitou uživatele s dostatečnými právy, zatímco samotné rozhraní může běžet v kontextu běžného uživatele.}
-
 \subsection{Správa služeb a systémová inicializace (systemd)}
 Moderní linuxové distribuce využívají pro správu systému a služeb inicializační systém \texttt{systemd}. Ten v posledním desetiletí nahradil starší standardy jako \texttt{sysvinit} a přinesl zásadní změny v tom, jak jsou procesy na pozadí spouštěny, monitorovány a hierarchicky organizovány.
 
@@ -104,10 +93,10 @@ Zatímco starší systémy spouštěly služby sekvenčně pomocí shell skript�
 
 Z pohledu vývoje systémových nástrojů jsou klíčové tzv. \textit{Unit files} (jednotky), konkrétně \texttt{.service} soubory. Tyto deklarativní konfigurační soubory definují parametry spuštění služby, její závislosti na síťové konektivitě a bezpečnostní kontext. Díky integraci s mechanismem \textit{cgroups} (Control Groups) má \texttt{systemd} absolutní kontrolu nad všemi procesy patřícími k dané službě, což umožňuje jejich spolehlivé ukončení nebo automatický restart v případě havárie. V architektuře postavené na službách hraje \texttt{systemd} roli garanta běhu, zajišťuje spuštění po startu systému a poskytuje standardizované rozhraní pro monitoring stavu skrze nástroj \texttt{systemctl}.
 
-\subsection{\sout{Konfigurace síťového subsystému (Netlink)}}
-\sout{Tradiční unixové nástroje (`ifconfig`) byly v Linuxu nahrazeny modernějším balíkem `iproute2`. Na pozadí těchto nástrojů stojí rozhraní \textbf{Netlink}.}
+\subsection{Konfigurace síťového subsystému (Netlink)}
+Tradiční unixové nástroje (`ifconfig`) byly v Linuxu nahrazeny modernějším balíkem `iproute2`. Na pozadí těchto nástrojů stojí rozhraní \textbf{Netlink}.
 
-\sout{Netlink slouží jako komunikační sběrnice mezi jádrem a uživatelským prostorem }\cite{ward_linux}\sout{. Na rozdíl od `ioctl` volání, Netlink používá standardní mechanismus socketů pro předávání zpráv o konfiguraci sítě (např. přiřazení IP adresy, změna routovací tabulky).}
+Netlink slouží jako komunikační sběrnice mezi jádrem a uživatelským prostorem \cite{ward_linux}. Na rozdíl od `ioctl` volání, Netlink používá standardní mechanismus socketů pro předávání zpráv o konfiguraci sítě (např. přiřazení IP adresy, změna routovací tabulky).
 
 \section{Meziprocesová komunikace (IPC) v Linuxu}
 \label{sec:ipc_theory}
@@ -139,9 +128,6 @@ Platforma .NET 8 (dříve .NET Core) představuje moderní, multiplatformní vý
 \subsubsection{Generic Host a životní cyklus služeb}
 Základním architektonickým prvkem pro běh aplikací na pozadí je tzv. \textbf{Generic Host}. Tento vzor poskytuje standardizované rozhraní pro správu životního cyklu aplikace, konfiguraci, logování a delegování úloh skrze mechanismus \textit{Dependency Injection} (DI) \cite{microsoft_generic_host}. Generic Host sjednocuje způsob, jakým jsou spravovány různé typy služeb, od webových serverů až po jednoduché úlohy běžící na pozadí. V kontextu systémových služeb umožňuje precizní řízení procesu ukončení (\textit{graceful shutdown}), kdy aplikace při přijetí signálu k ukončení (např. SIGTERM) korektně uvolní prostředky a ukončí běžící operace, čímž předchází nekonzistenci dat.
 
-\subsubsection{\sout{Integrace se systémem systemd}}
-\sout{Pro hlubší integraci s linuxovým inicializačním systémem \texttt{systemd} poskytuje platforma specializovaný modul \texttt{Microsoft.Extensions.Hosting.Systemd} \cite{microsoft_generic_host}. Tato komponenta umožňuje .NET aplikaci nativně komunikovat s inicializačním systémem \texttt{systemd}. Díky této integraci může služba odesílat stavová hlášení (např. o úspěšném spuštění) přímo do \texttt{systemd} a využívat pokročilé funkce správy služeb, jako je automatické obnovení po havárii nebo logování skrze systémový žurnál (\texttt{journald}).}
-
 \subsubsection{ASP.NET Core Data Protection}
 Kritickou součástí moderních systémů je ochrana citlivých dat, kterou v ekosystému .NET zajišťuje stack \textbf{ASP.NET Core Data Protection} \cite{microsoft_data_protection}. Tento mechanismus je navržen k šifrování dat „v klidu“ (encryption at rest) a k bezpečné správě kryptografických klíčů. Architektura stacku je založena na hierarchickém systému klíčů, kde je každý datový prvek šifrován unikátním klíčem odvozeným z hlavního klíče (master key).
 
@@ -162,16 +148,6 @@ Hlavní předností Go v oblasti systémových nástrojů je jeho schopnost stat
 \subsubsection{Framework Cobra}
 Pro tvorbu rozhraní příkazové řádky (CLI) se v ekosystému Go prosadil framework \textbf{Cobra} \cite{cobra_philosophy}. Ten definuje standardizované strukturu pro definici příkazů, podřízených příkazů a jejich parametrů (včetně rozlišení mezi globálními a lokálními přepínači). Cobra je de facto standardem, na kterém staví nástroje jako Docker či Kubernetes. Framework automatizuje generování nápovědy, validaci argumentů a poskytuje rozhraní pro generování manuálových stránek nebo skriptů pro automatické doplňování v shellu, čímž zajišťuje konzistentní uživatelský zážitek.
 
-\subsubsection{\sout{Architektura Elm a framework Bubble Tea}}
-\label{sec:elm_bubbletea}
-\sout{V oblasti interaktivních textových rozhraní (TUI) představuje špičku framework \textbf{Bubble Tea} \cite{bubble_tea_intro}. Ten je unikátní tím, že do terminálového prostředí přináší principy funkcionálního programování skrze vzor \textbf{The Elm Architecture} \cite{bubble_tea_elm}. Tato architektura definuje tři základní komponenty:}
-\begin{enumerate}
-    \item \sout{\textbf{Model:} Datová struktura reprezentující aktuální stav aplikace.}
-    \item \sout{\textbf{Update:} Čistá funkce, která přijímá zprávu (\textit{Message}) a aktuální model a vrací model nový společně s případnými příkazy (\textit{Commands}).}
-    \item \sout{\textbf{View:} Funkce, která na základě modelu vygeneruje textovou reprezentaci rozhraní pro terminál.}
-\end{enumerate}
-\sout{Zásadním přínosem tohoto přístupu je determinismus a snadná testovatelnost. Veškeré změny stavu probíhají asynchronně skrze zasílání zpráv, což zabraňuje vzniku \textit{race conditions}. Framework Bubble Tea se stará o efektivní překreslování terminálu (tzv. \textit{diffing}), kdy jsou aktualizovány pouze ty části obrazovky, které se skutečně změnily. To umožňuje vytvářet plynulá a reaktivní rozhraní, která uživateli poskytují okamžitou zpětnou vazbu bez problikávání či zpoždění.}
-
 \subsubsection{Testovací knihovny a nástroje}
 \label{sec:testovani_nastroje}
 Pro implementaci automatizovaných testů v různých programovacích jazycích a vrstvách aplikace byly zvoleny následující nástroje:
@@ -186,16 +162,16 @@ Pro implementaci automatizovaných testů v různých programovacích jazycích 
 \label{sec:formats_theory}
 Efektivní výměna dat mezi procesy (IPC) vyžaduje volbu vhodného formátu pro serializaci, který balancuje mezi výkonem, čitelností a snadnou údržbou.
 
-\subsubsection{\sout{Formát JSON}}
-\sout{\textbf{JSON} (JavaScript Object Notation) je široce rozšířený, textově orientovaný formát \cite{rfc_json}. Jeho hlavní výhodou je transparentnost – přenášená data lze snadno monitorovat a analyzovat běžnými systémovými nástroji. JSON nevyžaduje definici schématu předem, což usnadňuje agilní vývoj a integraci s webovými API. Navzdory textové povaze je parsování moderními knihovnami extrémně rychlé a pro většinu IPC scénářů na jednom hostiteli je režie zanedbalelná.}
+\subsubsection{Formát JSON}
+\textbf{JSON} (JavaScript Object Notation) je široce rozšířený, textově orientovaný formát \cite{rfc_json}. Jeho hlavní výhodou je transparentnost – přenášená data lze snadno monitorovat a analýzovat běžnými systémovými nástroji. JSON nevyžaduje definici schématu předem, což usnadňuje agilní vývoj a integraci s webovými API. Navzdory textové povaze je parsování moderními knihovnami extrémně rychlé a pro většinu IPC scénářů na jednom hostiteli je režie zanedbalelná.
 
-\subsubsection{\sout{Protokol gRPC a Protocol Buffers}}
-\sout{Naproti tomu \textbf{gRPC} je binární framework využívající \textbf{Protocol Buffers} jako mechanismus pro definici dat (\textit{Interface Definition Language}) \cite{grpc_vs_rest}. Je navržen pro maximální propustnost a minimální režii, čehož dosahuje díky binárnímu kódování a generování silně typovaného kódu pro různé programovací jazyky. gRPC vyniká v systémech s vysokým zatížením a v prostředí mikroslužeb, kde redukce velikosti zpráv vede k úspoře síťových prostředků.}
+\subsubsection{Protokol gRPC a Protocol Buffers}
+Naproti tomu \textbf{gRPC} je binární framework využívající \textbf{Protocol Buffers} jako mechanismus pro definici dat (\textit{Interface Definition Language}) \cite{grpc_vs_rest}. Je navržen pro maximální propustnost a minimální režii, čehož dosahuje díky binárnímu kódování a generování silně typovaného kódu pro různé programovací jazyky. gRPC vyniká v systémech s vysokým zatížením a v prostředí mikroslužeb, kde redukce velikosti zpráv vede k úspoře síťových prostředků.
 
-\subsubsection{\sout{Srovnání a volba transportní vrstvy}}
-\sout{Srovnání těchto technologií ukazuje na odlišné priority. gRPC dominuje v oblasti čistého výkonu a typové bezpečnosti, vyžaduje však složitější proces sestavení aplikace a ztěžuje manuální inspekci dat \cite{grpc_vs_rest}. JSON naopak zůstává preferovanou volbou pro systémy, kde je kladen důraz na diagnostiku a jednoduchost implementace.}
+\subsubsection{Srovnání a volba transportní vrstvy}
+Srovnání těchto technologií ukazuje na odlišné priority. gRPC dominuje v oblasti čistého výkonu a typové bezpečnosti, vyžaduje však složitější proces sestavení aplikace a ztěžuje manuální inspekci dat \cite{grpc_vs_rest}. JSON naopak zůstává preferovanou volbou pro systémy, kde je kladen důraz na diagnostiku a jednoduchost implementace.
 
-\sout{\begin{table}[htbp]
+\begin{table}[htbp]
     \centering
     \caption{Srovnání formátů JSON a gRPC \cite{grpc_vs_rest}}
     \label{tab:json_grpc}
@@ -208,70 +184,51 @@ Efektivní výměna dat mezi procesy (IPC) vyžaduje volbu vhodného formátu pr
         Čitelnost & Výborná pro člověka & Vyžaduje dekodér \\ \hline
         Podpora prohlížečů & Nativní & Vyžaduje proxy \\ \hline
     \end{tabular}
-\end{table}}
+\end{table}
 
 V rámci lokální komunikace mezi systémovými nástroji, kde je důležitá možnost nahlédnout do komunikace mezi klientem a službou bez nutnosti binární dešifrace, představuje JSON optimální kompromis mezi technickou efektivitou a vývojovou udržitelností.
 
-\section{\sout{Zajištění kvality a testování softwaru}}
+\section{Zajištění kvality a testování softwaru}
 \label{sec:testovani_teorie}
-\sout{Kvalita softwaru není náhodným výsledkem, ale důsledkem systematického procesu, který doprovází celý životní cyklus vývoje (SDLC – Software Development Life Cycle). V moderním inženýrství, zejména u systémových nástrojů, které manipulují se síťovým nastavením a vyžadují vysoká oprávnění, je verifikace správnosti klíčovým prvkem pro zajištění stability a bezpečnosti systému.}
+Kvalita softwaru není náhodným výsledkem, ale důsledkem systematického procesu, který doprovází celý životní cyklus vývoje (SDLC – Software Development Life Cycle). V moderním inženýrství, zejména u systémových nástrojů, které manipulují se síťovým nastavením a vyžadují vysoká oprávnění, je verifikace správnosti klíčovým prvkem pro zajištění stability a bezpečnosti systému.
 
-\subsection{\sout{Kvalita softwaru v SDLC}}
-\sout{Tradiční pohled na testování jako na oddělenou fázi na konci vývoje je v agilním prostředí nahrazen integrací testů přímo do procesu tvorby kódu. Zajištění kvality (QA – Quality Assurance) zahrnuje nejen detekci chyb, ale především prevenci jejich vzniku skrze statickou analýzu, code review a automatizované testování \cite{cohn_succeeding}. Automatizace v tomto procesu umožňuje rychlou regresní analýzu při jakýcholiv změnách v systému.}
+\subsection{Kvalita softwaru v SDLC}
+Tradiční pohled na testování jako na oddělenou fázi na konci vývoje je v agilním prostředí nahrazen integrací testů přímo do procesu tvorby kódu. Zajištění kvality (QA – Quality Assurance) zahrnuje nejen detekci chyb, ale především prevenci jejich vzniku skrze statickou analýzu, code review a automatizované testování \cite{cohn_succeeding}. Automatizace v tomto procesu umožňuje rychlou regresní analýzu při jakýcholiv změnách v systému.
 
-\subsection{\sout{Testovací pyramida}}
+\subsection{Testovací pyramida}
 \label{sec:test_pyramida_teorie}
-\sout{Koncept testovací pyramidy, který poprvé popularizoval Mike Cohn v knize \textit{Succeeding with Agile}, definuje ideální distribuci různých typů automatizovaných testů \cite{cohn_succeeding}. Cílem je vytvořit robustní základnu rychlých a levných testů, které jsou doplněny menším množstvím komplexnějších a pomalejších scénářů.}
+Koncept testovací pyramidy, který poprvé popularizoval Mike Cohn v knize \textit{Succeeding with Agile}, definuje idealní distribuci různých typů automatizovaných testů \cite{cohn_succeeding}. Cílem je vytvořit robustní základnu rychlých a levných testů, které jsou doplněny menším množstvím komplexnějších a pomalejších scénářů.
 
-\sout{\begin{figure}[H]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{images/pyramid-cost.jpg}
     \caption{Model testovací pyramidy podle Mikea Cohna \cite{cohn_succeeding}}
     \label{fig:test_pyramid}
-\end{figure}}
+\end{figure}
 
-\sout{Pyramida se skládá ze tří hlavních úrovní:}
+Pyramida se skládá ze tří hlavních úrovní:
 \begin{itemize}
-    \item \sout{\textbf{Jednotkové testy (Unit Tests):} Tvoří základnu pyramidy. Testují jednotlivé funkce nebo třídy v izolaci od okolního prostředí (např. pomocí mockování). Jsou extrémně rychlé a poskytují vývojáři okamžitou zpětnou vazbu.}
-    \item \sout{\textbf{Integrační testy (Integration Tests):} Zaměřují se na interakci mezi různými moduly nebo externími službami, čímž ověřují správnou komunikaci mezi komponentami systému.}
-    \item \sout{\textbf{End-to-End testy (E2E):} Vrchol pyramidy. Simulují reálné chování uživatele a testují systém jako celek od vstupu v CLI až po vytvoření VPN tunelu v jádře. Jsou nejpomalejší a nejvíce náchylné k chybám v konfiguraci prostředí (tzv. flakiness).}
+    \item \textbf{Jednotkové testy (Unit Tests):} Tvoří základnu pyramidy. Testují jednotlivé funkce nebo třídy v izolaci od okolního prostředí (např. pomocí mockování). Jsou extrémně rychlé a poskytují vývojáři okamžitou zpětnou vazbu.
+    \item \textbf{Integrační testy (Integration Tests):} Zaměřují se na interakci mezi různými moduly nebo externími službami, čímž ověřují správnou komunikaci mezi komponentami systému.
+    \item \textbf{End-to-End testy (E2E):} Vrchol pyramidy. Simulují reálné chování uživatele a testují systém jako celek od vstupu v CLI až po vytvoření VPN tunelu v jádře. Jsou nejpomalejší a nejvíce náchylné k chybám v konfiguraci prostředí (tzv. flakiness).
 \end{itemize}
 
-\subsection{\sout{Behavior-Driven Development (BDD) a Gherkin}}
+\subsection{Behavior-Driven Development (BDD) a Gherkin}
 \label{sec:bdd_teorie}
-\sout{Vývoj řízený chováním (BDD – Behavior-Driven Development) je metodika, která rozšiřuje principy TDD o zaměření na uživatelský pohled a čitelnost scénářů pro netechnické členy týmu \cite{bubble_tea_intro}. Specifikace jsou psány v přirozeném jazyce pomocí syntaxe \textbf{Gherkin}.}
+Vývoj řízený chováním (BDD – Behavior-Driven Development) je metodika, která rozšiřuje principy TDD o zaměření na uživatelský pohled a čitelnost scénářů pro netechnické členy týmu \cite{bubble_tea_intro}. Specifikace jsou psány v přirozeném jazyce pomocí syntaxe \textbf{Gherkin}.
 
-\sout{Scénáře v Gherkinu využívají klíčová slova:}
+Scénáře v Gherkinu využívají klíčová slova:
 \begin{itemize}
-    \item \sout{\textbf{Given (Za předpokladu):} Definice výchozího stavu systému.}
-    \item \sout{\textbf{When (Když):} Akce, kterou uživatel nebo systém provede.}
-    \item \sout{\textbf{Then (Pak):} Očekávaný výsledek operace.}
+    \item \textbf{Given (Za předpokladu):} Definice výchozího stavu systému.
+    \item \textbf{When (Když):} Akce, kterou uživatel nebo systém provede.
+    \item \textbf{Then (Pak):} Očekávaný výsledek operace.
 \end{itemize}
 
-\sout{Tento přístup umožňuje vytvořit tzv. „živou dokumentaci“, která je zároveň spustitelným testem. V rámci moderního inženýrství jsou Gherkin scénáře často využity pro precizní definici požadavků na rozhraní a chování systému, což zajišťuje, že implementace přesně odpovídá navržené specifikaci.}
+Tento přístup umožňuje vytvořit tzv. „živou dokumentaci“, která je zároveň spustitelným testem. V rámci moderního inženýrství jsou Gherkin scénáře často využity pro precizní definici požadavků na rozhraní a chování systému, což zajišťuje, že implementace přesně odpovídá navržené specifikaci.
 
 \section{Distribuce softwaru a balíčkovací systémy}
 \label{sec:distribuce}
 Správa a distribuce softwaru v ekosystému Linuxu představuje komplexní proces, který zajišťuje integritu, bezpečnost a snadnou údržbu systému. Na rozdíl od monolitických operačních systémů, kde je instalace softwaru často v režii jednotlivých aplikací, Linux využívá centralizované balíčkovací systémy, které spravují software jako soubor vzájemně propojených komponent.
-
-\subsection{\sout{Hierarchie distribucí a model Upstream/Downstream}}
-\sout{Linuxový ekosystém je charakteristický svou fragmentací, která je však organizována do logických struktur. Základem jsou tzv. foundational distributions (např. Debian, Fedora, Arch Linux, Slackware), ze kterých se odvozují stovky dalších variant.}
-
-\sout{Vztah mezi vývojáři a uživateli je definován modelem Upstream/Downstream }\cite{luminousmen_upstream}\sout{:}
-\begin{itemize}
-    \item \sout{\textbf{Upstream (Horní proud):} Představuje autory původního zdrojového kódu (např. projekt Linux kernel, GNOME, nebo samotný vývojář aplikace). Zde probíhá primární vývoj a opravy chyb.}
-    \item \sout{\textbf{Downstream (Dolní proud):} Představuje linuxové distribuce, které přebírají kód z upstreamu, upravují jej pro své potřeby (např. aplikací specifických patchů), kompilují a balí do binárních balíčků.}
-\end{itemize}
-
-%\begin{figure}[H]
-%    \centering
-%    \includegraphics[width=0.7\textwidth]{images/upstream-downstream.png}
-%    \caption{Model Upstream a Downstream v distribuci softwaru \cite{luminousmen_upstream}}
-%    \label{fig:upstream_downstream}
-%\end{figure}
-
-\sout{Příkladem hierarchie je rodina Debian: Debian (foundational) }$\rightarrow$\sout{ Ubuntu (downstream vůči Debianu) }$\rightarrow$\sout{ Linux Mint (downstream vůči Ubuntu). Tato hierarchie umožňuje efektivní sdílení oprav a inovací – oprava v upstreamu postupně „proteče“ všemi downstream distribucemi k uživatelům.}
-
 
 \subsection{Koncepty správy balíčků}
 Moderní správa balíčků je založena na třech pilířích:
