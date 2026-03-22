@@ -40,5 +40,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Fill out Internship Log (Výkaz práce)**
+- [x] **Track: Fill out Internship Log (Výkaz práce)**
 *Link: [./tracks/vykaz_prace_20260322/](./tracks/vykaz_prace_20260322/)*
