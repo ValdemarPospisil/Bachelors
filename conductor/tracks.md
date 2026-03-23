@@ -40,5 +40,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Generate student evaluation (hodnocení studentem) document**
+- [x] **Track: Generate student evaluation (hodnocení studentem) document**
 *Link: [./tracks/hodnoceni_studentem_20260322/](./tracks/hodnoceni_studentem_20260322/)*
