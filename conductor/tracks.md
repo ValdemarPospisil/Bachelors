@@ -37,3 +37,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] **Track: Refine thesis chapter 5 (testing), uncross BDD in chapter 1, and add Arch Linux support with QA verification.**
 *Link: [./tracks/thesis_ch5_refinement_20260318/](./tracks/thesis_ch5_refinement_20260318/)*
+
+---
+
+- [ ] **Track: Generate student evaluation (hodnocení studentem) document**
+*Link: [./tracks/hodnoceni_studentem_20260322/](./tracks/hodnoceni_studentem_20260322/)*
