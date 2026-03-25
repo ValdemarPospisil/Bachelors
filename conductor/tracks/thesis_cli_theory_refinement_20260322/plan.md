@@ -6,7 +6,7 @@
     - [x] Verify formatting matches existing entries.
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Bibliography Update' (Protocol in workflow.md)
 
-## Phase 2: Content Update (Section 1.1)
+## Phase 2: Content Update (Section 1.1) [checkpoint: 8fe322b]
 - [x] Task: Update `thesis/chapters/01_teorie.tex` [f3ad55e]
     - [x] Translate the provided English text into academic Czech.
     - [x] Merge/integrate the translated text into the "Rozhraní příkazové řádky" section.
