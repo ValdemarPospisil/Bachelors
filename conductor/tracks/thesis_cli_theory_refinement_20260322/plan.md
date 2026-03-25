@@ -1,10 +1,10 @@
 # Implementation Plan: Thesis content update - Section 1.1 (CLI)
 
-## Phase 1: Bibliography Update
+## Phase 1: Bibliography Update [checkpoint: 39a80fc]
 - [x] Task: Add new source to `thesis/thesis.bib` [5ea7791]
     - [x] Create a BibTeX entry for David Fateh's blog post with key `fateh_cli_explained`.
     - [x] Verify formatting matches existing entries.
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Bibliography Update' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Bibliography Update' (Protocol in workflow.md)
 
 ## Phase 2: Content Update (Section 1.1)
 - [ ] Task: Update `thesis/chapters/01_teorie.tex`
