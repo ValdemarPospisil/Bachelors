@@ -52,4 +52,4 @@ Tento projekt je zaměřen na vývoj nativního CLI klienta pro službu GoodAcce
 - [x] 5.4 Systémové a integrační testování v prostředí Linux
 
 ### 6. Závěr
-- [ ] Shrnutí výsledků a budoucí rozvoj
+- [x] Shrnutí výsledků a budoucí rozvoj
