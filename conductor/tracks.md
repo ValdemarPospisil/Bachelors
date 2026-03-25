@@ -40,5 +40,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Thesis content update - Section 1.1 (CLI)**
+- [~] **Track: Thesis content update - Section 1.1 (CLI)**
 *Link: [./tracks/thesis_cli_theory_refinement_20260322/](./tracks/thesis_cli_theory_refinement_20260322/)*
