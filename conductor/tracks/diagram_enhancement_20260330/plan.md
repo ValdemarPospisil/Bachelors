@@ -37,7 +37,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)
 
 ## Phase 4: Final Verification
-- [~] Task: Manual rendering check.
+- [x] Task: Manual rendering check. [8acc5e9]
     - [ ] Confirm all Mermaid diagrams render as expected.
     - [ ] Confirm all images and SVGs display correctly.
-- [ ] Task: Conductor - User Manual Verification 'Phase 4' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Phase 4' (Protocol in workflow.md)
