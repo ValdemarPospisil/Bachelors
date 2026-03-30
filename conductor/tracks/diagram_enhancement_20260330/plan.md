@@ -12,11 +12,11 @@
     - [ ] Define components for .NET Service side.
     - [ ] Define IPC/UDS relationship.
     - [ ] Verify diagram syntax using a Mermaid live editor.
-- [~] Task: Draft Mermaid State Diagram.
+- [x] Task: Draft Mermaid State Diagram. [30acf8e]
     - [ ] Define connection states (Disconnected, Connecting, Connected, etc.).
     - [ ] Define transitions based on `VpnService` logic.
     - [ ] Verify diagram syntax.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
 
 ## Phase 3: README.md Updates
 - [ ] Task: Replace high-level architecture diagram.
