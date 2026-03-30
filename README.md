@@ -173,22 +173,22 @@ gantt
     
     section Foundation & IPC
     Analýza a návrh IPC struktury :done, init, 2025-12-01, 14d
-    TUI Framework (Bubble Tea)    :done, tui, after init, 10d
+    TUI Framework (Bubble Tea)    :done, tui, after init, 8d
     
     section Auth & UI logic
-    Login / Logout mechanismus    :done, login, after tui, 12d
+    Login / Logout mechanismus    :done, login, after tui, 10d
     Interaktivní Setup Wizard     :done, setup, after login, 10d
-    Status & View modely          :done, stat, after setup, 10d
+    Status & View modely          :done, stat, after setup, 8d
 
     section Core Implementation
-    Connect / Disconnect logika   :done, conn, after stat, 14d
-    Persistence & Systemd integrace:done, pers, after conn, 14d
-    WireGuard & OpenVPN podpora   :done, vpn, after pers, 20d
+    Connect / Disconnect logika   :done, conn, after stat, 12d
+    Persistence & Systemd integrace:done, pers, after conn, 12d
+    WireGuard & OpenVPN podpora   :done, vpn, after pers, 18d
 
     section Polish & QA
-    Rozšíření (-p, -g přepínače)  :done, enh, after vpn, 10d
+    Rozšíření (-p, -g přepínače)  :done, enh, after vpn, 8d
     Řešení konfliktů (Multi-user) :done, conf, after enh, 10d
-    QA & Balíčkování (.deb, .rpm) :active, rel, after conf, 14d
+    QA & Balíčkování (.deb, .rpm) :active, rel, after conf, 10d
 ```
 
 ---
