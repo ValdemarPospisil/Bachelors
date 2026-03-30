@@ -31,10 +31,10 @@
 - [x] Task: Add connection state diagram. [de29fe0]
     - [ ] Create a new section "Stavový diagram" in `README.md`.
     - [ ] Embed the new Mermaid State Diagram.
-- [~] Task: Final README layout polish.
+- [x] Task: Final README layout polish. [6e2f6fa]
     - [ ] Check all links and image paths.
     - [ ] Ensure consistent formatting and spacing.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)
 
 ## Phase 4: Final Verification
 - [ ] Task: Manual rendering check.
