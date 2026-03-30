@@ -77,19 +77,9 @@ Komunikace mezi klientem a službou probíhá asynchronně pomocí JSON zpráv. 
 ![Login Sequence](./doc/diagrams/Sequence%20-%20Login.svg)
 
 ### Hierarchie příkazů
-```mermaid
-graph LR
-    ga[goodaccess] --> login[login]
-    ga --> logout[logout]
-    ga --> setup[setup]
-    ga --> connect[connect]
-    ga --> disconnect[disconnect]
-    ga --> status[status]
-    ga --> version[version]
+Přehled dostupných příkazů a jejich struktury v rámci CLI aplikace.
 
-    setup --> s1[Interaktivní průvodce nastavením]
-    status --> s2[Reálný stav VPN tunelu]
-```
+![Command Hierarchy](./thesis/images/command-tree.png)
 
 ---
 
