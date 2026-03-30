@@ -81,6 +81,21 @@ Přehled dostupných příkazů a jejich struktury v rámci CLI aplikace.
 
 ![Command Hierarchy](./thesis/images/command-tree.png)
 
+### Stavový diagram připojení
+Vizualizace životního cyklu VPN připojení a přechodů mezi jednotlivými stavy.
+
+```mermaid
+stateDiagram-v2
+    [*] --> Disconnected
+    Disconnected --> Connecting : ga-cli connect
+    Connecting --> Connected : success
+    Connecting --> Error : failure / timeout
+    Connected --> Disconnecting : ga-cli disconnect
+    Disconnecting --> Disconnected : success
+    Error --> Disconnected : ga-cli disconnect / reset
+    Connected --> Disconnected : network loss / idle timeout
+```
+
 ---
 
 ## 📸 Ukázky z Implementace (Screenshots)

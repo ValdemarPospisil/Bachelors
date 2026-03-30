@@ -25,10 +25,10 @@
 - [x] Task: Replace IPC sequence diagram. [34e668a]
     - [ ] Locate "IPC Komunikace" in `README.md`.
     - [ ] Replace with reference to `doc/diagrams/Sequence - Login.svg`.
-- [~] Task: Replace command hierarchy diagram.
+- [x] Task: Replace command hierarchy diagram. [dad027b]
     - [ ] Locate "Hierarchie příkazů" in `README.md`.
     - [ ] Replace with reference to `thesis/images/command-tree.png`.
-- [ ] Task: Add connection state diagram.
+- [~] Task: Add connection state diagram.
     - [ ] Create a new section "Stavový diagram" in `README.md`.
     - [ ] Embed the new Mermaid State Diagram.
 - [ ] Task: Final README layout polish.
