@@ -28,10 +28,10 @@
 - [x] Task: Replace command hierarchy diagram. [dad027b]
     - [ ] Locate "Hierarchie příkazů" in `README.md`.
     - [ ] Replace with reference to `thesis/images/command-tree.png`.
-- [~] Task: Add connection state diagram.
+- [x] Task: Add connection state diagram. [de29fe0]
     - [ ] Create a new section "Stavový diagram" in `README.md`.
     - [ ] Embed the new Mermaid State Diagram.
-- [ ] Task: Final README layout polish.
+- [~] Task: Final README layout polish.
     - [ ] Check all links and image paths.
     - [ ] Ensure consistent formatting and spacing.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)
