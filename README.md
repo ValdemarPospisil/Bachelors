@@ -74,7 +74,7 @@ classDiagram
 ### IPC Komunikace (Sekvenční diagram přihlášení)
 Komunikace mezi klientem a službou probíhá asynchronně pomocí JSON zpráv. Níže je vizualizace procesu přihlášení.
 
-![Login Sequence](./doc/diagrams/Sequence%20-%20Login.svg)
+![Login Sequence](./doc/diagrams/Sequence%20-%20Login.png)
 
 ### Hierarchie příkazů
 Přehled dostupných příkazů a jejich struktury v rámci CLI aplikace.
