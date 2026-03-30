@@ -160,9 +160,38 @@ Scenario: Connect using saved preferences (Default behavior)
 
 ## 📅 Roadmapa Projektu (Ganttův diagram)
 
-Vývoj probíhal podle předem stanoveného harmonogramu, který reflektuje fáze analýzy, návrhu a implementace.
+Vývoj probíhal iterativně od počátečního návrhu IPC až po finální balíčkování.
 
-![Gantt Chart](./doc/diagrams/Online%20Gantt%2020260115.png)
+```mermaid
+gantt
+    title GoodAccess CLI - Vývojová Roadmapa (2025-2026)
+    dateFormat  YYYY-MM-DD
+    axisFormat  %m/%y
+    
+    section Foundation & IPC
+    Analýza a návrh IPC struktury :done, init, 2025-12-01, 14d
+    TUI Framework (Bubble Tea)    :done, tui, after init, 10d
+    
+    section Auth & UI logic
+    Login / Logout mechanismus    :done, login, after tui, 12d
+    Interaktivní Setup Wizard     :done, setup, after login, 10d
+    Status & View modely          :done, stat, after setup, 5d
+
+    section Core Implementation
+    Connect / Disconnect logika   :done, conn, after stat, 14d
+    Persistence & Systemd integrace:done, pers, after conn, 10d
+    WireGuard & OpenVPN podpora   :done, vpn, after pers, 15d
+
+    section Polish & QA
+    Rozšíření (-p, -g přepínače)  :done, enh, after vpn, 7d
+    Řešení konfliktů (Multi-user) :done, conf, after enh, 7d
+    QA & Balíčkování (.deb, .rpm) :done, rel, after conf, 10d
+
+    section Bakalářská Práce
+    Psaní textu práce (Kap. 1-3)  :done, doc1, 2025-12-15, 40d
+    Dokumentace implementace      :done, doc2, after doc1, 25d
+    Finalizace a revize           :active, doc3, after doc2, 20d
+```
 
 ---
 
