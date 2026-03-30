@@ -1,0 +1,8 @@
+{
+  "track_id": "diagram_enhancement_20260330",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-03-30T10:00:00Z",
+  "updated_at": "2026-03-30T10:00:00Z",
+  "description": "Enhance README.md diagrams, add class and state diagrams based on code, replace old Mermaid graphs with static assets."
+}

@@ -42,3 +42,9 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [~] **Track: Thesis content update - Section 1.1 (CLI)**
 *Link: [./tracks/thesis_cli_theory_refinement_20260322/](./tracks/thesis_cli_theory_refinement_20260322/)*
+
+---
+
+- [ ] **Track: Enhance README.md diagrams, add class and state diagrams based on code, replace old Mermaid graphs with static assets.**
+*Link: [./tracks/diagram_enhancement_20260330/](./tracks/diagram_enhancement_20260330/)*
+
