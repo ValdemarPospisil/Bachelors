@@ -1,10 +1,10 @@
 # Implementation Plan - Diagram Enhancement
 
 ## Phase 1: Preparation & Asset Verification
-- [~] Task: Verify existence of external assets.
+- [x] Task: Verify existence of external assets. [bcdcf60]
     - [ ] Check `doc/diagrams/Sequence - Login.svg`
     - [ ] Check `thesis/images/command-tree.png`
-- [ ] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md)
 
 ## Phase 2: Create Mermaid Diagrams
 - [ ] Task: Draft Mermaid Class Diagram.
