@@ -18,7 +18,7 @@
     - [ ] Verify diagram syntax.
 - [x] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
 
-## Phase 3: README.md Updates
+## Phase 3: README.md Updates [checkpoint: 85115e2]
 - [x] Task: Replace high-level architecture diagram. [d88268a]
     - [ ] Locate "Celkové schéma" in `README.md`.
     - [ ] Replace with the new Mermaid Class Diagram.
@@ -34,10 +34,10 @@
 - [x] Task: Final README layout polish. [6e2f6fa]
     - [ ] Check all links and image paths.
     - [ ] Ensure consistent formatting and spacing.
-- [~] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)
 
 ## Phase 4: Final Verification
-- [ ] Task: Manual rendering check.
+- [~] Task: Manual rendering check.
     - [ ] Confirm all Mermaid diagrams render as expected.
     - [ ] Confirm all images and SVGs display correctly.
 - [ ] Task: Conductor - User Manual Verification 'Phase 4' (Protocol in workflow.md)
