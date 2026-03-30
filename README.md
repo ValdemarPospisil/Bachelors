@@ -13,23 +13,62 @@ Aplikace je navržena jako distribuovaný systém skládající se ze dvou hlavn
 
 ### Celkové schéma
 ```mermaid
-graph TD
-    subgraph "Uživatelský prostor (User Space)"
-        CLI[Go CLI Klient]
-        D[C# Systémová Služba / Daemon]
-    end
-    
-    subgraph "Jádro (Kernel Space)"
-        WG[WireGuard Module]
-        OVPN[OpenVPN Module]
-        NET[Síťová Rozhraní]
-    end
+classDiagram
+    class GoCLI {
+        +main()
+    }
+    class UnixClient {
+        -socketPath: string
+        +Send(command, payload)
+    }
+    class SenderReader {
+        -pipeName: string
+        +CreatePipe()
+        +ReadMessageAsync()
+        +SendMessageAsync()
+    }
+    class CliMessenger {
+        -senderReader: SenderReader
+        +Start()
+        +HandleCommand()
+    }
+    class AuthService {
+        +Login()
+        +IsUserLoggedIn()
+    }
+    class VpnService {
+        +Connect()
+        +Disconnect()
+    }
+    class GatewayService {
+        +GetGateways()
+    }
+    class UserProfileService {
+        +SaveConfiguration()
+    }
+    class VpnManager {
+        -agents: IAgent[]
+    }
+    class IAgent {
+        <<interface>>
+        +Connect()
+    }
+    class OpenVPN {
+    }
+    class WireGuard {
+    }
 
-    CLI <--"IPC (JSON přes UDS)"--> D
-    D <--"System Calls / CLI Tools"--> WG
-    D <--"System Calls / CLI Tools"--> OVPN
-    WG --> NET
-    OVPN --> NET
+    GoCLI --> UnixClient : používá
+    UnixClient ..> SenderReader : IPC (UDS/JSON)
+    CliMessenger --> SenderReader : používá
+    CliMessenger --> AuthService : spravuje
+    CliMessenger --> VpnService : spravuje
+    CliMessenger --> GatewayService : spravuje
+    CliMessenger --> UserProfileService : spravuje
+    VpnService --> VpnManager : orchestruje
+    VpnManager --> IAgent : používá
+    IAgent <|.. OpenVPN : implementuje
+    IAgent <|.. WireGuard : implementuje
 ```
 
 ### IPC Komunikace (Request/Response)

@@ -6,7 +6,7 @@
     - [ ] Check `thesis/images/command-tree.png`
 - [x] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md)
 
-## Phase 2: Create Mermaid Diagrams
+## Phase 2: Create Mermaid Diagrams [checkpoint: b358bfe]
 - [x] Task: Draft Mermaid Class Diagram. [4032e5e]
     - [ ] Define components for Go CLI side.
     - [ ] Define components for .NET Service side.
@@ -16,10 +16,10 @@
     - [ ] Define connection states (Disconnected, Connecting, Connected, etc.).
     - [ ] Define transitions based on `VpnService` logic.
     - [ ] Verify diagram syntax.
-- [~] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
 
 ## Phase 3: README.md Updates
-- [ ] Task: Replace high-level architecture diagram.
+- [~] Task: Replace high-level architecture diagram.
     - [ ] Locate "Celkové schéma" in `README.md`.
     - [ ] Replace with the new Mermaid Class Diagram.
 - [ ] Task: Replace IPC sequence diagram.
