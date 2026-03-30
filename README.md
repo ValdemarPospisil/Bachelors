@@ -1,55 +1,189 @@
-# GoodAccess CLI klient pro Linux
+# GoodAccess CLI Klient pro Linux
 
-Tento projekt je zaměřen na vývoj nativního CLI klienta pro službu GoodAccess v prostředí operačního systému Linux. Součástí projektu je také bakalářská práce dokumentující celý proces vývoje od analýzy až po distribuci.
+Tento projekt je zaměřen na vývoj nativního CLI (Command Line Interface) klienta pro službu **GoodAccess** v prostředí operačního systému Linux. Součástí projektu je také bakalářská práce dokumentující celý proces vývoje od analýzy až po distribuci.
 
-## Klíčové technologie
-- **Backend:** .NET 8 (C#) – systémová služba (daemon) spravující VPN tunely.
-- **Frontend:** Go (Golang) – uživatelské rozhraní příkazové řádky.
-- **IPC:** Unix Domain Sockets – bezpečná komunikace mezi komponentami.
-- **VPN Protokoly:** WireGuard a OpenVPN.
-
-## Dokumentace a Výstupy
-- 📄 [Bakalářská práce (PDF)](./thesis/build/thesis.pdf)
-- 📊 [Prezentace (PDF)](./presentations/SKKI1/build/prezentace.pdf)
+> [!IMPORTANT]
+> **Poznámka k repozitáři:** Vzhledem k tomu, že vývoj probíhal v rámci firemního prostředí, je samotný zdrojový kód aplikace **soukromý**. Tento veřejný repozitář ([ValdemarPospisil/Bachelors](https://github.com/ValdemarPospisil/Bachelors)) slouží jako doprovodný materiál k bakalářské práci a obsahuje dokumentaci, ukázky kódu, schémata a specifikace testů.
 
 ---
 
-## Stav bakalářské práce
+## 🏗️ Architektura Systému
 
-### 1. Teoretická východiska
-- [x] 1.1 Rozhraní příkazové řádky
-- [x] 1.2 Architektura VPN a principy Zero Trust
-- [x] 1.3 Architektura operačního systému Linux
-- [x] 1.4 Implementační technologie
-- [x] 1.5 Zajištění kvality a testování softwaru
-- [x] 1.6 Distribuce softwaru a balíčkové systémy
-- [x] 1.7 Agilní metodiky a Extreme Programming
+Aplikace je navržena jako distribuovaný systém skládající se ze dvou hlavních komponent komunikujících přes **Unix Domain Sockets (UDS)**.
 
-### 2. Analýza a specifikace požadavků
-- [x] 2.1 Identifikace zúčastněných stran
-- [x] 2.2 Případy užití
-- [x] 2.3 Funkční požadavky
-- [x] 2.4 Mimofunkční požadavky
-- [x] 2.5 Analýza architektury
+### Celkové schéma
+```mermaid
+graph TD
+    subgraph "Uživatelský prostor (User Space)"
+        CLI[Go CLI Klient]
+        D[C# Systémová Služba / Daemon]
+    end
+    
+    subgraph "Jádro (Kernel Space)"
+        WG[WireGuard Module]
+        OVPN[OpenVPN Module]
+        NET[Síťová Rozhraní]
+    end
 
-### 3. Návrh řešení
-- [x] 3.1 Komponenty systému
-- [x] 3.2 Návrh komunikace IPC
-- [x] 3.3 Návrh uživatelského rozhraní (CLI)
-- [x] 3.4 Správa dat a bezpečnostní model
-- [x] 3.5 Návrh distribuce a aktualizací
+    CLI <--"IPC (JSON přes UDS)"--> D
+    D <--"System Calls / CLI Tools"--> WG
+    D <--"System Calls / CLI Tools"--> OVPN
+    WG --> NET
+    OVPN --> NET
+```
 
-### 4. Implementace
-- [x] 4.1 Struktura projektu a vývojové prostředí
-- [x] 4.2 Implementace systémové služby (.NET)
-- [x] 4.3 Implementace klientské aplikace (Go)
-- [x] 4.4 Pokročilé funkce a technické výzvy
+### IPC Komunikace (Request/Response)
+Komunikace mezi klientem a službou probíhá asynchronně pomocí JSON zpráv.
 
-### 5. Testování a nasazení
-- [x] 5.1 Metodika testování
-- [x] 5.2 Jednotkové testy a mockování
-- [x] 5.3 Akceptační testování
-- [x] 5.4 Systémové a integrační testování v prostředí Linux
+```mermaid
+sequenceDiagram
+    participant User as Uživatel
+    participant CLI as Go CLI Klient
+    participant UDS as Unix Domain Socket
+    participant Daemon as C# Daemon (Systemd)
 
-### 6. Závěr
-- [x] Shrnutí výsledků a budoucí rozvoj
+    User->>CLI: ga-cli connect
+    CLI->>UDS: Connect()
+    CLI->>UDS: Send(JSON Request: {Action: "connect", Payload: {...}})
+    UDS->>Daemon: Receive(JSON Request)
+    
+    Note over Daemon: Validace stavu
+    Note over Daemon: Aktualizace VPN konfigurace
+    Note over Daemon: Aktivace rozhraní (wg0/tun0)
+    
+    Daemon->>UDS: Send(JSON Response: {Status: "success", Message: "Connected"})
+    UDS->>CLI: Receive(JSON Response)
+    CLI->>User: Výpis stavu: "Connected"
+```
+
+### Hierarchie příkazů
+```mermaid
+graph LR
+    ga[goodaccess] --> login[login]
+    ga --> logout[logout]
+    ga --> setup[setup]
+    ga --> connect[connect]
+    ga --> disconnect[disconnect]
+    ga --> status[status]
+    ga --> version[version]
+
+    setup --> s1[Interaktivní průvodce nastavením]
+    status --> s2[Reálný stav VPN tunelu]
+```
+
+---
+
+## 📸 Ukázky z Implementace (Screenshots)
+
+Zde jsou snímky obrazovky zachycující různé stavy aplikace.
+
+| Stav | Náhled |
+| :--- | :--- |
+| **Průvodce nastavením (Setup)** | ![Setup](./thesis/images/implementation/screenshots/setup-step-login.png) |
+| **Výběr brány (Gateway)** | ![Gateway](./thesis/images/implementation/screenshots/setup-step-gateway.png) |
+| **Připojování (Spinner)** | ![Connecting](./thesis/images/implementation/screenshots/connecting-spinner.png) |
+| **Stav připojení (Status)** | ![Status](./thesis/images/implementation/screenshots/status-connected.png) |
+| **Odpojeno** | ![Disconnected](./thesis/images/implementation/screenshots/status-disconnected.png) |
+| **Příkaz nápovědy (Help)** | ![Help](./thesis/images/implementation/screenshots/help-command.png) |
+
+---
+
+## 💻 Technické Detaily
+
+### Implementační technologie
+- **Frontend (UI/CLI):** [Go (Golang)](./doc/code/main.go) – Zaměřeno na rychlost, jednoduchost a statickou binárku.
+- **Backend (Daemon):** [.NET 8 (C#)](./doc/code/Program.cs) – Systémová služba spravovaná přes `systemd`, využívající silné typování a moderní asynchronní API.
+- **IPC:** Unix Domain Sockets s JSON serializací (viz [protocol.go](./doc/code/protocol.go)).
+
+### Ukázka kódu (Go Frontend)
+```go
+// Inicializace klienta a spuštění root příkazu
+func main() {
+    socketPath := "/tmp/CoreFxPipe_ga-cli.sock"
+    client := adapter.NewUnixClient(socketPath)
+    rootCmd := cmd.NewRootCmd(client)
+
+    if err := rootCmd.Execute(); err != nil {
+        fmt.Fprintln(os.Stderr, err)
+        os.Exit(1)
+    }
+}
+```
+
+### Ukázka kódu (C# Backend)
+```csharp
+// Konfigurace hostitele pro systémovou službu
+IHost host = Host.CreateDefaultBuilder(args)
+    .UseSystemd()
+    .ConfigureServices(services =>
+    {
+        services.AddDataProtection()
+            .PersistKeysToFileSystem(new DirectoryInfo(keysPath))
+            .SetApplicationName("CLIService");
+
+        services.AddSingleton(logger);
+        services.AddHostedService<Worker>();
+    })
+    .Build();
+
+await host.RunAsync();
+```
+
+---
+
+## 🧪 Zajištění Kvality (QA)
+
+Projekt využívá metodiku **BDD (Behavior-Driven Development)** pro definici uživatelských požadavků a jejich následné testování.
+
+### Gherkin Specifikace
+Testovací scénáře jsou psány v jazyce Gherkin, což umožňuje snadnou komunikaci mezi vývojáři a zadavatelem.
+
+**Ukázka scénáře ([connect.feature](./doc/specs/connect.feature)):**
+```gherkin
+Scenario: Connect using saved preferences (Default behavior)
+    Given I have a saved configuration:
+      | Gateway  | CZ Prague |
+      | Protocol | WireGuard |
+    When I run "ga-cli connect"
+    Then the system should initiate connection to "CZ Prague" using "WireGuard"
+    And I should see "Connected" in the output
+    And the exit code should be 0
+```
+
+**Odkazy na specifikace:**
+- [Login](./doc/specs/login.feature)
+- [Connect](./doc/specs/connect.feature)
+- [Status](./doc/specs/status.feature)
+- [Setup](./doc/specs/setup.feature)
+
+---
+
+## 📅 Roadmapa Projektu (Ganttův diagram)
+
+Vývoj probíhal podle předem stanoveného harmonogramu, který reflektuje fáze analýzy, návrhu a implementace.
+
+![Gantt Chart](./doc/diagrams/Online%20Gantt%2020260115.png)
+
+---
+
+## 🎥 Video Ukázky (Placeholders)
+
+*Videa budou doplněna po dokončení finální verze aplikace.*
+
+- 🎬 [Instalace a Prvotní Nastavení](#) (Placeholder)
+- 🎬 [Práce s VPN tunely](#) (Placeholder)
+- 🎬 [Diagnostika a řešení problémů](#) (Placeholder)
+
+---
+
+## 📄 Dokumentace a Výstupy
+
+Kompletní dokumentaci k projektu naleznete v následujících souborech:
+
+- **Bakalářská práce:** [thesis.pdf](./thesis/build/thesis.pdf)
+- **Zdrojové texty (LaTeX):** [thesis/](./thesis/)
+- **Prezentace:** [prezentace.pdf](./presentations/SKKI1/build/prezentace.pdf)
+
+---
+
+© 2026 Valdemar Pospíšil
