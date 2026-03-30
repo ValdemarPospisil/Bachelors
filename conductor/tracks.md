@@ -45,6 +45,6 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Enhance README.md diagrams, add class and state diagrams based on code, replace old Mermaid graphs with static assets.**
+- [x] **Track: Enhance README.md diagrams, add class and state diagrams based on code, replace old Mermaid graphs with static assets.**
 *Link: [./tracks/diagram_enhancement_20260330/](./tracks/diagram_enhancement_20260330/)*
 
