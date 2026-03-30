@@ -152,9 +152,12 @@ Scenario: Connect using saved preferences (Default behavior)
 
 **Odkazy na specifikace:**
 - [Login](./doc/specs/login.feature)
-- [Connect](./doc/specs/connect.feature)
-- [Status](./doc/specs/status.feature)
+- [Logout](./doc/specs/logout.feature)
 - [Setup](./doc/specs/setup.feature)
+- [Connect](./doc/specs/connect.feature)
+- [Disconnect](./doc/specs/disconnect.feature)
+- [Status](./doc/specs/status.feature)
+- [Version](./doc/specs/version.feature)
 
 ---
 
@@ -175,22 +178,17 @@ gantt
     section Auth & UI logic
     Login / Logout mechanismus    :done, login, after tui, 12d
     Interaktivní Setup Wizard     :done, setup, after login, 10d
-    Status & View modely          :done, stat, after setup, 5d
+    Status & View modely          :done, stat, after setup, 10d
 
     section Core Implementation
     Connect / Disconnect logika   :done, conn, after stat, 14d
-    Persistence & Systemd integrace:done, pers, after conn, 10d
-    WireGuard & OpenVPN podpora   :done, vpn, after pers, 15d
+    Persistence & Systemd integrace:done, pers, after conn, 14d
+    WireGuard & OpenVPN podpora   :done, vpn, after pers, 20d
 
     section Polish & QA
-    Rozšíření (-p, -g přepínače)  :done, enh, after vpn, 7d
-    Řešení konfliktů (Multi-user) :done, conf, after enh, 7d
-    QA & Balíčkování (.deb, .rpm) :done, rel, after conf, 10d
-
-    section Bakalářská Práce
-    Psaní textu práce (Kap. 1-3)  :done, doc1, 2025-12-15, 40d
-    Dokumentace implementace      :done, doc2, after doc1, 25d
-    Finalizace a revize           :active, doc3, after doc2, 20d
+    Rozšíření (-p, -g přepínače)  :done, enh, after vpn, 10d
+    Řešení konfliktů (Multi-user) :done, conf, after enh, 10d
+    QA & Balíčkování (.deb, .rpm) :active, rel, after conf, 14d
 ```
 
 ---
