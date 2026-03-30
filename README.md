@@ -71,29 +71,10 @@ classDiagram
     IAgent <|.. WireGuard : implementuje
 ```
 
-### IPC Komunikace (Request/Response)
-Komunikace mezi klientem a službou probíhá asynchronně pomocí JSON zpráv.
+### IPC Komunikace (Sekvenční diagram přihlášení)
+Komunikace mezi klientem a službou probíhá asynchronně pomocí JSON zpráv. Níže je vizualizace procesu přihlášení.
 
-```mermaid
-sequenceDiagram
-    participant User as Uživatel
-    participant CLI as Go CLI Klient
-    participant UDS as Unix Domain Socket
-    participant Daemon as C# Daemon (Systemd)
-
-    User->>CLI: ga-cli connect
-    CLI->>UDS: Connect()
-    CLI->>UDS: Send(JSON Request: {Action: "connect", Payload: {...}})
-    UDS->>Daemon: Receive(JSON Request)
-    
-    Note over Daemon: Validace stavu
-    Note over Daemon: Aktualizace VPN konfigurace
-    Note over Daemon: Aktivace rozhraní (wg0/tun0)
-    
-    Daemon->>UDS: Send(JSON Response: {Status: "success", Message: "Connected"})
-    UDS->>CLI: Receive(JSON Response)
-    CLI->>User: Výpis stavu: "Connected"
-```
+![Login Sequence](./doc/diagrams/Sequence%20-%20Login.svg)
 
 ### Hierarchie příkazů
 ```mermaid

@@ -19,10 +19,10 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
 
 ## Phase 3: README.md Updates
-- [~] Task: Replace high-level architecture diagram.
+- [x] Task: Replace high-level architecture diagram. [d88268a]
     - [ ] Locate "Celkové schéma" in `README.md`.
     - [ ] Replace with the new Mermaid Class Diagram.
-- [ ] Task: Replace IPC sequence diagram.
+- [~] Task: Replace IPC sequence diagram.
     - [ ] Locate "IPC Komunikace" in `README.md`.
     - [ ] Replace with reference to `doc/diagrams/Sequence - Login.svg`.
 - [ ] Task: Replace command hierarchy diagram.
