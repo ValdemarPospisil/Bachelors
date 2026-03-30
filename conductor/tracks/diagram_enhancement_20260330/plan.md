@@ -7,12 +7,12 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md)
 
 ## Phase 2: Create Mermaid Diagrams
-- [~] Task: Draft Mermaid Class Diagram.
+- [x] Task: Draft Mermaid Class Diagram. [4032e5e]
     - [ ] Define components for Go CLI side.
     - [ ] Define components for .NET Service side.
     - [ ] Define IPC/UDS relationship.
     - [ ] Verify diagram syntax using a Mermaid live editor.
-- [ ] Task: Draft Mermaid State Diagram.
+- [~] Task: Draft Mermaid State Diagram.
     - [ ] Define connection states (Disconnected, Connecting, Connected, etc.).
     - [ ] Define transitions based on `VpnService` logic.
     - [ ] Verify diagram syntax.
