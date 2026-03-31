@@ -81,35 +81,21 @@ Přehled dostupných příkazů a jejich struktury v rámci CLI aplikace.
 
 ![Command Hierarchy](./thesis/images/command-tree.png)
 
-### Stavový diagram připojení
-Vizualizace životního cyklu VPN připojení a přechodů mezi jednotlivými stavy.
-
-```mermaid
-stateDiagram-v2
-    [*] --> Disconnected
-    Disconnected --> Connecting : ga-cli connect
-    Connecting --> Connected : success
-    Connecting --> Error : failure / timeout
-    Connected --> Disconnecting : ga-cli disconnect
-    Disconnecting --> Disconnected : success
-    Error --> Disconnected : ga-cli disconnect / reset
-    Connected --> Disconnected : network loss / idle timeout
-```
-
----
-
 ## 📸 Ukázky z Implementace (Screenshots)
 
-Zde jsou snímky obrazovky zachycující různé stavy aplikace.
+Zde jsou snímky obrazovky zachycující různé stavy aplikace v logickém pořadí od přihlášení až po odhlášení.
 
 | Stav | Náhled |
 | :--- | :--- |
-| **Průvodce nastavením (Setup)** | ![Setup](./thesis/images/implementation/screenshots/setup-step-login.png) |
-| **Výběr brány (Gateway)** | ![Gateway](./thesis/images/implementation/screenshots/setup-step-gateway.png) |
-| **Připojování (Spinner)** | ![Connecting](./thesis/images/implementation/screenshots/connecting-spinner.png) |
-| **Stav připojení (Status)** | ![Status](./thesis/images/implementation/screenshots/status-connected.png) |
-| **Odpojeno** | ![Disconnected](./thesis/images/implementation/screenshots/status-disconnected.png) |
-| **Příkaz nápovědy (Help)** | ![Help](./thesis/images/implementation/screenshots/help-command.png) |
+| **Přihlášení (Login)** | ![Login](./doc/screenshots/login-successfull.png) |
+| **Nastavení (Setup - Protokol)** | ![Setup Protocol](./doc/screenshots/setup-protocol.png) |
+| **Nastavení (Setup - Připojení)** | ![Setup Connect](./doc/screenshots/setup-connect.png) |
+| **Nastavení (Setup - Persistence)** | ![Setup Persistence](./doc/screenshots/setup-persistent.png) |
+| **Nápověda k příkazům (Help)** | ![Help](./doc/screenshots/connect-help.png) |
+| **Úspěšné připojení** | ![Connected](./doc/screenshots/connect-successfull.png) |
+| **Chyba sítě (Error)** | ![Error](./doc/screenshots/connect-network-error.png) |
+| **Odpojení (Disconnected)** | ![Disconnected](./doc/screenshots/disconnect-successfull.png) |
+| **Odhlášení (Logout)** | ![Logout](./doc/screenshots/logout-connected.png) |
 
 ---
 
