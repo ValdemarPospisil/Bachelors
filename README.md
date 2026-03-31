@@ -71,6 +71,16 @@ classDiagram
     IAgent <|.. WireGuard : implementuje
 ```
 
+### Komponentový model (User vs System Space)
+Vizualizace rozdělení aplikace na klientskou část (User Space) a systémového démona (System Space).
+
+![Architecture Component Model](./thesis/images/navrh-architecture.png)
+
+### Bezpečnostní model (Data Protection)
+Schéma zajištění bezpečnosti uložených dat a ověřování identity uživatele (LinuxId validation).
+
+![Security Component](./thesis/images/security-component.png)
+
 ### IPC Komunikace (Sekvenční diagram přihlášení)
 Komunikace mezi klientem a službou probíhá asynchronně pomocí JSON zpráv. Níže je vizualizace procesu přihlášení.
 
@@ -80,6 +90,11 @@ Komunikace mezi klientem a službou probíhá asynchronně pomocí JSON zpráv. 
 Přehled dostupných příkazů a jejich struktury v rámci CLI aplikace.
 
 ![Command Hierarchy](./thesis/images/command-tree.png)
+
+### Distribuce a Aktualizace
+Diagram zobrazující proces detekce nové verze a následnou aktualizaci balíčků přes systémového správce balíčků.
+
+![Distribution Diagram](./thesis/images/distribution-diagram.png)
 
 ## 📸 Ukázky z Implementace (Screenshots)
 
