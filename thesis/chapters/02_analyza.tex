@@ -1,8 +1,6 @@
 \chapter{Analýza a specifikace požadavků}
 \label{chap:analyza}
 
-Cílem této kapitoly je analyzovat potřeby cílové skupiny uživatelů a na jejich základě definovat funkční i nefunkční požadavky na výslednou aplikaci. Součástí je také analýza možných architektonických přístupů.
-
 Celý proces analýzy a sběru požadavků probíhal v agilním prostředí. Během vývoje se využívaly iterativní schůzky, pravidelné standupy a dedikované brainstormové sekce. Na těchto setkáních byli přítomni zkušení vývojáři a technický ředitel (CTO), kteří měli přímý kontakt se zákazníky a znali jejich konkrétní požadavky a zpětnou vazbu. Díky tomu bylo možné rychle a efektivně reagovat na potřeby uživatelů a správně specifikovat klíčové vlastnosti aplikace.
 
 \section{Identifikace zúčastněných stran}
@@ -32,28 +30,23 @@ Aplikace musí umožnit přihlášení uživatele v prostředí bez webového pr
 \begin{itemize}
     \item \textbf{F1 -- Login:} Přihlášení probíhá pomocí standardního terminálového vstupu, kam uživatel zadá název týmu, uživatelské jméno a heslo. Zadávání hesla je pro bezpečnost maskováno (zobrazují se pouze znaky \texttt{*}).
     \item \textbf{F2 -- Logout:} Standardní ukončení relace uživatele a bezpečné smazání lokálně uložených tokenů.
+    \item \textbf{F3 -- Setup:} Interaktivní průvodce prvotním nastavením (onboarding wizard). Umožňuje uživateli v jednom kroku provést přihlášení, zvolit protokol, vybrat bránu, nastavit perzistentní připojení a rovnou se připojit. Tento proces je striktně interaktivní.
 \end{itemize}
 
 \subsection{Správa připojení}
 Jádrem aplikace je ovládání VPN tunelu a správa nastavení pro připojení.
 \begin{itemize}
-    \item \textbf{F3 -- Connect:} Navázání připojení. Standardně se využije preferovaný protokol a brána (gateway) uložená z předchozího nastavení.
-    \item \textbf{F4 -- Connect Flags:} Možnost dočasně přepsat preferované nastavení při připojení pomocí přepínačů \texttt{-g} (gateway) a \texttt{-p} (protocol). Přepínač \texttt{--protocol} očekává textový název protokolu, zatímco \texttt{--gateway} vyvolá interaktivní výběr. Tato volba se neuloží jako preferovaná.
-    \item \textbf{F5 -- Disconnect:} Korektní ukončení VPN připojení a úklid routovacích pravidel.
-    \item \textbf{F6 -- Persistent Connect:} Nastavení připojení na úrovni celého zařízení, které zajistí automatické znovupřipojení i po restartu počítače.
-    \item \textbf{F7 -- Gateway Selection:} Možnost uživatele vybrat si konkrétní VPN bránu.
-    \item \textbf{F8 -- Protocol Selection:} Možnost uživatele zvolit preferovaný VPN protokol (WireGuard nebo OpenVPN).
+    \item \textbf{F4 -- Connect:} Navázání připojení. Standardně se využije preferovaný protokol a brána (gateway) uložená z předchozího nastavení.
+    \item \textbf{F5 -- Connect Flags:} Možnost dočasně přepsat preferované nastavení při připojení pomocí přepínačů \texttt{-g} (gateway) a \texttt{-p} (protocol). Přepínač \texttt{--protocol} očekává textový název protokolu, zatímco \texttt{--gateway} vyvolá interaktivní výběr. Tato volba se neuloží jako preferovaná.
+    \item \textbf{F6 -- Disconnect:} Korektní ukončení VPN připojení a úklid routovacích pravidel.
+    \item \textbf{F7 -- Persistent Connect:} Nastavení připojení na úrovni celého zařízení, které zajistí automatické znovupřipojení i po restartu počítače.
+    \item \textbf{F8 -- Gateway Selection:} Možnost uživatele vybrat si konkrétní VPN bránu.
+    \item \textbf{F9 -- Protocol Selection:} Možnost uživatele zvolit preferovaný VPN protokol (WireGuard nebo OpenVPN).
 \end{itemize}
 
 \subsection{Monitoring a stav}
 \begin{itemize}
-    \item \textbf{F9 -- Status:} Zobrazení aktuálního stavu připojení (Připojeno/Odpojeno, IP adresa, přenesená data). Výstup lze volitelně formátovat do JSON pro snadné strojové zpracování.
-\end{itemize}
-
-\subsection{Správa konfigurace a konfliktů}
-\begin{itemize}
-    \item \textbf{F10 -- Setup:} Interaktivní průvodce prvotním nastavením (onboarding wizard). Umožňuje uživateli v jednom kroku provést přihlášení, zvolit protokol, vybrat bránu, nastavit perzistentní připojení a rovnou se připojit. Tento proces je striktně interaktivní.
-    \item \textbf{F11 -- Řešení konfliktů (Conflict Resolution):} Systém musí detekovat konfliktní stavy. Pokud je aktivní relace v grafickém klientovi (GUI) nebo je na stejném stroji připojen jiný uživatel, CLI klient na to uživatele upozorní a striktně zamezí přepisu stavu sítě.
+    \item \textbf{F10 -- Status:} Zobrazení aktuálního stavu připojení (Připojeno/Odpojeno, IP adresa, přenesená data). Výstup lze volitelně formátovat do JSON pro snadné strojové zpracování.
 \end{itemize}
 
 \subsection{Obecné příkazy}
@@ -80,11 +73,6 @@ Aplikace GoodAccess na operačním systému Linux v současné době funguje jak
     \item \textbf{GoodAccessService (Daemon):} Tato služba běží na pozadí pod správou systému \texttt{systemd} s právy uživatele \texttt{root}. Její primární odpovědností je správa síťových rozhraní (především tunelů WireGuard), konfigurace systémového směrování (routingu) a bezpečné uchovávání kryptografických klíčů a certifikátů.
     \item \textbf{Grafický klient (Electron/GUI):} Uživatelské rozhraní je postaveno na frameworku Electron. Tato část běží v běžném uživatelském prostoru (bez root oprávnění) a funguje v podstatě jako „hloupý“ prezentační ovladač. Zobrazuje stav a přijímá příkazy od uživatele, které následně předává daemonu ke zpracování. Komunikace mezi těmito dvěma procesy probíhá lokálně, typicky pomocí Unix Domain Sockets (IPC).
 \end{itemize}
-
-\subsection{Zhodnocení problému a motivace pro CLI}
-Tato rozdělená architektura funguje spolehlivě na běžných desktopových instalacích Linuxu. Zásadním problémem stávajícího řešení je však závislost grafického klienta na frameworku Electron. Aplikace v Electronu pro své spuštění nutně vyžaduje přítomnost zobrazovacího serveru (např. X11 nebo Wayland).
-
-Na serverových (headless) distribucích, v prostředích pro kontinuální integraci (CI/CD) nebo uvnitř Docker kontejnerů tyto zobrazovací servery záměrně chybí. V takových případech je spuštění a ovládání grafické aplikace nemožné, přestože klíčová běhová služba (daemon) dokáže fungovat bez problému na pozadí. Z tohoto omezení vyvstává explicitní potřeba vytvořit alternativní rozhraní ve formě aplikace pro příkazovou řádku (CLI), které dokáže plnohodnotně komunikovat s existující službou a ovládat ji čistě v textovém režimu, nezávisle na grafickém prostředí.
 
 \subsection{Možné architektonické přístupy}
 Při návrhu řešení byly zvažovány dva přístupy k interakci s existující logikou GoodAccess:
