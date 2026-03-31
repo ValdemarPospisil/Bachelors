@@ -83,18 +83,23 @@ Přehled dostupných příkazů a jejich struktury v rámci CLI aplikace.
 
 ## 📸 Ukázky z Implementace (Screenshots)
 
-Zde jsou snímky obrazovky zachycující různé stavy aplikace v logickém pořadí od přihlášení až po odhlášení.
+Zde jsou snímky obrazovky zachycující různé stavy aplikace v logickém pořadí.
 
 | Stav | Náhled |
 | :--- | :--- |
-| **Přihlášení (Login)** | ![Login](./doc/screenshots/login-successfull.png) |
-| **Nastavení (Setup - Protokol)** | ![Setup Protocol](./doc/screenshots/setup-protocol.png) |
-| **Nastavení (Setup - Připojení)** | ![Setup Connect](./doc/screenshots/setup-connect.png) |
-| **Nastavení (Setup - Persistence)** | ![Setup Persistence](./doc/screenshots/setup-persistent.png) |
-| **Nápověda k příkazům (Help)** | ![Help](./doc/screenshots/connect-help.png) |
+| **Průvodce: Přihlášení (Setup)** | ![Setup Login](./thesis/images/implementation/screenshots/setup-step-login.png) |
+| **Průvodce: Výběr brány (Gateway)** | ![Gateway](./thesis/images/implementation/screenshots/setup-step-gateway.png) |
+| **Průvodce: Protokol** | ![Setup Protocol](./doc/screenshots/setup-protocol.png) |
+| **Průvodce: Persistence** | ![Setup Persistence](./doc/screenshots/setup-persistent.png) |
+| **Úspěšné přihlášení (Login)** | ![Login](./doc/screenshots/login-successfull.png) |
+| **Připojování (Spinner)** | ![Connecting](./thesis/images/implementation/screenshots/connecting-spinner.png) |
+| **Stav připojení (Status)** | ![Status](./thesis/images/implementation/screenshots/status-connected.png) |
 | **Úspěšné připojení** | ![Connected](./doc/screenshots/connect-successfull.png) |
+| **Odpojeno (Disconnected)** | ![Disconnected](./doc/screenshots/disconnect-successfull.png) |
+| **Nápověda (Help)** | ![Help](./doc/screenshots/connect-help.png) |
 | **Chyba sítě (Error)** | ![Error](./doc/screenshots/connect-network-error.png) |
-| **Odpojení (Disconnected)** | ![Disconnected](./doc/screenshots/disconnect-successfull.png) |
+| **JSON výstup (Status JSON)** | ![Status JSON](./thesis/images/implementation/screenshots/status-json.png) |
+| **Konflikt: Jiný uživatel** | ![Another User](./thesis/images/implementation/screenshots/another-user-connected.png) |
 | **Odhlášení (Logout)** | ![Logout](./doc/screenshots/logout-connected.png) |
 
 ---
