@@ -100,7 +100,8 @@ Zde jsou snímky obrazovky zachycující různé stavy aplikace v logickém poř
 | **Chyba sítě (Error)** | ![Error](./doc/screenshots/connect-network-error.png) |
 | **JSON výstup (Status JSON)** | ![Status JSON](./thesis/images/implementation/screenshots/status-json.png) |
 | **Konflikt: Jiný uživatel** | ![Another User](./thesis/images/implementation/screenshots/another-user-connected.png) |
-| **Odhlášení (Logout)** | ![Logout](./doc/screenshots/logout-connected.png) |
+| **Odhlášení (Vynucené odpojení)** | ![Logout Connected](./doc/screenshots/logout-connected.png) |
+| **Úspěšné odhlášení (Logout)** | ![Logout Success](./doc/screenshots/logout-successfull.png) |
 
 ---
 
