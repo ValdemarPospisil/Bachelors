@@ -210,13 +210,11 @@ gantt
 
 ---
 
-## 🎥 Video Ukázky (Placeholders)
+## 🎥 Video Ukázka (Walkthrough)
 
-*Videa budou doplněna po dokončení finální verze aplikace.*
+Zde je kompletní video ukázka základního workflow aplikace od prvního nastavení až po odhlášení.
 
-- 🎬 [Instalace a Prvotní Nastavení](#) (Placeholder)
-- 🎬 [Práce s VPN tunely](#) (Placeholder)
-- 🎬 [Diagnostika a řešení problémů](#) (Placeholder)
+![Walkthrough](./doc/videos/full-walktrough.mp4)
 
 ---
 
