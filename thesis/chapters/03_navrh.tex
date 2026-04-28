@@ -36,7 +36,7 @@ Pro výměnu dat mezi Go klientem a .NET službou bylo nutné zvolit vhodný mec
 V teoretické kapitole (viz sekce \ref{sec:formats_theory}) byly porovnány formáty JSON a gRPC. Pro účely této práce byl zvolen formát \textbf{JSON}. Hlavním důvodem je jeho textová čitelnost, která výrazně usnadňuje ladění komunikace během vývoje, a nativní podpora v obou použitých jazycích (Go i C\#) bez nutnosti generovat složité stuby, což odpovídá agilnímu principu jednoduchosti.
 
 \subsection{Protokol a struktura zpráv}
-Komunikace probíhá podle modelu Request-Response. Klient otevře spojení k socketu služby (typicky \texttt{/tmp/CoreFxPipe\_ga-cli.sock}), odešle požadavek v JSON formátu a čeká na odpověď, po které spojení uzavře.
+Komunikace probíhá podle modelu Request-Response. Klient otevře spojení k socketu služby (typicky \texttt{/tmp/\allowbreak{}CoreFxPipe\_ga-cli.sock}), odešle požadavek v JSON formátu a čeká na odpověď, po které spojení uzavře.
 
 Průběh typické komunikace pro přihlášení uživatele znázorňuje následující sekvenční diagram (Obrázek \ref{fig:ipcsequence}).
 
@@ -168,7 +168,7 @@ Veškerý perzistentní stav aplikace je udržován systémovou službou (daemon
 
 Pro ochranu perzistentních dat bylo využito rozhraní \texttt{Data Protection API}, které je nativní součástí platformy ASP.NET Core (jak bylo teoreticky popsáno v sekci \ref{sec:technologie}). Toto rozhraní zajišťuje transparentní šifrování (\texttt{Protect}) a dešifrování (\texttt{Unprotect}) ukládaných databázových souborů.
 
-Klíčovým bezpečnostním prvkem celého mechanismu je správa samotných šifrovacích klíčů. Ty jsou generovány a izolovány ve vyhrazeném adresáři (konkrétně \texttt{/opt/GoodAccess/configs/DataProtection-Keys}). Při startu služby je programově zajištěno nastavení striktních přístupových práv (v prostředí Linuxu pomocí příkazu \texttt{chmod 700}). Tím je na úrovni operačního systému garantováno, že k šifrovacím klíčům – a potažmo k uloženým datům – má přístup výhradně uživatel \texttt{root}, pod nímž je služba běžně spuštěna. Celková architektura bezpečnostní komponenty je znázorněna na obrázku \ref{fig:security_component}.
+Klíčovým bezpečnostním prvkem celého mechanismu je správa samotných šifrovacích klíčů. Ty jsou generovány a izolovány ve vyhrazeném adresáři (konkrétně \texttt{/opt/\allowbreak{}GoodAccess/\allowbreak{}configs/\allowbreak{}DataProtection-Keys}). Při startu služby je programově zajištěno nastavení striktních přístupových práv (v prostředí Linuxu pomocí příkazu \texttt{chmod 700}). Tím je na úrovni operačního systému garantováno, že k šifrovacím klíčům – a potažmo k uloženým datům – má přístup výhradně uživatel \texttt{root}, pod nímž je služba běžně spuštěna. Celková architektura bezpečnostní komponenty je znázorněna na obrázku \ref{fig:security_component}.
 
 \begin{figure}[htbp]
     \centering
@@ -179,7 +179,7 @@ Klíčovým bezpečnostním prvkem celého mechanismu je správa samotných šif
 
 \subsection{Bezpečnost meziprocesové komunikace (IPC)}
 
-Komunikační kanál mezi klientem a službou je realizován pomocí pojmenovaných rour (Named Pipes), které jsou v prostředí operačního systému Linux implementovány jako Unix Domain Sockets (v tomto návrhu konkrétně umístěné v systémovém adresáři \texttt{/tmp/CoreFxPipe\_ga-cli.sock}). Místo zavádění dedikovaných uživatelských skupin pro omezení přístupu k soketu na úrovni souborového systému je bezpečnost řešena dynamicky přímo na aplikační úrovni služby.
+Komunikační kanál mezi klientem a službou je realizován pomocí pojmenovaných rour (Named Pipes), které jsou v prostředí operačního systému Linux implementovány jako Unix Domain Sockets (v tomto návrhu konkrétně umístěné v systémovém adresáři \texttt{/tmp/\allowbreak{}CoreFxPipe\_ga-cli.sock}). Místo zavádění dedikovaných uživatelských skupin pro omezení přístupu k soketu na úrovni souborového systému je bezpečnost řešena dynamicky přímo na aplikační úrovni služby.
 
 Každý požadavek odeslaný z CLI klienta obsahuje kromě samotných uživatelských dat (payload) také aplikační kontext s identifikátorem volajícího uživatele (\texttt{LinuxId}). Služba tak může při zpracování požadavku bezpečně ověřovat, zda má uživatel dostatečná oprávnění k požadované akci (např. manipulaci s VPN připojením, odhlášení relace). V případě zjištění narušení bezpečnosti nebo nedostatečných oprávnění je požadavek okamžitě zamítnut, čímž je zajištěna integrita systému i při sdílení jednoho soketu více lokálními uživateli.
 
@@ -196,7 +196,7 @@ Aplikace bude distribuována ve dvou standardních formátech, které pokrývaj�
     \item \textbf{.rpm balíčky} pro rodinu distribucí založených na Red Hat (např. Fedora, CentOS, RHEL).
 \end{itemize}
 
-Instalační balíček funkčně zapouzdřuje obě klíčové komponenty systému. Během instalačního procesu (např. při volání \texttt{apt-get install}) dojde k umístění zkompilované binární aplikace klienta (napsané v jazyce Go) do systémového adresáře \texttt{/usr/bin/ga-cli}, čímž se stane globálně dostupnou pro všechny uživatele systému. Zároveň jsou do adresáře \texttt{/opt/GoodAccess/} rozbaleny veškeré závislosti a samotná .NET služba. Součástí instalace je také registrace příslušného konfiguračního souboru (unit file) pro inicializační systém \texttt{systemd}. Instalační skript balíčku (post-install) následně zajistí automatické spuštění služby na pozadí, čímž je systém okamžitě připraven k použití.
+Instalační balíček funkčně zapouzdřuje obě klíčové komponenty systému. Během instalačního procesu (např. při volání \texttt{apt-get install}) dojde k umístění zkompilované binární aplikace klienta (napsané v jazyce Go) do systémového adresáře \texttt{/usr/\allowbreak{}bin/\allowbreak{}ga-cli}, čímž se stane globálně dostupnou pro všechny uživatele systému. Zároveň jsou do adresáře \texttt{/opt/\allowbreak{}GoodAccess/} rozbaleny veškeré závislosti a samotná .NET služba. Součástí instalace je také registrace příslušného konfiguračního souboru (unit file) pro inicializační systém \texttt{systemd}. Instalační skript balíčku (post-install) následně zajistí automatické spuštění služby na pozadí, čímž je systém okamžitě připraven k použití.
 
 \subsection{Detekce a provedení aktualizace}
 
