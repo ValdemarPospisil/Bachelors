@@ -14,22 +14,12 @@ Hlavním důvodem preference příkazové řádky v profesionálním prostředí
 \subsubsection{Vzdálená správa a cloud}
 Dalším kritickým faktorem je vzdálená správa prostřednictvím protokolu SSH, který vyžaduje minimální síťovou propustnost a umožňuje správu i přes nestabilní připojení. V moderním cloudovém prostředí a při využití kontejnerizace (např. Docker, Kubernetes) jsou systémy často provozovány v tzv. headless režimu bez grafického výstupu, což činí rozhraní příkazové řádky jedinou možnou formou interakce \cite{ward_linux}.
 
-\subsection{Principy návrhu a standardy CLI aplikací}
-Kvalitní CLI aplikace se řídí souborem ustálených principů, které zajišťují jejich předvídatelnost a vzájemnou spolupráci. Eric S. Raymond ve své knize \textit{The Art of Unix Programming} definuje tzv. „Unixovou filosofii“, jejímž základem je tvorba malých, jednoúčelových nástrojů, které spolu efektivně komunikují \cite{raymond_unix}. Tento přístup umožňuje skládat komplexní operace z jednoduchých komponent pomocí mechanismu rour (pipes).
+\subsection{Principy návrhu moderních CLI rozhraní}
 
-\subsubsection{Unixová filozofie}
-\label{sec:unix_filozofie}
-Základním stavebním kamenem interakce v CLI jsou standardní datové proudy, které umožňují řetězení příkazů do složitých celků \cite{raymond_unix}:
-\begin{itemize}
-    \item \textbf{Standardní vstup (stdin):} Zdroj dat pro aplikaci, typicky klávesnice nebo výstup jiného programu.
-    \item \textbf{Standardní výstup (stdout):} Primární kanál pro výstup dat, typicky terminál.
-    \item \textbf{Standardní chybový výstup (stderr):} Oddělený kanál pro chybová hlášení a diagnostiku, což umožňuje uživateli přesměrovat data do souboru, zatímco chyby stále vidí na obrazovce.
-\end{itemize}
+Při návrhu aplikací pro příkazovou řádku je klíčové dodržování ustálených konvencí, které zajišťují předvídatelnost pro uživatele a snadnou integraci do automatizačních skriptů. Z~hlediska syntaxe se moderní nástroje opírají primárně o~standardy POSIX a GNU. Tradiční plochou strukturu příkazů dnes u~komplexnějších aplikací nahrazuje hierarchické uspořádání pomocí dílčích příkazů (tzv. \textit{subcommands}). Tato struktura bývá doplněna o~krátké i~dlouhé přepínače (např. \texttt{-v} vs. \texttt{--verbose}), což zajišťuje jak rychlost při manuálním zadávání, tak čitelnost v~automatizačních skriptech.
 
-\subsubsection{Standardní datové proudy}
-Důležitou roli hraje také syntaxe příkazů. Moderní nástroje se snaží dodržovat standardy jako POSIX nebo GNU konvence pro argumenty a přepínače (flags). Krátké přepínače (např. \texttt{-v}) jsou určeny pro rychlé psaní, zatímco dlouhé varianty (např. \texttt{--verbose}) zvyšují čitelnost skriptů a dokumentace \cite{raymond_unix}.
+Pro spolehlivou automatizaci a řetězení příkazů v~systémech rodiny Linux je navíc nezbytná striktní separace standardních datových proudů. Standardní výstup (\textit{stdout}) by měl být vyhrazen exkluzivně pro formátovaná a strojově zpracovatelná data (např. ve formátu JSON). Veškerá diagnostika, varování a chybová hlášení by naopak měla být směrována výhradně na standardní chybový výstup (\textit{stderr}). Tím je zaručeno, že případné chybové stavy nenaruší parsování dat v~navazujících rourách (\textit{pipes}).
 
-\subsubsection{Syntaxe a standardy}
 \section{Architektura VPN a principy Zero Trust}
 \label{sec:vpn_zero_trust}
 Tradiční pojetí zabezpečení sítě, založené na ochraně perimetru, prochází v posledních letech zásadní transformací. Tato sekce popisuje evoluci od klasických VPN tunelů k moderní architektuře Zero Trust Network Access (ZTNA). Tento vývoj je v současnosti silně ovlivněn nejen technologickým pokrokem, ale i legislativními rámci, jako je evropská směrnice NIS2, která klade zvýšený důraz na odolnost kritické infrastruktury a doporučuje principy Zero Trust jako součást moderní strategie kybernetické bezpečnosti \cite{goodaccess_ztna_explained}.
@@ -69,55 +59,22 @@ V rámci ZTNA se rozlišují dva hlavní přístupy k segmentaci:
 \subsection{Protokol WireGuard}
 WireGuard je moderní VPN protokol navržený s důrazem na jednoduchost, rychlost a moderní kryptografii \cite{wireguard_paper}. S rozsahem přibližně 4 000 řádků kódu je WireGuard velmi snadno auditovatelný. Díky své implementaci přímo v jádře Linuxu dosahuje vynikající propustnosti a velmi nízké latence. Z pohledu správy systému se WireGuard chová jako standardní síťové rozhraní, což výrazně zjednodušuje konfiguraci směrování a celkovou integraci do systémových nástrojů. Pro dynamické enterprise prostředí, které GoodAccess obsluhuje, představuje WireGuard ideální volbu především díky mimořádně rychlému navazování spojení (handshake) a vysoké odolnosti vůči změnám síťového prostředí (roaming).
 
-\section{Architektura operačního systému Linux}
-\label{sec:linux_arch}
-
-Tato sekce analyzuje klíčové mechanismy operačního systému Linux, které jsou nezbytné pro běh systémových služeb a správu síťových rozhraní.
-
-\subsection{Struktura systému: User Space a Kernel Space}
-Linux dělí paměťový prostor na dvě privilegovaně odlišné části. Toto rozdělení je kritické pro stabilitu a bezpečnost systému.
-
-\subsubsection{Prostor jádra a uživatelský prostor}
-\begin{itemize}
-    \item \textbf{Kernel Space (Prostor jádra):} Zde běží jádro operačního systému, ovladače zařízení a kritické síťové moduly, včetně implementace protokolu WireGuard. Kód v tomto prostoru má plný přístup k hardwaru.
-    \item \textbf{User Space (Uživatelský prostor):} Zde běží běžné aplikace, včetně uživatelských rozhraní a backendových služeb.
-\end{itemize}
-
-Toto oddělení, často označované jako \textit{privilege separation}, zajišťuje, že chybný nebo škodlivý kód v uživatelské aplikaci nemůže přímo ohrozit integritu celého systému. Brian Ward ve své knize \textit{How Linux Works} zdůrazňuje, že zatímco uživatelský prostor je místem, kde probíhá většina „reálné akce“ aplikací, jádro slouží jako arbitr a správce všech hardwarových prostředků \cite{ward_linux}.
+\section{Systémové služby a komunikace v Linuxu}
+\label{sec:linux_services_ipc}
+Pro běh moderních síťových a bezpečnostních nástrojů v prostředí OS Linux je nezbytná robustní správa procesů na pozadí a efektivní, bezpečná výměna dat. Jelikož jsou tyto aplikace často rozděleny na privilegovanou službu a neprivilegovaného klienta, je nutné zajistit jak spolehlivý životní cyklus služby, tak standardizované komunikační kanály.
 
 \subsection{Správa služeb a systémová inicializace (systemd)}
-Moderní linuxové distribuce využívají pro správu systému a služeb inicializační systém \texttt{systemd}. Ten v posledním desetiletí nahradil starší standardy jako \texttt{sysvinit} a přinesl zásadní změny v tom, jak jsou procesy na pozadí spouštěny, monitorovány a hierarchicky organizovány.
+Moderní linuxové distribuce využívají pro správu systému a služeb inicializační systém \texttt{systemd}. Z pohledu vývoje systémových nástrojů jsou klíčové tzv. \textit{Unit files} (konkrétně \texttt{.service} soubory), které definují parametry spuštění služby a bezpečnostní kontext. Díky integraci s mechanismem \textit{cgroups} má \texttt{systemd} absolutní kontrolu nad procesy patřícími k dané službě, což umožňuje jejich spolehlivé ukončení, izolaci nebo automatický restart v případě havárie, a zajišťuje tak garantovaný běh systémových démonů \cite{ward_linux}.
 
-\subsubsection{systemd a správa služeb}
-Zatímco starší systémy spouštěly služby sekvenčně pomocí shell skriptů, což prodlužovalo start systému, \texttt{systemd} využívá agresivní paralelizaci a spouštění služeb na základě požadavků (on-demand), například skrze socketovou aktivaci. Brian Ward vysvětluje, že \texttt{systemd} není pouhým inicializačním procesem s PID 1, ale komplexním ekosystémem pro správu uživatelského prostoru, který integruje logování (\texttt{journald}), správu zařízení (\texttt{udev}) i konfiguraci sítě \cite{ward_linux}.
-
-Z pohledu vývoje systémových nástrojů jsou klíčové tzv. \textit{Unit files} (jednotky), konkrétně \texttt{.service} soubory. Tyto deklarativní konfigurační soubory definují parametry spuštění služby, její závislosti na síťové konektivitě a bezpečnostní kontext. Díky integraci s mechanismem \textit{cgroups} (Control Groups) má \texttt{systemd} absolutní kontrolu nad všemi procesy patřícími k dané službě, což umožňuje jejich spolehlivé ukončení nebo automatický restart v případě havárie. V architektuře postavené na službách hraje \texttt{systemd} roli garanta běhu, zajišťuje spuštění po startu systému a poskytuje standardizované rozhraní pro monitoring stavu skrze nástroj \texttt{systemctl}.
+\subsection{Meziprocesová komunikace (Unix Domain Sockets)}
+\label{sec:uds_theory}
+Jelikož je aplikace typicky rozdělena na dvě části (privilegovaná služba a neprivilegovaný klient), je nutné zajistit efektivní přenos dat mezi nimi. V prostředí Linuxu je standardem pro lokální komunikaci využití Unix Domain Sockets (UDS). Na rozdíl od TCP/IP socketů, které využívají síťová rozhraní, UDS využívají speciální soubory na disku. Hlavní výhodou je vysoký výkon (data neprochází síťovým zásobníkem) a bezpečnost – přístup k socketu lze omezit standardními linuxovými oprávněními souborů, čímž je zaručeno, že se ke službě připojí pouze autorizovaný uživatel \cite{ward_linux}.
 
 \subsection{Konfigurace síťového subsystému (Netlink)}
-Tradiční unixové nástroje (`ifconfig`) byly v Linuxu nahrazeny modernějším balíkem `iproute2`. Na pozadí těchto nástrojů stojí rozhraní \textbf{Netlink}.
+Zatímco UDS slouží ke komunikaci mezi uživatelskými procesy, pro konfiguraci sítě je nutná komunikace s jádrem systému. K tomuto účelu slouží rozhraní Netlink, které funguje jako komunikační sběrnice mezi jádrem a uživatelským prostorem \cite{ward_linux}. Netlink využívá mechanismus socketů pro předávání zpráv o konfiguraci sítě (např. přiřazení IP adresy, úprava routovací tabulky či nastavení VPN rozhraní), čímž na pozadí nahrazuje starší systémová volání jako \texttt{ioctl}.
 
-Netlink slouží jako komunikační sběrnice mezi jádrem a uživatelským prostorem \cite{ward_linux}. Na rozdíl od `ioctl` volání, Netlink používá standardní mechanismus socketů pro předávání zpráv o konfiguraci sítě (např. přiřazení IP adresy, změna routovací tabulky).
-
-\section{Meziprocesová komunikace (IPC) v Linuxu}
-\label{sec:ipc_theory}
-Jelikož je aplikace rozdělena na dvě části (privilegovaná služba a neprivilegovaný klient), je nutné zajistit efektivní přenos dat mezi nimi. V prostředí Linuxu je standardem pro lokální komunikaci využití \textbf{Unix Domain Sockets (UDS)}.
-
-\subsubsection{Unix Domain Sockets}
-Na rozdíl od TCP/IP socketů, které využívají síťová rozhraní a IP adresy, UDS využívají souborový systém. Socket je reprezentován speciálním souborem na disku \cite{ward_linux}.
-Hlavní výhody pro systémové služby jsou:
-\begin{enumerate}
-    \item \textbf{Výkon:} Data se nekopírují přes síťový zásobník, ale zůstávají v paměti OS.
-    \item \textbf{Bezpečnost a řízení přístupu:} Přístup k socketu lze omezit standardními linuxovými oprávněními souborů. To umožňuje, aby se k chráněné službě mohl připojit pouze uživatel s příslušným oprávněním.
-\end{enumerate}
-
-\subsection{Správa oprávnění a souborový systém}
-Linux využívá standard \textbf{FHS (Filesystem Hierarchy Standard)}, který definuje, kam mají aplikace ukládat svá data. Pro software třetích stran je vyhrazen adresář \texttt{/opt}, zatímco konfigurace a logy patří do \texttt{/etc} a \texttt{/var/log}.
-
-\subsubsection{Model oprávnění DAC a bezpečnostní kontext}
-Linux využívá model Discretionary Access Control (DAC), kde každý soubor má vlastníka, skupinu a sadu práv (\texttt{rwx}) \cite{ward_linux}. Pro systémové služby jako VPN klient je však tento model často nedostačující, protože operace se síťovým rozhraním vyžadují práva uživatele \texttt{root}. 
-
-V rámci bezpečného návrhu běží kritické komponenty pod identitou \texttt{root} (typicky jako systemd služba), zatímco frontend komunikuje přes Unix Domain Socket s omezeným přístupem. Moderní Linux dále rozšiřuje tento model o tzv. \textit{Capabilities} (schopnosti), které umožňují rozdělit absolutní moc uživatele \texttt{root} na menší celky (např. \texttt{CAP\_NET\_ADMIN} pro správu sítě), čímž implementují princip nejmenších privilegií \cite{ward_linux}.
-
+\subsection{Správa oprávnění a bezpečnostní kontext}
+Linux využívá model Discretionary Access Control (DAC), kde každý soubor má vlastního vlastníka a sadu práv, což úzce souvisí s bezpečností UDS \cite{ward_linux}. Pro kritické síťové operace, jako je vytváření tunelů, jsou však nutná vyšší oprávnění. Moderní Linux tento model rozšiřuje o tzv. \textit{Capabilities}, které umožňují rozdělit absolutní moc uživatele \texttt{root} na menší celky (např. \texttt{CAP\_NET\_ADMIN}), čímž je naplněn princip nejmenších privilegií \cite{ward_linux}. Veškerá aplikační data a konfigurace pak respektují standard Filesystem Hierarchy Standard (FHS).
 \section{Technologie a nástroje}
 \label{sec:technologie}
 V rámci teoretického základu pro vývoj moderních systémových nástrojů je nezbytné analyzovat vlastnosti platforem a technologií, které jsou pro tento typ úloh optimalizovány. Tato sekce se zaměřuje na platformu .NET 8, jazyk Go a transportní formáty dat, přičemž zkoumá jejich vnitřní architekturu a bezpečnostní mechanismy.
@@ -146,7 +103,7 @@ Jazyk Go, vyvinutý společností Google, se stal standardem pro systémové pro
 Hlavní předností Go v oblasti systémových nástrojů je jeho schopnost statické kompilace. Výsledkem procesu sestavení je jediný binární soubor, který v sobě obsahuje všechny nezbytné knihovny (včetně runtime prostředí). To je v prostředí Linuxu zásadní výhoda, neboť uživatel nemusí instalovat žádné závislosti, což radikálně zjednodušuje distribuci softwaru \cite{donovan_go}. Go dále disponuje pokročilým modelem souběžnosti založeným na \textit{gorutinách} a kanálech (\textit{channels}), což umožňuje efektivní asynchronní zpracování síťových operací a událostí bez složitosti tradičních vláken.
 
 \subsubsection{Framework Cobra}
-Pro tvorbu rozhraní příkazové řádky (CLI) se v ekosystému Go prosadil framework \textbf{Cobra} \cite{cobra_philosophy}. Ten definuje standardizované strukturu pro definici příkazů, podřízených příkazů a jejich parametrů (včetně rozlišení mezi globálními a lokálními přepínači). Cobra je de facto standardem, na kterém staví nástroje jako Kubernetes. Framework automatizuje generování nápovědy, validaci argumentů a poskytuje rozhraní pro generování manuálových stránek nebo skriptů pro automatické doplňování v shellu, čímž zajišťuje konzistentní uživatelský zážitek.
+Pro tvorbu rozhraní příkazové řádky (CLI) se v ekosystému Go prosadil framework \textbf{Cobra} \cite{cobra_philosophy}. Ten definuje standardizované strukturu pro definici příkazů, podřízených příkazů a jejich parametrů (včetně rozlišení mezi globálními a lokálními přepínači). Framework automatizuje generování nápovědy, validaci argumentů a poskytuje rozhraní pro generování manuálových stránek nebo skriptů pro automatické doplňování v shellu, čímž zajišťuje konzistentní uživatelský zážitek.
 
 \subsubsection{Architektura Elm a framework Bubble Tea}
 \label{sec:elm_bubbletea}
@@ -169,39 +126,9 @@ Pro implementaci automatizovaných testů v různých programovacích jazycích 
     \item \textbf{xUnit:} Pro ekosystém .NET představuje xUnit moderní a vysoce rozšiřitelný framework pro psaní jednotkových a integračních testů, který klade důraz na čistotu a jednoduchost testovacího kódu \cite{xunit}.
 \end{itemize}
 
-\subsection{Serializace dat a transportní formáty}
-\label{sec:formats_theory}
-Efektivní výměna dat mezi procesy (IPC) vyžaduje volbu vhodného formátu pro serializaci, který balancuje mezi výkonem, čitelností a snadnou údržbou.
-
-\subsubsection{Formát JSON}
-\textbf{JSON} (JavaScript Object Notation) je široce rozšířený, textově orientovaný formát \cite{rfc_json}. Jeho hlavní výhodou je transparentnost – přenášená data lze snadno monitorovat a analýzovat běžnými systémovými nástroji. JSON nevyžaduje definici schématu předem, což usnadňuje agilní vývoj a integraci s webovými API. Navzdory textové povaze je parsování moderními knihovnami extrémně rychlé a pro většinu IPC scénářů na jednom hostiteli je režie zanedbalelná.
-
-\subsubsection{Protokol gRPC a Protocol Buffers}
-Naproti tomu \textbf{gRPC} je binární framework využívající \textbf{Protocol Buffers} jako mechanismus pro definici dat (\textit{Interface Definition Language}) \cite{grpc_vs_rest}. Je navržen pro maximální propustnost a minimální režii, čehož dosahuje díky binárnímu kódování a generování silně typovaného kódu pro různé programovací jazyky. gRPC vyniká v systémech s vysokým zatížením a v prostředí mikroslužeb, kde redukce velikosti zpráv vede k úspoře síťových prostředků.
-
-\subsubsection{Srovnání a volba transportní vrstvy}
-Srovnání těchto technologií ukazuje na odlišné priority. gRPC dominuje v oblasti čistého výkonu a typové bezpečnosti, vyžaduje však složitější proces sestavení aplikace a ztěžuje manuální inspekci dat \cite{grpc_vs_rest}. JSON naopak zůstává preferovanou volbou pro systémy, kde je kladen důraz na diagnostiku a jednoduchost implementace.
-
-\begin{table}[htbp]
-    \centering
-    \caption{Srovnání formátů JSON a gRPC \cite{grpc_vs_rest}}
-    \label{tab:json_grpc}
-    \begin{tabular}{|l|l|l|}
-        \hline
-        \textbf{Kritérium} & \textbf{JSON} & \textbf{gRPC (Protobuf)} \\ \hline
-        Typ dat & Textový (UTF-8) & Binární \\ \hline
-        Schéma & Volitelné & Povinné (.proto) \\ \hline
-        Výkon & Nižší (parsování textu) & Vysoký (binární serializace) \\ \hline
-        Čitelnost & Výborná pro člověka & Vyžaduje dekodér \\ \hline
-        Podpora prohlížečů & Nativní & Vyžaduje proxy \\ \hline
-    \end{tabular}
-\end{table}
-
-V rámci lokální komunikace mezi systémovými nástroji, kde je důležitá možnost nahlédnout do komunikace mezi klientem a službou bez nutnosti binární dešifrace, představuje JSON optimální kompromis mezi technickou efektivitou a vývojovou udržitelností.
-
 \section{Zajištění kvality a testování softwaru}
 \label{sec:testovani_teorie}
-Kvalita softwaru není náhodným výsledkem, ale důsledkem systematického procesu, který doprovází celý životní cyklus vývoje (SDLC – Software Development Life Cycle). V moderním inženýrství, zejména u systémových nástrojů, které manipulují se síťovým nastavením a vyžadují vysoká oprávnění, je verifikace správnosti klíčovým prvkem pro zajištění stability a bezpečnosti systému.
+Kvalita softwaru není náhodným výsledkem, ale důsledkem systematického procesu, který doprovází celý životní cyklus vývoje (SDLC – Software Development Life Cycle). V moderním inženýrství, zejména u systémových nástrojů, které manipulují se síťovým nastavením a vyžadují vysoká oprávnění, je verifikace správnosti klíčovým prvkem pro zajištění stability a bezpečnosti systému \cite{sommerville_se}.
 
 \subsection{Kvalita softwaru v SDLC}
 Tradiční pohled na testování jako na oddělenou fázi na konci vývoje je v agilním prostředí nahrazen integrací testů přímo do procesu tvorby kódu. Zajištění kvality (QA – Quality Assurance) zahrnuje nejen detekci chyb, ale především prevenci jejich vzniku skrze statickou analýzu, code review a automatizované testování \cite{cohn_succeeding}. Automatizace v tomto procesu umožňuje rychlou regresní analýzu při jakýcholiv změnách v systému.
@@ -212,8 +139,26 @@ Koncept testovací pyramidy, který poprvé popularizoval Mike Cohn v knize \tex
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{images/pyramid-cost.jpg}
-    \caption{Model testovací pyramidy podle Mikea Cohna \cite{cohn_succeeding}}
+    \begin{tikzpicture}[scale=1.5, font=\sffamily]
+        % Základna (Unit Tests)
+        \filldraw[fill=blue!10, draw=black, thick] (-3,0) -- (3,0) -- (2,1.5) -- (-2,1.5) -- cycle;
+        \node at (0,0.75) {\textbf{Jednotkové testy}};
+        
+        % Střed (Integration Tests)
+        \filldraw[fill=orange!10, draw=black, thick] (-2,1.5) -- (2,1.5) -- (1,3) -- (-1,3) -- cycle;
+        \node at (0,2.25) {\textbf{Integrační testy}};
+        
+        % Vrchol (E2E)
+        \filldraw[fill=red!10, draw=black, thick] (-1,3) -- (1,3) -- (0,4.5) -- cycle;
+        \node at (0,3.5) {\textbf{E2E testy}};
+        
+        % Šipka vlevo (Náklady a čas)
+        \draw[->, thick] (-3.5,0.5) -- (-1.5,4) node[midway, left=0.2cm, align=right] {Rostoucí náklady\\a časová náročnost};
+        
+        % Šipka vpravo (Izolace a rychlost)
+        \draw[->, thick] (1.5,4) -- (3.5,0.5) node[midway, right=0.2cm, align=left] {Rostoucí izolace\\a rychlost provedení};
+    \end{tikzpicture}
+    \caption{Model testovací pyramidy (převzato od Mikea Cohna \cite{cohn_succeeding})}
     \label{fig:test_pyramid}
 \end{figure}
 
@@ -239,10 +184,10 @@ Tento přístup umožňuje vytvořit tzv. „živou dokumentaci“, která je z�
 
 \section{Distribuce softwaru a balíčkovací systémy}
 \label{sec:distribuce}
-Správa a distribuce softwaru v ekosystému Linuxu představuje komplexní proces, který zajišťuje integritu, bezpečnost a snadnou údržbu systému. Na rozdíl od monolitických operačních systémů, kde je instalace softwaru často v režii jednotlivých aplikací, Linux využívá centralizované balíčkovací systémy, které spravují software jako soubor vzájemně propojených komponent.
+Správa a distribuce softwaru v ekosystému Linuxu představuje komplexní proces, který zajišťuje integritu, bezpečnost a snadnou údržbu systému. Na rozdíl od monolitických operačních systémů, kde je instalace softwaru často v režii jednotlivých aplikací, Linux využívá centralizované balíčkovací systémy, které spravují software jako soubor vzájemně propojených komponent \cite{ward_linux}.
 
 \subsection{Koncepty správy balíčků}
-Moderní správa balíčků je založena na třech pilířích:
+Moderní správa balíčků je založena na třech pilířích \cite{nemeth_admin}:
 \begin{enumerate}
     \item \textbf{Metadata:} Každý balíček obsahuje podrobné informace o své verzi, architektuře, popisu a především o svých závislostech.
     \item \textbf{Závislosti (Dependencies):} Schopnost systému automaticky identifikovat a doinstalovat knihovny nebo jiné programy, které balíček vyžaduje ke svému běhu. Tím se předchází tzv. „dependency hell“, kdy uživatel musel ručně dohledávat potřebné komponenty.
@@ -274,6 +219,15 @@ Významným rozdílem je také práce se závislostmi. Zatímco rodina Debian vy
 
 \section{Metodologie agilního vývoje}
 \label{sec:agile_teorie}
-Moderní vývoj softwaru se v posledních dvou dekádách posunul k agilním přístupům, které kladou důraz na adaptabilitu a lidský faktor. Pro účely této bakalářské práce byla zvolena metodika inspirovaná principy Extreme Programming (XP), která se zaměřuje na zvyšování kvality softwaru a schopnost reagovat na měnící se požadavky skrze intenzivní aplikaci osvědčených inženýrských praktik \cite{beck_xp}.
+Moderní vývoj softwaru se v posledních dvou dekádách posunul k agilním přístupům, které kladou důraz na adaptabilitu a lidský faktor. Pro účely této bakalářské práce byla zvolena metodika inspirovaná Extreme Programming (XP). XP je agilní framework zaměřený na zvyšování kvality softwaru a schopnost reagovat na měnící se požadavky skrze intenzivní aplikaci inženýrských praktik \cite{beck_xp}.
 
-Základem zvoleného postupu je iterativní vývoj, kde je celý projekt rozdělen do menších, řiditelných celků (tickets). Každá iterace zahrnuje fázi analýzy, návrhu, implementace a následného testování, což umožňuje průběžné ověřování funkčnosti systému a včasnou detekci chyb. Klíčovou roli hraje také důraz na jednoduchost návrhu (Simple Design) a neustálé vylepšování vnitřní struktury kódu (Refactoring) s cílem zachovat čistotu a dlouhodou udržitelnost kódové základny \cite{beck_xp}.
+Tento přístup je definován pěti základními hodnotami \cite{beck_xp}:
+\begin{itemize}
+    \item \textbf{Komunikace (Communication):} Průběžná a jasná výměna znalostí mezi vývojáři a zákazníkem.
+    \item \textbf{Jednoduchost (Simplicity):} Soustředění se vždy na to nejjednodušší řešení, které právě teď funguje. Jde o maximalizaci znovupoužitelnosti kódu a zamezení tvorby nadbytečné architektury, což usnadňuje budoucí údržbu (princip \textit{Simple Design}).
+    \item \textbf{Zpětná vazba (Feedback):} Rychlé a časté ověřování správnosti pomocí automatizovaných testů a průběžného dodávání prototypů.
+    \item \textbf{Odvaha (Courage):} Schopnost dělat potřebná rozhodnutí, například radikálně refaktorovat kód pro zlepšení jeho struktury.
+    \item \textbf{Respekt (Respect):} Vzájemná úcta v týmu a odpovědnost za kvalitu společného kódu.
+\end{itemize}
+
+Základem zvoleného postupu pro tuto práci je iterativní vývoj, kde je celý projekt rozdělen do menších, řiditelných celků (tickets). Každá iterace zahrnuje fázi analýzy, návrhu, implementace a následného testování, což úzce naplňuje XP hodnotu zpětné vazby. Klíčovou roli v implementaci pak hraje neustálé vylepšování vnitřní struktury kódu (Refactoring) s cílem zachovat čistotu a dlouhodobou udržitelnost kódové základny \cite{beck_xp}.

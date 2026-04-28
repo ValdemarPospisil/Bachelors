@@ -1,7 +1,7 @@
 \chapter{Analýza a specifikace požadavků}
 \label{chap:analyza}
 
-Celý proces analýzy a sběru požadavků probíhal v agilním prostředí. Během vývoje se využívaly iterativní schůzky, pravidelné standupy a dedikované brainstormové sekce. Na těchto setkáních byli přítomni zkušení vývojáři a technický ředitel (CTO), kteří měli přímý kontakt se zákazníky a znali jejich konkrétní požadavky a zpětnou vazbu. Díky tomu bylo možné rychle a efektivně reagovat na potřeby uživatelů a správně specifikovat klíčové vlastnosti aplikace.
+Celý proces analýzy a sběru požadavků probíhal v agilním prostředí. Během vývoje se využívaly iterativní schůzky, pravidelné standupy a dedikované brainstormové sekce. Na těchto setkáních byli přítomni zkušení vývojáři a technický ředitel (CTO), který díky přímému kontaktu se zákazníky detailně znal jejich konkrétní požadavky a tlumočil jejich zpětnou vazbu. Díky tomu bylo možné rychle a efektivně reagovat na potřeby uživatelů a správně specifikovat klíčové vlastnosti aplikace.
 
 \section{Identifikace zúčastněných stran}
 Primárními uživateli GoodAccess CLI pro Linux jsou:
@@ -16,7 +16,43 @@ Hlavní scénáře použití systému z pohledu koncového uživatele (administr
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{images/use-case.png}
+    \begin{tikzpicture}[scale=1.0, transform shape, font=\sffamily,
+        usecase/.style={rectangle, rounded corners=3ex, draw=black, fill=blue!5, text centered, inner sep=2mm, text width=3.5cm, minimum height=1cm},
+        actor/.style={draw=none, fill=none, text centered},
+        line/.style={-, thick, draw=black!70}]
+
+        % Hranice systému
+        \draw[thick, draw=black!50, rounded corners=1ex, fill=gray!5] (-0.5, -4.5) rectangle (4.5, 5.5);
+        \node at (2, 5) {\large \textbf{GoodAccess CLI}};
+
+        % Uživatel (stickman)
+        \node[actor] (user) at (-3.5, 0.5) {
+            \begin{tikzpicture}[scale=0.8]
+                \draw[thick] (0,0.5) circle (0.3); % Hlava
+                \draw[thick] (0,0.2) -- (0,-0.6); % Tělo
+                \draw[thick] (-0.4,-0.1) -- (0.4,-0.1); % Ruce
+                \draw[thick] (0,-0.6) -- (-0.4,-1.2); % Levá noha
+                \draw[thick] (0,-0.6) -- (0.4,-1.2); % Pravá noha
+                \node at (0,-1.6) {\textbf{Uživatel}};
+            \end{tikzpicture}
+        };
+
+        % Use Cases
+        \node[usecase] (setup) at (2, 4) {Prvotní nastavení\\(Setup)};
+        \node[usecase] (login) at (2, 2.5) {Přihlášení\\(Login)};
+        \node[usecase] (connect) at (2, 1) {Připojení k VPN\\(Connect)};
+        \node[usecase] (status) at (2, -0.5) {Zjištění stavu\\(Status)};
+        \node[usecase] (disconnect) at (2, -2) {Odpojení VPN\\(Disconnect)};
+        \node[usecase] (logout) at (2, -3.5) {Odhlášení\\(Logout)};
+
+        % Vztahy
+        \draw[line] (user) -- (setup.west);
+        \draw[line] (user) -- (login.west);
+        \draw[line] (user) -- (connect.west);
+        \draw[line] (user) -- (status.west);
+        \draw[line] (user) -- (disconnect.west);
+        \draw[line] (user) -- (logout.west);
+    \end{tikzpicture}
     \caption{Diagram případů užití GoodAccess CLI}
     \label{fig:usecase}
 \end{figure}
@@ -58,10 +94,10 @@ Jádrem aplikace je ovládání VPN tunelu a správa nastavení pro připojení.
 \section{Mimofunkční požadavky}
 \label{sec:nefunkcni_pozadavky}
 \begin{itemize}
-    \item \textbf{N1 -- Výkon a odezva:} Aplikace v prostředí příkazové řádky (CLI) musí reagovat okamžitě. Zásadní je rychlý start aplikace a nízká paměťová náročnost, aby její spuštění uživatele neomezovalo.
-    \item \textbf{N2 -- Kompatibilita:} Aplikace musí být funkční na hlavních serverových distribucích Linuxu (Debian/Ubuntu, Fedora/RHEL).
-    \item \textbf{N3 -- Bezpečnost:} Citlivá data (přístupové tokeny, privátní klíče) musí být uložena bezpečně a přístupná pouze oprávněné službě.
-    \item \textbf{N4 -- Distribuce a nasazení:} Pro usnadnění instalace a správy ze strany systémových administrátorů musí být aplikace zabalitelná do standardních distribučních balíčků. Konkrétně se jedná o formáty \texttt{.deb} (pro rodinu Debian) a \texttt{.rpm} (pro rodinu Red Hat).
+    \item \textbf{M1 -- Výkon a odezva:} Aplikace v prostředí příkazové řádky (CLI) musí reagovat okamžitě. Zásadní je rychlý start aplikace a nízká paměťová náročnost, aby její spuštění uživatele neomezovalo.
+    \item \textbf{M2 -- Kompatibilita:} Aplikace musí být funkční na hlavních serverových distribucích Linuxu (Debian/Ubuntu, Fedora/RHEL).
+    \item \textbf{M3 -- Bezpečnost:} Citlivá data (přístupové tokeny, privátní klíče) musí být uložena bezpečně a přístupná pouze oprávněné službě.
+    \item \textbf{M4 -- Distribuce a nasazení:} Pro usnadnění instalace a správy ze strany systémových administrátorů musí být aplikace zabalitelná do standardních distribučních balíčků. Konkrétně se jedná o formáty \texttt{.deb} (pro rodinu Debian) a \texttt{.rpm} (pro rodinu Red Hat).
 \end{itemize}
 
 \section{Analýza architektury}
@@ -77,18 +113,17 @@ Aplikace GoodAccess na operačním systému Linux v současné době funguje jak
 \subsection{Možné architektonické přístupy}
 Při návrhu řešení byly zvažovány dva přístupy k interakci s existující logikou GoodAccess:
 
-\subsubsection{Návrh A: Tenký klient (Wrapper)}
-V tomto modelu běží v systému jedna privilegovaná služba (.NET), která drží stav a vykonává operace. CLI aplikace (Go) slouží pouze jako dálkové ovládání, které posílá příkazy službě přes IPC.
-
-\subsubsection{Návrh B: Samostatná logika}
-CLI aplikace by obsahovala veškerou logiku pro připojení a správu WireGuardu a běžela by přímo pod uživatelem root, nezávisle na existující službě.
+\begin{description}
+    \item[Návrh A: Tenký klient (Wrapper)] V tomto modelu běží v systému jedna privilegovaná služba (.NET), která drží stav a vykonává operace. CLI aplikace (Go) slouží pouze jako dálkové ovládání, které posílá příkazy službě přes IPC.
+    \item[Návrh B: Samostatná logika] CLI aplikace by obsahovala veškerou logiku pro připojení a správu WireGuardu a běžela by přímo pod uživatelem \texttt{root}, nezávisle na existující službě.
+\end{description}
 
 \subsection{Zvolené řešení}
 Byl zvolen \textbf{Návrh A (Wrapper)} z následujících důvodů:
 \begin{enumerate}
     \item \textbf{Single Source of Truth:} Služba drží jednotný stav aplikace. Nedochází k desynchronizaci mezi tím, co si myslí CLI, a tím, co je reálně nastaveno v síti.
     \item \textbf{Bezpečnost:} Uživatel nemusí spouštět CLI pod \texttt{rootem}. Privilegované operace provádí pouze izolovaná služba na pozadí.
-    \item \textbf{Znovupoužitelnost:} Využívá se již otestovaná a existující logika v .NET backendu, což je v souladu s principy XP (Simplicity).
+    \item \textbf{Znovupoužitelnost:} Využívá se již otestovaná a existující logika v .NET backendu, což je v souladu s hodnotou jednoduchosti (Simplicity) metodiky Extreme Programming (\ref{sec:agile_teorie}).
 \end{enumerate}
 
 %\begin{figure}[H]

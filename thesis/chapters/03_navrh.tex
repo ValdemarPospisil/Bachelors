@@ -7,16 +7,56 @@ V této kapitole je představen detailní technický návrh prototypu CLI klient
 Celý systém je v souladu se zvoleným návrhem rozdělen na dvě hlavní, technologicky odlišné komponenty, které spolu komunikují přes definované rozhraní.
 
 \begin{itemize}
-    \item \textbf{Služba (Service - .NET):} Funguje jako daemon spravovaný systémem \texttt{systemd} s právy uživatele \texttt{root}. Její primární a jedinou odpovědností je správa stavu sítě, konfigurace rozhraní WireGuard a bezpečné ukládání kryptografických klíčů. Volba platformy .NET pro tuto komponentu přímo vychází z potřeby multiplatformní podpory a snadné integrace do systému \texttt{systemd} (viz sekce \ref{sec:technologie}), a především umožňuje znovupoužití již existující a otestované logiky z grafického klienta (viz sekce \ref{sec:analyza_architektury}).
+    \item \textbf{Služba (Service - .NET):} Funguje jako daemon spravovaný systémem \texttt{systemd} s právy uživatele \texttt{root}. Tato komponenta představuje jádro (backend) celého řešení. Její odpovědností je kompletní obsluha aplikační logiky – od komunikace s centrálním API GoodAccess, přes vyhodnocování stavů a bezpečné ukládání kryptografických klíčů, až po samotnou správu síťových rozhraní a konfiguraci tunelů WireGuard. Volba platformy .NET pro tuto komponentu přímo vychází z potřeby multiplatformní podpory a snadné integrace do systému \texttt{systemd} (viz sekce \ref{sec:technologie}), a především umožňuje znovupoužití již existující a otestované logiky z grafického klienta (viz sekce \ref{sec:analyza_architektury}).
     \item \textbf{Klient (Client - Go):} Běží v uživatelském prostoru (bez \texttt{root} oprávnění) a zajišťuje čistě interakci s uživatelem. Zodpovídá za parsování argumentů příkazové řádky pomocí frameworku \texttt{Cobra}, obsluhu interaktivních TUI prvků prostřednictvím \texttt{Bubble Tea} a finální formátování výstupu. Jazyk Go byl pro vývoj CLI zvolen díky svým vlastnostem pro systémové programování, rychlému startu a statické kompilaci do jediné binárky, což radikálně zjednodušuje distribuci (viz sekce \ref{sec:technologie} a \ref{sec:cli_teorie}).
 \end{itemize}
 
-
-Architektura Go klienta navíc úzce reflektuje principy takzvané \textit{Clean Architecture}. Celá kódová základna klienta je rozdělena do logických vrstev, kde uživatelské rozhraní (UI a parsování příkazů) je zcela odděleno od aplikační logiky a transportní vrstvy (IPC komunikace přes Unix Domain Sockets). Toto vrstvení zaručuje vysokou testovatelnost komponent a možnost nezávisle upravovat vizuální prezentaci bez vlivu na způsob, jakým klient komunikuje s .NET službou.
-
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{images/navrh-architecture.png}
+    \begin{tikzpicture}[font=\sffamily\small, scale=1.1, transform shape, >=latex]
+        % Styles
+        \tikzset{
+            component/.style={draw, thick, fill=white, align=center, minimum width=4cm, minimum height=1.5cm},
+            database/.style={cylinder, draw, thick, aspect=0.25, shape border rotate=90, fill=white, align=center, minimum width=3cm, minimum height=1.8cm},
+            cloudnode/.style={cloud, draw, thick, fill=white, cloud puffs=13, cloud puff arc=120, aspect=2.5, minimum width=4.5cm, minimum height=2.5cm, align=center},
+            interface/.style={draw, circle, thick, fill=white, minimum size=0.3cm, inner sep=0}
+        }
+
+        % User Space Package
+        \draw[thick, fill=gray!5] (-4.5, 4.5) -- (-1.5, 4.5) -- (-1.3, 4) -- (4.5, 4) -- (4.5, 2) -- (-4.5, 2) -- cycle;
+        \draw[thick] (-4.5, 4) -- (-1.3, 4);
+        \node[anchor=north west, font=\bfseries] at (-4.4, 4.5) {User Space};
+        
+        \node[component] (cli) at (0, 3) {$\ll$component$\gg$\\Go CLI Client};
+
+        % System Space Package
+        \draw[thick, fill=gray!5] (-6.5, -0.2) -- (-1.5, -0.2) -- (-1.3, -0.7) -- (6.5, -0.7) -- (6.5, -6.5) -- (-6.5, -6.5) -- cycle;
+        \draw[thick] (-6.5, -0.7) -- (-1.3, -0.7);
+        \node[anchor=north west, font=\bfseries] at (-6.4, -0.15) {System Space (root)};
+        
+        \node[component] (svc) at (0, -2.2) {$\ll$component$\gg$\\.NET GoodAccess Daemon\\(systemd service)};
+        
+        \node[component, minimum width=3.5cm] (wg) at (-3.5, -5.0) {$\ll$component$\gg$\\WireGuard\\Interface};
+        \node[database] (sec) at (3.5, -5.0) {$\ll$database$\gg$\\Secure Storage\\Data Protection};
+
+        % Cloud Node
+        \node[cloudnode, fill=gray!5, minimum height=3.5cm] (cloud) at (0, -9.5) {};
+        \node[anchor=north, font=\bfseries] at (0, -6.9) {GoodAccess Cloud};
+        \node[component, minimum width=3cm, minimum height=1.2cm] (api) at (0, -9.5) {$\ll$component$\gg$\\GoodAccess API};
+
+        % Unix Domain Socket (Interface)
+        \node[interface] (uds) at (0, 0.75) {};
+        \node[right=0.2cm of uds, align=left] {Unix Domain Socket\\\texttt{/tmp/CoreFxPipe\_ga-cli.sock}};
+        
+        % Connections
+        \draw[thick] (svc) -- (uds); % Provided interface
+        \draw[thick, dashed, ->] (cli) -- (uds) node[midway, left] {Raw JSON payload}; % Required interface
+        
+        \draw[thick, dashed, ->] (svc) -- (wg) node[midway, left=0.1cm] {Netlink API};
+        \draw[thick, dashed, <->] (svc) -- (sec) node[midway, right] {R\&W};
+        \draw[thick, dashed, ->] (svc) -- (api) node[midway, right] {HTTPS };
+
+    \end{tikzpicture}
     \caption{Architektura systému znázorňující hranici mezi .NET Službou a Go Klientem skrze IPC (Unix Domain Sockets).}
     \label{fig:architecture_ipc}
 \end{figure}
@@ -30,10 +70,12 @@ Architektura Go klienta navíc úzce reflektuje principy takzvané \textit{Clean
 
 \section{Návrh komunikace IPC}
 \label{sec:navrh_ipc}
-Pro výměnu dat mezi Go klientem a .NET službou bylo nutné zvolit vhodný mechanismus meziprocesní komunikace (IPC). Jak bylo popsáno v teoretické části (viz sekce \ref{sec:ipc_theory}), pro lokální komunikaci v systému Linux jsou nejvhodnějším nástrojem Unix Domain Sockets (UDS). Ty nabízejí vyšší bezpečnost díky souborovým oprávněním a lepší výkon oproti síťovým socketům (TCP/IP), protože nedochází k režii spojené se síťovým stackem.
+Pro výměnu dat mezi Go klientem a .NET službou bylo nutné zvolit vhodný mechanismus meziprocesní komunikace (IPC). Jak bylo popsáno v teoretické části (viz sekce \ref{sec:uds_theory}), pro lokální komunikaci v systému Linux jsou nejvhodnějším nástrojem Unix Domain Sockets (UDS). Ty nabízejí vyšší bezpečnost díky souborovým oprávněním a lepší výkon oproti síťovým socketům (TCP/IP), protože nedochází k režii spojené se síťovým stackem.
 
 \subsection{Volba formátu dat}
-V teoretické kapitole (viz sekce \ref{sec:formats_theory}) byly porovnány formáty JSON a gRPC. Pro účely této práce byl zvolen formát \textbf{JSON}. Hlavním důvodem je jeho textová čitelnost, která výrazně usnadňuje ladění komunikace během vývoje, a nativní podpora v obou použitých jazycích (Go i C\#) bez nutnosti generovat složité stuby, což odpovídá agilnímu principu jednoduchosti.
+Pro strukturování přenášených zpráv v rámci lokální komunikace mezi systémovými nástroji byl zvolen formát \textbf{JSON} \cite{rfc_json}. Hlavním důvodem pro jeho volbu je textová čitelnost, která výrazně usnadňuje manuální diagnostiku a ladění komunikace (např. pomocí nástrojů jako \texttt{socat}) bez nutnosti binární dešifrace zpráv.
+
+Dalším faktorem je nativní a velmi robustní podpora serializace do JSON formátu ve standardních knihovnách obou použitých jazyků (Go i C\#), díky čemuž odpadá nutnost využívat dodatečné mezivrstvy či složité procesy pro generování kódu. Tato volba představuje optimální kompromis mezi technickou efektivitou a vývojovou udržitelností, což odpovídá agilnímu principu jednoduchosti.
 
 \subsection{Protokol a struktura zpráv}
 Komunikace probíhá podle modelu Request-Response. Klient otevře spojení k socketu služby (typicky \texttt{/tmp/\allowbreak{}CoreFxPipe\_ga-cli.sock}), odešle požadavek v JSON formátu a čeká na odpověď, po které spojení uzavře.
@@ -42,7 +84,49 @@ Průběh typické komunikace pro přihlášení uživatele znázorňuje následu
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{images/ipc-sequence.png}
+    \begin{tikzpicture}[font=\sffamily\small, >=latex]
+        % Lifelines nodes
+        \node (user) at (0, 0) {\textbf{User}};
+        \node[draw, thick, fill=white, minimum width=2.5cm, minimum height=0.8cm] (cli) at (3.5, 0) {\textbf{Go CLI Client}};
+        \node[draw, thick, fill=white, minimum width=2.5cm, minimum height=0.8cm] (uds) at (7.5, 0) {\textbf{UDS Socket}};
+        \node[draw, thick, fill=white, minimum width=2.5cm, minimum height=0.8cm] (svc) at (11.5, 0) {\textbf{.NET Daemon}};
+
+        % Lifelines lines
+        \draw[thick, dashed] (0, -0.4) -- (0, -9.5);
+        \draw[thick, dashed] (3.5, -0.4) -- (3.5, -9.5);
+        \draw[thick, dashed] (7.5, -0.4) -- (7.5, -9.5);
+        \draw[thick, dashed] (11.5, -0.4) -- (11.5, -9.5);
+
+        % Execution bars
+        \draw[thick, fill=blue!10] (3.35, -1.0) rectangle (3.65, -9.2);
+        \draw[thick, fill=gray!10] (7.35, -3.2) rectangle (7.65, -8.2);
+        \draw[thick, fill=red!10] (11.35, -4.2) rectangle (11.65, -7.2);
+
+        % Messages
+        \draw[->, thick] (0, -1.2) -- (3.35, -1.2) node[midway, above] {\texttt{ga login}};
+
+        % CLI self message
+        \draw[->, thick] (3.65, -1.4) -- (4.5, -1.4) -- (4.5, -2.2) -- (3.65, -2.2) node[midway, right=0.4cm, align=left] {Prompt for\\credentials};
+
+        % CLI to UDS
+        \draw[->, thick] (3.65, -3.4) -- (7.35, -3.4) node[midway, above] {Write JSON Request};
+        
+        % UDS to SVC
+        \draw[->, thick] (7.65, -4.4) -- (11.35, -4.4) node[midway, above] {Transmit byte stream};
+        
+        % SVC self messages
+        \draw[->, thick] (11.65, -4.8) -- (12.6, -4.8) -- (12.6, -5.8) -- (11.65, -5.8) node[midway, right=0.4cm, align=left] {Validate request,\\call GoodAccess API,\\save tokens to storage};
+        
+        % SVC to UDS
+        \draw[->, thick, dashed] (11.35, -7.0) -- (7.65, -7.0) node[midway, above] {Write JSON Response};
+        
+        % UDS to CLI
+        \draw[->, thick, dashed] (7.35, -8.0) -- (3.65, -8.0) node[midway, above] {Transmit byte stream};
+        
+        % CLI to User
+        \draw[->, thick, dashed] (3.35, -9.0) -- (0, -9.0) node[midway, above] {Display successful login};
+
+    \end{tikzpicture}
     \caption{Sekvenční diagram IPC komunikace při přihlášení.}
     \label{fig:ipcsequence}
 \end{figure}
@@ -127,7 +211,7 @@ Aplikace dynamicky mění své chování a způsob prezentace dat na základě k
 V tomto režimu aplikace využívá framework \texttt{Bubble Tea} (viz sekce \ref{sec:technologie}) k vytvoření bohatého textového rozhraní. Uživatel je navigován pomocí interaktivních prvků, jako jsou výběrové seznamy (např. při volbě brány), spinners indikující probíhající operaci nebo barevně odlišené stavové zprávy. Tento režim je aktivován automaticky, pokud je detekován standardní terminálový výstup (TTY).
 
 \subsubsection{Skriptovací a headless režim}
-Pro účely automatizace a volání z jiných programů aplikace podporuje přepínač \texttt{--json}. V tomto režimu je potlačeno veškeré interaktivní vykreslování (TUI), barvy a spinners. Výstupem příkazů je pak čistý a validní JSON objekt (viz sekce \ref{sec:formats_theory}), který lze snadno zpracovat nástroji jako \texttt{jq}. Pokud aplikace detekuje, že výstup je přesměrován do roury (pipe) nebo souboru a přepínač \texttt{--json} není přítomen, automaticky vypíná barvy, aby nedocházelo ke znečištění textu ANSI únikovými kódy.
+Pro účely automatizace a volání z jiných programů aplikace podporuje přepínač \texttt{--json}. V tomto režimu je potlačeno veškeré interaktivní vykreslování (TUI), barvy a spinners. Výstupem příkazů je pak čistý a validní JSON objekt, který lze snadno zpracovat nástroji jako \texttt{jq}. Pokud aplikace detekuje, že výstup je přesměrován do roury (pipe) nebo souboru a přepínač \texttt{--json} není přítomen, automaticky vypíná barvy, aby nedocházelo ke znečištění textu ANSI únikovými kódy.
 
 \subsection{Vizuální styl a UX principy}
 \label{sec:vizualni_styl}
