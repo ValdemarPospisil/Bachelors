@@ -5,22 +5,22 @@ Cílem této bakalářské práce byl návrh a implementace funkčního prototyp
 
 \section*{Shrnutí výsledků}
 
-V rámci práce byly splněny všechny cíle stanovené v zadání. Podařilo se navrhnout a implementovat architekturu založenou na striktním oddělení tenkého klienta v jazyce Go a systémové služby na platformě .NET Core, což zajišťuje vysokou úroveň bezpečnosti a modularity systému. 
+V rámci práce byly splněny cíle stanovené v zadání. Podařilo se navrhnout a implementovat funkční prototyp nativního CLI klienta, který staví na bezpečné a modulární architektuře s jasným oddělením klientské a servisní části. Prototyp plně realizuje orchestraci OpenVPN a prokazuje připravenost navrženého systému pro integraci moderního protokolu WireGuard.
 
 Klíčové výstupy práce zahrnují:
 \begin{itemize}
     \item Implementaci autentizačního mechanismu integrovaného s centrálním API.
-    \item Realizaci správy VPN připojení s využitím moderního protokolu WireGuard i osvědčeného OpenVPN.
+    \item Realizaci správy VPN připojení s plnou podporou OpenVPN a architektonickou připraveností pro WireGuard.
     \item Návrh a implementaci zabezpečeného systémového úložiště (\textit{Secure Storage}) pro citlivá data.
     \item Vytvoření testovací strategie zahrnující automatizované jednotkové testy a strukturované manuální ověřování kritických funkcí systému.
     \item Přípravu a otestování distribučních balíčků pro majoritní linuxové rodiny (Debian, Red Hat).
 \end{itemize}
 
-Výsledná aplikace \texttt{ga-cli} poskytuje plnohodnotnou alternativu ke stávajícímu grafickému klientovi a otevírá nové možnosti využití produktu GoodAccess v prostředích, kde je kladen důraz na automatizaci a skriptování.
+Výsledná aplikace \texttt{ga-cli} poskytuje funkční alternativu ke stávajícímu grafickému klientovi a otevírá nové možnosti využití produktu GoodAccess v prostředích, kde je kladen důraz na automatizaci a skriptování.
 
 \section*{Přínos}
 
-Přínos práce spočívá především v zaplnění kritického místa v produktové nabídce společnosti GoodAccess na platformě Linux. Zatímco grafické rozhraní je vhodné pro běžné koncové uživatele, administrátoři a DevOps inženýři vyžadovali nástroj, který lze snadno integrovat do stávajících pracovních postupů a CI/CD řetězců.
+Přínos práce spočívá především v zaplnění kritického místa v produktové nabídce společnosti GoodAccess na platformě Linux a v návrhu univerzální platformy pro CLI nástroje firmy. Zatímco grafické rozhraní je vhodné pro běžné koncové uživatele, administrátoři a DevOps inženýři vyžadovali nástroj, který lze snadno integrovat do stávajících pracovních postupů a CI/CD řetězců.
 
 Díky zvolené architektuře, která využívá Unix Domain Sockets pro meziprocesovou komunikaci, je systém připraven na budoucí rozšiřování bez nutnosti zásadních zásahů do jádra aplikace. Implementace podpory pro strojově čitelný formát JSON (\texttt{--json}) navíc výrazně zjednodušuje automatizaci správy síťové infrastruktury.
 
@@ -28,7 +28,7 @@ Díky zvolené architektuře, která využívá Unix Domain Sockets pro meziproc
 
 Ačkoliv prototyp splňuje všechna zadaná kritéria, existuje prostor pro další vylepšení. Mezi hlavní směry rozvoje patří:
 \begin{itemize}
-    \item Rozšíření podpory pro pokročilé síťové funkce, jako je \textit{Split Tunneling} přímo v uživatelském rozhraní klienta.
+    \item Plná integrace orchestrace WireGuardu a rozšíření podpory pro pokročilé síťové funkce, jako je \textit{Split Tunneling}.
     \item Podpora dalších linuxových distribucí a alternativních správců balíčků.
     \item Implementace pokročilé diagnostiky sítě přímo v rámci příkazu \texttt{status}.
 \end{itemize}

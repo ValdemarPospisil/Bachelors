@@ -60,7 +60,10 @@ private void WriteFile(object json)
 \end{minipage}
 
 \subsection{IPC Server (Unix Domain Sockets)}
-Základním kamenem architektury je nově vytvořený modul \texttt{CLIService}. Tento modul slouží jako most mezi uživatelskými vstupy a jádrem služby. Jak bylo navrženo v kapitole~\ref{sec:navrh_ipc}, komunikace probíhá přes Unix Domain Sockets (UDS), což je na platformě Linux standardní a vysoce výkonný způsob výměny dat mezi lokálními procesy. Služba vytvoří pojmenovanou rouru (named pipe), na které asynchronně naslouchá příchozím spojením od klienta. Požadavky jsou zasílány a vraceny ve formátu JSON, což usnadňuje deserializaci dat na obou stranách.
+Základním kamenem architektury je nově vytvořený modul \texttt{CLIService}. Tento modul slouží jako most mezi uživatelskými vstupy a jádrem služby. Jak bylo navrženo v kapitole~\ref{sec:navrh_ipc}, komunikace probíhá přes Unix Domain Sockets (UDS), což je na platformě Linux standardní a vysoce výkonný způsob výměny dat mezi lokálními procesy.
+
+Ačkoliv je v .NET kódu využita třída \texttt{NamedPipeServerStream}, pro zajištění stejného chování a využití vlastností lokálních soketů popsaných v návrhu, je tato komponenta systémovou službou publikována s příslušným prefixem \texttt{CoreFxPipe}. Služba tak vytvoří tento komunikační kanál, na kterém asynchronně naslouchá příchozím spojením od klienta. Požadavky jsou zasílány a vraceny ve formátu JSON, což usnadňuje deserializaci dat na obou stranách.
+
 
 \noindent\begin{minipage}{\linewidth}
 \begin{lstlisting}[language=CSharp, stringstyle=\itshape]
@@ -77,10 +80,8 @@ _serverStream = new NamedPipeServerStream(
 \begin{figure}[htbp]
     \centering
     \begin{tikzpicture}[font=\sffamily\small, scale=0.95, transform shape, >=latex]
-        \shorthandoff{-}
-        
-        \tikzset{
-            class/.style={draw, thick, fill=white, align=center, minimum width=3.5cm, minimum height=1.5cm},
+
+        \tikzset{            class/.style={draw, thick, fill=white, align=center, minimum width=3.5cm, minimum height=1.5cm},
             interface/.style={draw, circle, thick, fill=white, minimum size=0.3cm, inner sep=0},
             package/.style={draw, thick, fill=gray!5, align=left, inner sep=10pt}
         }
@@ -165,7 +166,7 @@ await host.RunAsync();
 \end{minipage}
 
 \section{Implementace klientské aplikace (Go)}
-Na straně klienta bylo zvoleno využití jazyka Go, a to především pro jeho vynikající vlastnosti při vývoji CLI aplikací a schopnost kompilace do jediné statické binární formy nezávislé na externích knihovnách na koncovém systému.
+Na straně klienta bylo zvoleno využití jazyka Go, který se v posledních letech stal de facto standardem pro vývoj moderních cloud-native a systémových nástrojů. Mezi jeho hlavní výhody patří především schopnost statické kompilace do jediného binárního souboru, který v sobě nese veškeré potřebné závislosti včetně runtime prostředí. To radikálně zjednodušuje distribuci a nasazení v různorodých linuxových distribucích, kde není vyžadována přítomnost specifických sdílených knihoven. Jazyk Go dále nabízí vynikající výkon, velmi rychlý start aplikací (což je pro interaktivní CLI nástroje kritické) a silně typovaný, avšak minimalistický syntaktický model, který usnadňuje dlouhodobou údržbu a čitelnost kódu \cite{donovan_go}.
 
 \subsection{Parsování příkazů (Cobra)}
 Základní aplikační kostra byla postavena na populárním frameworku Cobra (jehož parametry jsou uvedeny v kapitole~\ref{sec:cobra}). Tento nástroj umožňuje velmi snadno deklarovat stromovou strukturu příkazů, definovat argumenty (tzv. flags) a automaticky generovat nápovědu pro uživatele.
@@ -341,26 +342,23 @@ Klíčovou součástí balíčků jsou takzvané \textit{maintainer scripts} (vi
 \begin{enumerate}
     \item Reloadují konfiguraci \texttt{systemd} (\texttt{systemctl daemon-reload}).
     \item Aktivují a spustí službu \texttt{goodaccess-cli.service}.
-    \item Nastaví restriktivní oprávnění (\texttt{chmod 700}) pro hlavní binární soubor klienta, aby se zamezilo neautorizovanému spuštění.
+    \item Nastaví restriktivní oprávnění (\texttt{chmod 700}) pro binární soubor služby (daemona), aby se zamezilo neautorizovanému spuštění.
 \end{enumerate}
 
 \subsection{Implementace detekce aktualizací}
-Jak bylo navrženo v kapitole \ref{sec:distribuce_aktualizace}, aplikace se spoléhá na proaktivní detekci nových verzí. Tato logika byla implementována v rámci komunikace se službou. Služba při každém požadavku na zobrazení stavu (\texttt{ga-cli status}) asynchronně porovnává lokální verzi s verzí dostupnou na centrálním API.
+Jak bylo navrženo v kapitole \ref{sec:distribuce_aktualizace}, aplikace se spoléhá na proaktivní detekci nových verzí. Tato logika byla implementována v rámci komunikace se službou. Služba při každém požadavku na zobrazení verze (\texttt{ga-cli version}) asynchronně porovnává lokální verzi s verzí dostupnou na centrálním API.
 
 Pokud je zjištěna novější verze, je v odpovědi ze služby nastaven příznak \texttt{UpdateAvailable}. Klientská aplikace v Go následně tuto informaci interpretuje a zobrazí uživateli upozornění přímo v terminálu.
 
 \noindent\begin{minipage}{\linewidth}
 \begin{lstlisting}[language=Go, stringstyle=\itshape]
-// returned by the background service.
-type AppStateResponse struct {
-	IsLoggedIn             bool   `json:"isLoggedIn"`
-	IsConnected            bool   `json:"isConnected"`
-	UserName               string `json:"userName"`
-	IsAnotherUserConnected bool   `json:"isAnotherUserConnected"`
-
+// returned by the background service for the version command.
+type VersionResponse struct {
+	CurrentVersion  string `json:"currentVersion"`
+	
 	// UpdateAvailable is set to true if the service detects 
 	// a newer version on the central API.
-	UpdateAvailable        bool   `json:"updateAvailable"`
+	UpdateAvailable bool   `json:"updateAvailable"`
 }
 \end{lstlisting}
 \end{minipage}
