@@ -11,7 +11,7 @@ Celý systém je v souladu se zvoleným návrhem rozdělen na dvě hlavní, tech
     \item \textbf{Klient (Client - Go):} Běží v uživatelském prostoru (bez \texttt{root} oprávnění) a zajišťuje čistě interakci s uživatelem. Zodpovídá za parsování argumentů příkazové řádky pomocí frameworku \texttt{Cobra}, obsluhu interaktivních TUI prvků prostřednictvím \texttt{Bubble Tea} a finální formátování výstupu. Jazyk Go byl pro vývoj CLI zvolen díky svým vlastnostem pro systémové programování, rychlému startu a statické kompilaci do jediné binárky, což radikálně zjednodušuje distribuci (viz sekce \ref{sec:technologie} a \ref{sec:cli_teorie}).
 \end{itemize}
 
-Architektura Go klienta navíc úzce reflektuje principy takzvané \textit{Clean Architecture}. Celá kódová základna klienta je rozdělena do logických vrstev, kde uživatelské rozhraní (UI a parsování příkazů) je zcela odděleno od aplikační logiky a transportní vrstvy (IPC komunikace přes Unix Domain Sockets). Toto vrstvení zaručuje vysokou testovatelnost komponent a možnost nezávisle upravovat vizuální prezentaci bez vlivu na způsob, jakým klient komunikuje s .NET službou.
+Architektura Go klienta navíc úzce reflektuje principy takzvané \textit{Clean Architecture}~\cite{martin_clean}. Celá kódová základna klienta je rozdělena do logických vrstev, kde uživatelské rozhraní (UI a parsování příkazů) je zcela odděleno od aplikační logiky a transportní vrstvy (IPC komunikace přes Unix Domain Sockets). Toto vrstvení zaručuje vysokou testovatelnost komponent a možnost nezávisle upravovat vizuální prezentaci bez vlivu na způsob, jakým klient komunikuje s .NET službou.
 
 
 \begin{figure}[H]
@@ -347,7 +347,7 @@ Klíčovým bezpečnostním prvkem celého mechanismu je správa samotných šif
 
 \subsection{Bezpečnost meziprocesové komunikace (IPC)}
 
-Komunikační kanál mezi klientem a službou je realizován pomocí pojmenovaných rour (Named Pipes), které jsou v prostředí operačního systému Linux implementovány jako Unix Domain Sockets \cite{microsoft_grpc_ipc} (v tomto návrhu konkrétně umístěné v systémovém adresáři \texttt{/tmp/\allowbreak{}CoreFxPipe\\\allowbreak{}ga-cli.sock}). Místo zavádění dedikovaných uživatelských skupin pro omezení přístupu k soketu na úrovni souborového systému je bezpečnost řešena dynamicky přímo na aplikační úrovni služby.
+Komunikační kanál mezi klientem a službou je realizován pomocí pojmenovaných rour (Named Pipes), které jsou v prostředí operačního systému Linux implementovány jako Unix Domain Sockets \cite{dotnet_named_pipes} (v tomto návrhu konkrétně umístěné v systémovém adresáři \texttt{/tmp/\allowbreak{}CoreFxPipe\\\allowbreak{}ga-cli.sock}). Místo zavádění dedikovaných uživatelských skupin pro omezení přístupu k soketu na úrovni souborového systému je bezpečnost řešena dynamicky přímo na aplikační úrovni služby.
 
 Každý požadavek odeslaný z CLI klienta obsahuje kromě samotných uživatelských dat (payload) také aplikační kontext s identifikátorem volajícího uživatele (\texttt{LinuxId}). Služba tak může při zpracování požadavku bezpečně ověřovat, zda má uživatel dostatečná oprávnění k požadované akci (např. manipulaci s VPN připojením, odhlášení relace). V případě zjištění narušení bezpečnosti nebo nedostatečných oprávnění je požadavek okamžitě zamítnut, čímž je zajištěna integrita systému i při sdílení jednoho soketu více lokálními uživateli.
 

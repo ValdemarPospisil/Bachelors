@@ -77,6 +77,8 @@ _serverStream = new NamedPipeServerStream(
 \end{lstlisting}
 \end{minipage}
 
+Bezpečnost tohoto komunikačního kanálu je zajištěna na úrovni souborového systému. Při vytvoření Unix Domain Socketu systém vygeneruje soubor na cestě \texttt{/tmp/CoreFxPipe\_ga-cli.sock}, jehož vlastníkem je uživatel \texttt{root}, pod kterým služba běží. Přístupová práva tohoto soketového souboru jsou nastavena tak, aby připojení mohly navazovat pouze procesy s odpovídajícími oprávněními. Parametr \texttt{maxNumberOfServerInstances~=~1} zároveň zajišťuje, že server obsluhuje vždy nejvýše jednoho klienta -- jakýkoliv pokus o souběžné připojení je serverem odmítnut. Volba \texttt{PipeOptions.Asynchronous} pak umožňuje neblokující I/O operace, díky čemuž hlavní vlákno služby není blokováno čekáním na příchozí spojení.
+
 \begin{figure}[htbp]
     \centering
     \begin{tikzpicture}[font=\sffamily\small, scale=0.95, transform shape, >=latex]

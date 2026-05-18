@@ -21,7 +21,20 @@
 \usepackage{longtable}
 \usepackage{afterpage}
 \usepackage{microtype}  % přesnější typografie
+\usepackage{minted}
 
+\usemintedstyle{friendly}
+
+\setminted{
+  fontsize=\small,
+  baselinestretch=1,
+  bgcolor=white,
+  breaklines=true,
+  breakanywhere=false,
+  tabsize=3,
+  frame=single,
+  linenos=false
+}
 % workaround for imcompatibility of czech babel and biblatex
 
 \iftutex
@@ -42,11 +55,11 @@
 % fonty lze měnit (detaily viz sekce fonty)
 \iftutex
 	\usepackage{fontspec}  % nastavení fontů pro LuaLaTeX a XeLaTeX
-%	\setmainfont{Libertinus Serif}
-%	\setsansfont{Libertinus Sans}
-%	\setmonofont[Scale=MatchLowercase]{Source Code Pro}
-%	\usepackage{unicode-math}
-%	\setmathfont{Libertinus Math}
+	\setmainfont{Libertinus Serif}
+	\setsansfont{Libertinus Sans}
+	\setmonofont[Scale=MatchLowercase]{Source Code Pro}
+	\usepackage{unicode-math}
+	\setmathfont{Libertinus Math}
 \else
 	\usepackage[utf8]{inputenc} % nastavení pro PDF LaTeX
 	\usepackage[T1]{fontenc}
@@ -185,7 +198,6 @@
     Vedoucí práce: 	& \vedouci\\
 &\\
 Studijní program:       & \program\\
-\ifthenelse{\boolean{api}}{Studijní obor:          & \obor\\}{}
 \end{tabular} 
 }
 \vspace{1.5cm}
@@ -223,7 +235,7 @@ jen pramenů, které cituji a uvádím v přiloženém seznamu literatury.
 
 Byl\ifthenelse{\boolean{feminum}}{a}{} jsem seznámen\ifthenelse{\boolean{feminum}}{a}{} 
 s tím, že se na moji práci vztahují práva a povinnosti vyplývající ze
-zákona č. 121/2000 Sb., ve znění zákona č. 81/2005 Sb., autorský zákon, zejména se
+zákona č. ~121/2000 Sb., ve znění zákona č. ~81/2005 Sb., autorský zákon, zejména se
 skutečností, že Univerzita Jana Evangelisty Purkyně v Ústí nad Labem má právo na uzavření
 licenční smlouvy o užití této práce jako školního díla podle § 60 odst. 1 autorského zákona, a
 s tím, že pokud dojde k užití této práce mnou nebo bude poskytnuta licence o užití jinému
@@ -256,7 +268,7 @@ V současné době nabízí GoodAccess VPN řešení především prostřednictv
 
 Hlavním cílem této práce je navrhnout a implementovat funkční prototyp CLI aplikace pro správu GoodAccess VPN připojení na Linux distribucích s využitím WireGuard protokolu. Práce se zabývá návrhem architektury, bezpečným ukládáním dat a implementací komunikace se systémovou službou pomocí IPC.
 
-\textbf{Klíčová slova:} VPN, GoodAccess, CLI, Linux, Go, .NET  
+\textbf{Klíčová slova:} VPN, GoodAccess, CLI, Linux, Go, C#  
 
 \bigskip
 

@@ -5,7 +5,7 @@ Tato kapitola analyzuje klíčové technologie, architektonické principy a bezp
 
 \section{Rozhraní příkazové řádky}
 \label{sec:cli_teorie}
-Rozhraní příkazové řádky (CLI – Command Line Interface) představuje jeden z nejstarších, avšak stále nejvýkonnějších způsobů interakce uživatele s počítačem prostřednictvím textových příkazů. Navzdory rozšíření grafických rozhraní zůstává CLI, jehož historie sahá do 60. let 20. století k práci Steva Bournea pro systémy Unix, nepostradatelným nástrojem pro administrátory a vývojáře \cite{fateh_cli_explained}. Pro profesionály představuje CLI pomyslný „švýcarský nůž“, který díky své hlubší funkcionalitě a možnostem automatizace slouží jako základní vrstva, nad níž jsou moderní uživatelská rozhraní často budována jako vyšší stupeň abstrakce \cite{fateh_cli_explained}.
+Rozhraní příkazové řádky (CLI – Command Line Interface) představuje jeden z nejstarších, avšak stále nejvýkonnějších způsobů interakce uživatele s počítačem prostřednictvím textových příkazů. Navzdory rozšíření grafických rozhraní zůstává CLI nepostradatelným nástrojem pro administrátory a vývojáře. Jeho kořeny sahají do poloviny 60. let 20. století k projektu Multics, kde Louis Pouzin poprvé zavedl termín „shell“ pro uživatelské rozhraní oddělené od jádra systému \cite{raymond_unix}. Tento koncept byl následně rozvinut v systému Unix prací Kena Thompsona a později Stephena Bournea, jehož Bourne shell z roku 1979 definoval moderní standard pro skriptování a automatizaci \cite{raymond_unix}. Pro profesionály představuje CLI pomyslný „švýcarský nůž“, který díky své hlubší funkcionalitě slouží jako základní vrstva, nad níž jsou moderní uživatelská rozhraní často budována jako vyšší stupeň abstrakce \cite{fateh_cli_explained}.
 
 \subsection{Role CLI v moderní správě systémů}
 \subsubsection{Efektivita a automatizace}
@@ -28,7 +28,7 @@ Tradiční pojetí zabezpečení sítě, založené na ochraně perimetru, proch
 Virtuální privátní síť (VPN) umožňuje vytvořit bezpečné, šifrované spojení (tunel) mezi dvěma body v rámci nezabezpečené sítě. Princip tunelování spočívá v zapouzdření (enkapsulaci) síťových paketů do jiného protokolu, který zajišťuje integritu a důvěrnost přenášených dat \cite{wireguard_paper}. Historicky se organizace spoléhaly na perimetrovou bezpečnost (tzv. hrad a příkop), kde je vnitřní síť považována za důvěryhodnou zónu. Tento přístup však trpí kritickou slabinou: pokud útočník kompromituje jediné zařízení uvnitř perimetru, může se v síti volně pohybovat (laterální pohyb), protože vnitřní síť mu implicitně důvěřuje \cite{nist_800_207}.
 
 \subsubsection{Koncept Zero Trust}
-Filozofie Zero Trust (nulová důvěra) model „hrad a příkop“ opouští a vychází z principu „nikdy nedůvěřuj, vždy prověřuj“ (Never trust, always verify). Samotný koncept není nový; termín „Zero Trust“ zpopularizoval již v roce 2010 John Kindervag (v té době analytik společnosti Forrester Research), který prosazoval myšlenku, že bezpečnost musí být nedílnou součástí architektury sítě, nikoliv pouze jejím vnějším obalem \cite{goodaccess_ztna_explained}. V konceptu Zero Trust není důvěra nikdy udělena automaticky na základě fyzického umístění uživatele nebo jeho IP adresy. Každý pokus o přístup k jakémukoliv zdroji musí být individuálně autentizován, autorizován a šifrován \cite{goodaccess_ztna_explained}.
+Filozofie Zero Trust (nulová důvěra) model „hrad a příkop“ opouští a vychází z principu \textit{„nikdy nedůvěřuj, vždy prověřuj“} (v originále \textit{„Never trust, always verify“}) \cite{kindervag2010nomore}. Samotný koncept není nový; termín „Zero Trust“ zpopularizoval již v roce 2010 John Kindervag (v té době analytik společnosti Forrester Research), který prosazoval myšlenku, že bezpečnost musí být nedílnou součástí architektury sítě, nikoliv pouze jejím vnějším obalem \cite{kindervag2010nomore}. V konceptu Zero Trust není důvěra nikdy udělena automaticky na základě fyzického umístění uživatele nebo jeho IP adresy. Každý pokus o přístup k jakémukoliv zdroji musí být individuálně autentizován, autorizován a šifrován podle standardu NIST SP 800-207 \cite{nist_800_207}.
 
 \subsection{Zero Trust Network Access (ZTNA) a GoodAccess}
 
@@ -45,7 +45,7 @@ V rámci ZTNA se rozlišují dva hlavní přístupy k segmentaci:
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{images/ZTNA.png}
-    \caption{Architektura Zero Trust Network Access \cite{ztna_paper_2025}}
+    \caption{Architektura Zero Trust Network Access (převzato z \cite{ztna_paper_2025})}
     \label{fig:ztna_arch}
 \end{figure}
 
@@ -159,7 +159,7 @@ Koncept testovací pyramidy, který poprvé popularizoval Mike Cohn v knize \tex
         % Šipka vpravo (Izolace a rychlost)
         \draw[->, thick] (1.5,4) -- (3.5,0.5) node[midway, right=0.2cm, align=left] {Rostoucí izolace\\a rychlost provedení};
     \end{tikzpicture}
-    \caption{Model testovací pyramidy (převzato od Mikea Cohna \cite{cohn_succeeding})}
+    \caption{Model testovací pyramidy (překresleno z \cite{cohn_succeeding})}
     \label{fig:test_pyramid}
 \end{figure}
 
@@ -172,7 +172,7 @@ Pyramida se skládá ze tří hlavních úrovní:
 
 \subsection{Behavior-Driven Development (BDD) a Gherkin}
 \label{sec:bdd_teorie}
-Vývoj řízený chováním (BDD – Behavior-Driven Development) je metodika, která rozšiřuje principy TDD o zaměření na uživatelský pohled a čitelnost scénářů pro netechnické členy týmu \cite{bubble_tea_intro}. Specifikace jsou psány v přirozeném jazyce pomocí syntaxe \textbf{Gherkin}.
+Vývoj řízený chováním (BDD – Behavior-Driven Development) je metodika, která rozšiřuje principy TDD o zaměření na uživatelský pohled a čitelnost scénářů pro netechnické členy týmu \cite{north2006introducing}. Specifikace jsou psány v přirozeném jazyce pomocí syntaxe \textbf{Gherkin}.
 
 Scénáře v Gherkinu využívají klíčová slova:
 \begin{itemize}
@@ -216,7 +216,7 @@ Zatímco Debian využívá sadu souborů v adresáři \texttt{debian/}, RPM stav
     \item \textbf{\%files:} Explicitní seznam souborů, které má finální balíček obsahovat. Jakýkoliv soubor vytvořený v sekci \%install, který není uveden v \%files, způsobí chybu buildu, což zajišťuje vysokou úroveň kontroly nad obsahem balíčku.
 \end{itemize}
 
-Významným rozdílem je také práce se závislostmi. Zatímco rodina Debian využívá nástroj \texttt{APT}, RPM systémy přešly od \texttt{YUM} k modernímu nástroji \texttt{DNF}, který využívá pokročilé algoritmy (SAT solver) pro řešení konfliktů mezi balíčky.
+Významným rozdílem je také práce se závislostmi. Zatímco rodina Debian využívá nástroj \texttt{APT}, RPM systémy přešly od \texttt{YUM} k modernímu nástroji \texttt{DNF}, který využívá pokročilé algoritmy (SAT solver) pro řešení konfliktů mezi balíčky \cite{schroeder2008libsolv}.
 
 \section{Metodologie agilního vývoje}
 \label{sec:agile_teorie}
