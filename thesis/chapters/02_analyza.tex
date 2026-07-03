@@ -118,7 +118,7 @@ Jádrem aplikace je ovládání VPN tunelu a správa nastavení pro připojení.
     \item \textbf{F12 -- Help:} Zobrazení standardní nápovědy k dostupným příkazům a jejich použití.
 \end{itemize}
 
-\section{Mimofunkční požadavky}
+\section{Nefunkční požadavky}
 \label{sec:nefunkcni_pozadavky}
 \begin{itemize}
     \item \textbf{M1 -- Výkon a odezva:} Aplikace v prostředí příkazové řádky (CLI) musí reagovat okamžitě. Zásadní je rychlý start aplikace a nízká paměťová náročnost, aby její spuštění uživatele neomezovalo.
@@ -150,7 +150,7 @@ Byl zvolen \textbf{Návrh A (Wrapper)} z následujících důvodů:
 \begin{enumerate}
     \item \textbf{Single Source of Truth:} Služba drží jednotný stav aplikace. Nedochází k desynchronizaci mezi tím, co si myslí CLI, a tím, co je reálně nastaveno v síti.
     \item \textbf{Bezpečnost:} Uživatel nemusí spouštět CLI pod \texttt{rootem}. Privilegované operace provádí pouze izolovaná služba na pozadí.
-    \item \textbf{Znovupoužitelnost:} Využívá se již otestovaná a existující logika v .NET backendu, což je v souladu s hodnotou jednoduchosti (Simplicity) metodiky Extreme Programming (\ref{sec:agile_teorie}).
+    \item \textbf{Znovupoužitelnost:} Využívá se již otestovaná a existující logika v .NET backendu, což je v souladu s hodnotou jednoduchosti (Simplicity) metodiky XP (\ref{sec:agile_teorie}).
 \end{enumerate}
 
 %\begin{figure}[H]

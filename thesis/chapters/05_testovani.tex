@@ -1,12 +1,12 @@
 \chapter{Testování a validace}
 \label{chap:testovani}
 
-Ověření funkčnosti a stability aplikace probíhalo v souladu s metodikou Extrémního programování průběžně během vývoje.
+Ověření funkčnosti a stability aplikace probíhalo v souladu s metodikou XP průběžně během vývoje.
 
 \section{Metodika testování}
 \label{sec:metodika_testovani}
 
-V souladu s principy agilního vývoje, zejména metodiky Extrémního programování (viz sekce~\ref{sec:agile_teorie}), bylo testování integrální součástí celého vývojového cyklu, nikoliv až jeho závěrečnou fází. Uplatňován byl přístup TDD (Test-Driven Development), kdy byly pro klíčové logické celky psány testy ještě před samotnou implementací.
+V souladu s principy agilního vývoje, zejména metodiky XP (viz sekce~\ref{sec:agile_teorie}), bylo testování integrální součástí celého vývojového cyklu, nikoliv až jeho závěrečnou fází. Uplatňován byl přístup TDD (Test-Driven Development), kdy byly pro klíčové logické celky psány testy ještě před samotnou implementací.
 
 Strategie testování vychází z konceptu testovací pyramidy, který byl detailně popsán v teoretické části práce (viz podkapitola \ref{sec:test_pyramida_teorie}). V rámci této práce byly realizovány testy na všech úrovních pyramidy, od rychlých jednotkových testů až po komplexní akceptační scénáře.
 
@@ -65,15 +65,17 @@ namespace GoodAccess.CLI.Tests
         public void SavePreferences_ShouldStoreCorrectData()
         {
             // Arrange
-            var mockProtector = new Mock<IDataProtectionProvider>();
-            var storage = new CliStorage(mockProtector.Object);
+            var mockProtector = new Mock<IDataProtector>();
+            var mockProvider = new Mock<IDataProtectionProvider>();
+            mockProvider.Setup(p => p.CreateProtector(It.IsAny<string>())).Returns(mockProtector.Object);
+            var storage = new CliStorage(mockProvider.Object);
             var prefs = new CliPreferences { LastUser = "test@example.com" };
 
             // Act
             storage.SavePreferences(prefs);
 
             // Assert
-            // Verify that data was passed to the protection provider and then stored
+            // Verify that data was passed to the protector before being stored
             mockProtector.Verify(p => p.Protect(It.IsAny<byte[]>()), Times.Once);
         }
     }
@@ -83,7 +85,6 @@ namespace GoodAccess.CLI.Tests
 
 Další testovací scénáře pro třídu \texttt{CliStorage} zahrnují:
 \begin{itemize}
-    \item \texttt{SavePreferences\_\allowbreak{}ShouldStoreCorrectData()}: Test ověří, že po zavolání metody \texttt{SavePreferences} je do souboru zapsán správně naformátovaný a zašifrovaný JSON objekt.
     \item \texttt{GetRefreshToken\_\allowbreak{}ShouldThrowOnMissingToken()}: Test zajistí, že pokud se metoda pokusí přečíst neexistující token, je vyhozena očekávaná výjimka.
     \item \texttt{SetRefreshToken\_\allowbreak{}ShouldUpdateSession()}: Ověří, že zavolání metody pro nastavení nového obnovovacího tokenu správně aktualizuje data v úložišti.
 \end{itemize}

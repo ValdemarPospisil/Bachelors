@@ -237,7 +237,7 @@ Zde je kompletní video ukázka základního workflow aplikace od prvního nasta
 
 Kompletní dokumentaci k projektu naleznete v následujících souborech:
 
-- **Bakalářská práce:** [thesis.pdf](./thesis/build/thesis.pdf)
+- **Bakalářská práce:** [thesis.pdf](./thesis/thesis.pdf)
 - **Zdrojové texty (LaTeX):** [thesis/](./thesis/)
 - **Prezentace:** [prezentace.pdf](./presentations/SKKI1/build/prezentace.pdf)
 
