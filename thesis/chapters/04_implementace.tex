@@ -146,7 +146,7 @@ switch (command.ToLower())
 V raných fázích vývoje, kdy ještě nebyla zcela implementována veškerá produkční logika a klientská aplikace se teprve formovala, vracela metoda \texttt{CliMessenger} provizorní, pevně definované hodnoty (tzv. hardcoded data). Tento přístup umožnil paralelní vývoj -- uživatelské rozhraní se mohlo designovat a testovat proti konzistentnímu API bez čekání na dokončení komplexní aplikační logiky. Postupem času byly tyto provizorní odpovědi nahrazovány reálným napojením na síťové a autentizační subsystémy.
 
 \subsection{Životní cyklus a integrace se systemd}
-Pro zajištění běhu služby na pozadí a správnou instalaci na Linuxu byl využit modul \texttt{Microsoft.\allowbreak Extensions.\allowbreak Hosting.\allowbreak Systemd} (~\ref{sec:technologie}). Díky tomuto modulu se celá aplikace může chovat jako nativní \texttt{systemd} služba. Definice \texttt{goodaccess-cli.service} zajižduje automatické spuštění po startu systému a \textit{graceful shutdown} proces pro bezpečné odpojení VPN před vypnutím. Následující ukázka kódu z konfigurační třídy \texttt{Program.cs} demonstruje inicializaci hostitele, kde metoda \texttt{UseSystemd()} registruje životní cyklus služby a zároveň probíhá konfigurace \texttt{DataProtection} API z předchozí podkapitoly a registrace hlavní pracovní třídy \texttt{Worker}, která obstarává chod aplikace v pozadí.
+Pro zajištění běhu služby na pozadí a správnou instalaci na Linuxu byl využit modul \texttt{Microsoft.\allowbreak Extensions.\allowbreak Hosting.\allowbreak Systemd} (viz sekce~\ref{sec:technologie}). Díky tomuto modulu se celá aplikace může chovat jako nativní \texttt{systemd} služba. Definice \texttt{goodaccess-cli.service} zajižduje automatické spuštění po startu systému a \textit{graceful shutdown} proces pro bezpečné odpojení VPN před vypnutím. Následující ukázka kódu z konfigurační třídy \texttt{Program.cs} demonstruje inicializaci hostitele, kde metoda \texttt{UseSystemd()} registruje životní cyklus služby a zároveň probíhá konfigurace \texttt{DataProtection} API z předchozí podkapitoly a registrace hlavní pracovní třídy \texttt{Worker}, která obstarává chod aplikace v pozadí.
 
 \noindent\begin{minipage}{\linewidth}
 \begin{lstlisting}[language=CSharp, stringstyle=\itshape]
@@ -275,7 +275,7 @@ Moderní protokol WireGuard představoval v kontextu architektury významnou vý
 \subsection{Vylepšení uživatelské přívětivosti (UX)}
 S cílem maximalizovat komfort koncových uživatelů při interakci v terminálu byl klient postupně doplňován o podpůrné funkce a vizuální prvky definované v kapitole~\ref{sec:vizualni_styl}. Byly implementovány kontextové nápovědy (tzv. \textit{hints}), které uživateli po dokončení operace nebo při kontrole stavu navrhují další logický krok. Například, je-li uživatel odhlášen, příkaz \texttt{status} nejen zobrazí aktuální stav, ale zároveň nabídne spuštění příkazu \texttt{ga-cli login}. Dalším důležitým UX prvkem je okamžitá vizuální odezva u déletrvajících operací (např. sestavování VPN spojení), jež byla realizována pomocí animovaných načítacích elementů (spinnerů).
 
-Důležitým přepínačem (flag) je plná podpora pro strojově čitelné formátování výstupů prostřednictvím \texttt{--json}. Tento flag zajišťuje, že aplikace nebude vracet interaktivní textové uživatelské rozhraní ani barevně formátovaný text, ale striktně strukturovaný JSON výstup. Tato funkcionalita je klíčová pro případnou integraci CLI nástroje do CI/CD řetězců (pipelines) a automatizačních skriptů, kde je vyžadováno bezobslužné řízení celého procesu připojení a zpracování jeho výsledků.
+Důležitým přepínačem (flag) je plná podpora pro strojově čitelné formátování výstupů prostřednictvím \texttt{-{}-json}. Tento flag zajišťuje, že aplikace nebude vracet interaktivní textové uživatelské rozhraní ani barevně formátovaný text, ale striktně strukturovaný JSON výstup. Tato funkcionalita je klíčová pro případnou integraci CLI nástroje do CI/CD řetězců (pipelines) a automatizačních skriptů, kde je vyžadováno bezobslužné řízení celého procesu připojení a zpracování jeho výsledků.
 
 \begin{figure}[htbp]
     \centering
@@ -296,7 +296,7 @@ Důležitým přepínačem (flag) je plná podpora pro strojově čitelné form�
     \begin{minipage}{0.6\textwidth}
         \centering
         \includegraphics[width=\linewidth]{images/implementation/screenshots/status-json.png}
-        \caption{Strojově čitelný výstup pomocí flagu \texttt{--json}}
+        \caption{Strojově čitelný výstup pomocí flagu \texttt{-{}-json}}
         \label{fig:ux_json_output}
     \end{minipage}
 \end{figure}

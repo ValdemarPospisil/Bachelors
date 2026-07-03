@@ -6,7 +6,7 @@ Ověření funkčnosti a stability aplikace probíhalo v souladu s metodikou Ext
 \section{Metodika testování}
 \label{sec:metodika_testovani}
 
-V souladu s principy agilního vývoje, zejména metodiky Extrémního programování ~\ref{sec:agile_teorie}, bylo testování integrální součástí celého vývojového cyklu, nikoliv až jeho závěrečnou fází. Uplatňován byl přístup TDD (Test-Driven Development), kdy byly pro klíčové logické celky psány testy ještě před samotnou implementací.
+V souladu s principy agilního vývoje, zejména metodiky Extrémního programování (viz sekce~\ref{sec:agile_teorie}), bylo testování integrální součástí celého vývojového cyklu, nikoliv až jeho závěrečnou fází. Uplatňován byl přístup TDD (Test-Driven Development), kdy byly pro klíčové logické celky psány testy ještě před samotnou implementací.
 
 Strategie testování vychází z konceptu testovací pyramidy, který byl detailně popsán v teoretické části práce (viz podkapitola \ref{sec:test_pyramida_teorie}). V rámci této práce byly realizovány testy na všech úrovních pyramidy, od rychlých jednotkových testů až po komplexní akceptační scénáře.
 
@@ -126,7 +126,7 @@ Kromě jednotkových a akceptačních testů bylo klíčové ověřit funkčnost
 
 Cílem systémového testování bylo ověřit celý životní cyklus aplikace v reálném prostředí a potvrdit splnění funkčních i nefunkčních požadavků. Proces se zaměřil na následující klíčové aspekty:
 \begin{enumerate}
-    \item \textbf{Instalace a oprávnění:} Byla ověřena úspěšná instalace balíčků (\texttt{.rpm} i \texttt{.deb}) a korektní nastavení restriktivních oprávnění (\texttt{700}) hlavního binárního souboru \texttt{ga-cli}.
+    \item \textbf{Instalace a oprávnění:} Byla ověřena úspěšná instalace balíčků (\texttt{.rpm} i \texttt{.deb}) a korektní nastavení restriktivních oprávnění (\texttt{700}) na binárním souboru služby (daemona).
     \item \textbf{Navázání spojení:} Testování potvrdilo schopnost aplikace korektně inicializovat IPC komunikaci a následně vyvolat sestavení VPN tunelu.
     \item \textbf{Validace konektivity:} Po úspěšném připojení byla ověřena funkčnost tunelu pomocí příkazu \texttt{ping} na interní firemní zdroje, které jsou dostupné výhradně skrze VPN GoodAccess.
 \end{enumerate}

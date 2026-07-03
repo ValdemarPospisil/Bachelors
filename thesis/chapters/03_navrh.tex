@@ -213,11 +213,11 @@ Aktuální hierarchii příkazů znázorňuje Obrázek \ref{fig:command_tree}.
     \node[cmd, fill=blue!15, font=\sffamily\bfseries] (root) at (-4, 0) {ga-cli};
 
     % Flags
-    \node[flag] (setup-g) at (4, 1.1) {--gateway};
-    \node[flag] (connect-g) at (4, 0.45) {--gateway};
-    \node[flag] (connect-p) at (4, -0.45) {--protocol};
-    \node[flag] (status-j) at (4, -2.2) {--json};
-    \node[flag] (version-j) at (4, -3.3) {--json};
+    \node[flag] (setup-g) at (4, 1.1) {-{}-gateway};
+    \node[flag] (connect-g) at (4, 0.45) {-{}-gateway};
+    \node[flag] (connect-p) at (4, -0.45) {-{}-protocol};
+    \node[flag] (status-j) at (4, -2.2) {-{}-json};
+    \node[flag] (version-j) at (4, -3.3) {-{}-json};
 
     % Connect root to commands
     \draw[thick] (root.east) -- (-2, 0) coordinate (bus);
@@ -248,7 +248,7 @@ Mezi klíčové příkazy patří:
 \begin{itemize}
     \item \texttt{login}: Pro autentizaci uživatele vůči backendu GoodAccess.
     \item \texttt{setup}: Komplexní průvodce prvotním nastavením (viz sekce \ref{sec:setup_flow}).
-    \item \texttt{connect}: Navázání VPN připojení. Bez parametrů se připojuje k preferované bráně. Pomocí přepínače \texttt{-g} nebo \texttt{--gateway} lze vyvolat interaktivní výběr pro jednorázové připojení k jiné bráně.
+    \item \texttt{connect}: Navázání VPN připojení. Bez parametrů se připojuje k preferované bráně. Pomocí přepínače \texttt{-g} nebo \texttt{-{}-gateway} lze vyvolat interaktivní výběr pro jednorázové připojení k jiné bráně.
     \item \texttt{disconnect}: Bezpečné ukončení aktivního tunelu.
     \item \texttt{status}: Zobrazení detailních informací o aktuální relaci.
 \end{itemize}
@@ -347,7 +347,7 @@ Klíčovým bezpečnostním prvkem celého mechanismu je správa samotných šif
 
 \subsection{Bezpečnost meziprocesové komunikace (IPC)}
 
-Komunikační kanál mezi klientem a službou je realizován pomocí pojmenovaných rour (Named Pipes), které jsou v prostředí operačního systému Linux implementovány jako Unix Domain Sockets \cite{dotnet_named_pipes} (v tomto návrhu konkrétně umístěné v systémovém adresáři \texttt{/tmp/\allowbreak{}CoreFxPipe\\\allowbreak{}ga-cli.sock}). Místo zavádění dedikovaných uživatelských skupin pro omezení přístupu k soketu na úrovni souborového systému je bezpečnost řešena dynamicky přímo na aplikační úrovni služby.
+Komunikační kanál mezi klientem a službou je realizován pomocí pojmenovaných rour (Named Pipes), které jsou v prostředí operačního systému Linux implementovány jako Unix Domain Sockets \cite{dotnet_named_pipes} (v tomto návrhu konkrétně umístěné v systémovém adresáři \texttt{/tmp/\allowbreak{}CoreFxPipe\_ga-cli.sock}). Místo zavádění dedikovaných uživatelských skupin pro omezení přístupu k soketu na úrovni souborového systému je bezpečnost řešena dynamicky přímo na aplikační úrovni služby.
 
 Každý požadavek odeslaný z CLI klienta obsahuje kromě samotných uživatelských dat (payload) také aplikační kontext s identifikátorem volajícího uživatele (\texttt{LinuxId}). Služba tak může při zpracování požadavku bezpečně ověřovat, zda má uživatel dostatečná oprávnění k požadované akci (např. manipulaci s VPN připojením, odhlášení relace). V případě zjištění narušení bezpečnosti nebo nedostatečných oprávnění je požadavek okamžitě zamítnut, čímž je zajištěna integrita systému i při sdílení jednoho soketu více lokálními uživateli.
 
