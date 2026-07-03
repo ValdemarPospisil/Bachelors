@@ -25,7 +25,7 @@ Pro spolehlivou automatizaci a řetězení příkazů v~systémech rodiny Linux 
 Tradiční pojetí zabezpečení sítě, založené na ochraně perimetru, prochází v posledních letech zásadní transformací. Tato sekce popisuje evoluci od klasických VPN tunelů k moderní architektuře Zero Trust Network Access (ZTNA). Tento vývoj je v současnosti silně ovlivněn nejen technologickým pokrokem, ale i legislativními rámci, jako je evropská směrnice NIS2, která klade zvýšený důraz na odolnost kritické infrastruktury a doporučuje principy Zero Trust jako součást moderní strategie kybernetické bezpečnosti \cite{goodaccess_ztna_explained}.
 
 \subsection{Tradiční VPN a perimetrová bezpečnost}
-Virtuální privátní síť (VPN) umožňuje vytvořit bezpečné, šifrované spojení (tunel) mezi dvěma body v rámci nezabezpečené sítě. Princip tunelování spočívá v zapouzdření (enkapsulaci) síťových paketů do jiného protokolu, který zajišťuje integritu a důvěrnost přenášených dat \cite{wireguard_paper}. Historicky se organizace spoléhaly na perimetrovou bezpečnost (tzv. hrad a příkop), kde je vnitřní síť považována za důvěryhodnou zónu. Tento přístup však trpí kritickou slabinou: pokud útočník kompromituje jediné zařízení uvnitř perimetru, může se v síti volně pohybovat (laterální pohyb), protože vnitřní síť mu implicitně důvěřuje \cite{nist_800_207}.
+Virtuální privátní síť (VPN) umožňuje vytvořit bezpečné, šifrované spojení (tunel) mezi dvěma body v rámci nezabezpečené sítě. Princip tunelování spočívá v zapouzdření (enkapsulaci) síťových paketů do jiného protokolu, který zajišťuje integritu a důvěrnost přenášených dat \cite{ward_linux}. Historicky se organizace spoléhaly na perimetrovou bezpečnost (tzv. hrad a příkop), kde je vnitřní síť považována za důvěryhodnou zónu. Tento přístup však trpí kritickou slabinou: pokud útočník kompromituje jediné zařízení uvnitř perimetru, může se v síti volně pohybovat (laterální pohyb), protože vnitřní síť mu implicitně důvěřuje \cite{nist_800_207}.
 
 \subsubsection{Koncept Zero Trust}
 Filozofie Zero Trust (nulová důvěra) model „hrad a příkop“ opouští a vychází z principu \textit{„nikdy nedůvěřuj, vždy prověřuj“} (v originále \textit{„Never trust, always verify“}) \cite{kindervag2010nomore}. Samotný koncept není nový; termín „Zero Trust“ zpopularizoval již v roce 2010 John Kindervag (v té době analytik společnosti Forrester Research), který prosazoval myšlenku, že bezpečnost musí být nedílnou součástí architektury sítě, nikoliv pouze jejím vnějším obalem \cite{kindervag2010nomore}. V konceptu Zero Trust není důvěra nikdy udělena automaticky na základě fyzického umístění uživatele nebo jeho IP adresy. Každý pokus o přístup k jakémukoliv zdroji musí být individuálně autentizován, autorizován a šifrován podle standardu NIST SP 800-207 \cite{nist_800_207}.
@@ -97,7 +97,7 @@ Bezpečnostní stack řeší několik klíčových problémů automatizovaně:
 Díky této abstrakci může vývojář pracovat s jednoduchým rozhraním \texttt{IDataProtector}, zatímco platforma transparentně zajišťuje kryptografickou integritu a důvěrnost uložených dat.
 
 \subsection{Programovací jazyk Go}
-Jazyk Go, vyvinutý společností Google, se stal standardem pro systémové programování a cloud-native nástroje. Jeho filozofie je založena na minimalismu, efektivitě a bezpečnosti. Go kombinuje výkon kompilovaných jazyků (jako C++) s produktivitou jazyků s dynamickou typovou kontrolou \cite{go_spec}.
+Jazyk Go, vyvinutý společností Google, patří mezi nejrozšířenější jazyky pro systémové programování a cloud-native nástroje. Jeho filozofie je založena na minimalismu, efektivitě a bezpečnosti. Go kombinuje výkon kompilovaných jazyků (jako C++) s produktivitou jazyků s dynamickou typovou kontrolou \cite{go_spec}.
 
 \subsubsection{Charakteristika jazyka a systémové programování}
 Hlavní předností Go v oblasti systémových nástrojů je jeho schopnost statické kompilace. Výsledkem procesu sestavení je jediný binární soubor, který v sobě obsahuje všechny nezbytné knihovny (včetně runtime prostředí). To je v prostředí Linuxu zásadní výhoda, neboť uživatel nemusí instalovat žádné závislosti, což radikálně zjednodušuje distribuci softwaru \cite{donovan_go}. Go dále disponuje pokročilým modelem souběžnosti založeným na \textit{gorutinách} a kanálech (\textit{channels}), což umožňuje efektivní asynchronní zpracování síťových operací a událostí bez složitosti tradičních vláken.
@@ -172,7 +172,7 @@ Pyramida se skládá ze tří hlavních úrovní:
 
 \subsection{Behavior-Driven Development (BDD) a Gherkin}
 \label{sec:bdd_teorie}
-Vývoj řízený chováním (BDD – Behavior-Driven Development) je metodika, která rozšiřuje principy TDD o zaměření na uživatelský pohled a čitelnost scénářů pro netechnické členy týmu \cite{north2006introducing}. Specifikace jsou psány v přirozeném jazyce pomocí syntaxe \textbf{Gherkin}.
+Vývoj řízený chováním (BDD – Behavior-Driven Development) je metodika, která rozšiřuje principy TDD o zaměření na uživatelský pohled a čitelnost scénářů pro netechnické členy týmu \cite{north2006introducing}. Specifikace jsou psány v přirozeném jazyce pomocí syntaxe \textbf{Gherkin}, kterou popularizoval projekt Cucumber \cite{cucumber_gherkin}.
 
 Scénáře v Gherkinu využívají klíčová slova:
 \begin{itemize}
