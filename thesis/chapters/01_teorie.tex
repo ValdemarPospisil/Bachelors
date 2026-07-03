@@ -94,7 +94,7 @@ Bezpečnostní stack řeší několik klíčových problémů automatizovaně:
     \item \textbf{Rotace:} Systém automaticky generuje nové klíče a zneplatňuje staré, čímž omezuje dopad případného úniku klíče.
     \item \textbf{Perzistence:} Na systému Linux stack podporuje ukládání klíčů ve formátu XML (Extensible Markup Language) do souborového systému, přičemž je možné využít šifrování klíčů pomocí certifikátů nebo systémových úložišť.
 \end{itemize}
-Díky této abstrakci může vývojář pracovat s jednoduchým rozhraním \texttt{IDataProtector}, zatímco platforma transparentně zajišťuje kryptografickou integritu a důvěrnosti uložených dat.
+Díky této abstrakci může vývojář pracovat s jednoduchým rozhraním \texttt{IDataProtector}, zatímco platforma transparentně zajišťuje kryptografickou integritu a důvěrnost uložených dat.
 
 \subsection{Programovací jazyk Go}
 Jazyk Go, vyvinutý společností Google, se stal standardem pro systémové programování a cloud-native nástroje. Jeho filozofie je založena na minimalismu, efektivitě a bezpečnosti. Go kombinuje výkon kompilovaných jazyků (jako C++) s produktivitou jazyků s dynamickou typovou kontrolou \cite{go_spec}.
@@ -104,7 +104,7 @@ Hlavní předností Go v oblasti systémových nástrojů je jeho schopnost stat
 
 \label{sec:cobra}
 \subsubsection{Framework Cobra}
-Pro tvorbu rozhraní příkazové řádky (CLI) se v ekosystému Go prosadil framework \textbf{Cobra} \cite{cobra_philosophy}. Ten definuje standardizované strukturu pro definici příkazů, podřízených příkazů a jejich parametrů (včetně rozlišení mezi globálními a lokálními přepínači). Framework automatizuje generování nápovědy, validaci argumentů a poskytuje rozhraní pro generování manuálových stránek nebo skriptů pro automatické doplňování v shellu, čímž zajišťuje konzistentní uživatelský zážitek.
+Pro tvorbu rozhraní příkazové řádky (CLI) se v ekosystému Go prosadil framework \textbf{Cobra} \cite{cobra_philosophy}. Ten definuje standardizovanou strukturu pro definici příkazů, podřízených příkazů a jejich parametrů (včetně rozlišení mezi globálními a lokálními přepínači). Framework automatizuje generování nápovědy, validaci argumentů a poskytuje rozhraní pro generování manuálových stránek nebo skriptů pro automatické doplňování v shellu, čímž zajišťuje konzistentní uživatelský zážitek.
 
 \subsubsection{Architektura Elm a framework Bubble Tea}
 \label{sec:elm_bubbletea}
@@ -132,11 +132,11 @@ Pro implementaci automatizovaných testů v různých programovacích jazycích 
 Kvalita softwaru není náhodným výsledkem, ale důsledkem systematického procesu, který doprovází celý životní cyklus vývoje (SDLC – Software Development Life Cycle). V moderním inženýrství, zejména u systémových nástrojů, které manipulují se síťovým nastavením a vyžadují vysoká oprávnění, je verifikace správnosti klíčovým prvkem pro zajištění stability a bezpečnosti systému \cite{sommerville_se}.
 
 \subsection{Kvalita softwaru v SDLC}
-Tradiční pohled na testování jako na oddělenou fázi na konci vývoje je v agilním prostředí nahrazen integrací testů přímo do procesu tvorby kódu. Zajištění kvality (QA – Quality Assurance) zahrnuje nejen detekci chyb, ale především prevenci jejich vzniku skrze statickou analýzu, code review a automatizované testování \cite{cohn_succeeding}. Automatizace v tomto procesu umožňuje rychlou regresní analýzu při jakýcholiv změnách v systému.
+Tradiční pohled na testování jako na oddělenou fázi na konci vývoje je v agilním prostředí nahrazen integrací testů přímo do procesu tvorby kódu. Zajištění kvality (QA – Quality Assurance) zahrnuje nejen detekci chyb, ale především prevenci jejich vzniku skrze statickou analýzu, code review a automatizované testování \cite{cohn_succeeding}. Automatizace v tomto procesu umožňuje rychlou regresní analýzu při jakýchkoliv změnách v systému.
 
 \subsection{Testovací pyramida}
 \label{sec:test_pyramida_teorie}
-Koncept testovací pyramidy, který poprvé popularizoval Mike Cohn v knize \textit{Succeeding with Agile}, definuje idealní distribuci různých typů automatizovaných testů \cite{cohn_succeeding}. Cílem je vytvořit robustní základnu rychlých a levných testů, které jsou doplněny menším množstvím komplexnějších a pomalejších scénářů.
+Koncept testovací pyramidy, který poprvé popularizoval Mike Cohn v knize \textit{Succeeding with Agile}, definuje ideální distribuci různých typů automatizovaných testů \cite{cohn_succeeding}. Cílem je vytvořit robustní základnu rychlých a levných testů, které jsou doplněny menším množstvím komplexnějších a pomalejších scénářů.
 
 \begin{figure}[H]
     \centering
@@ -206,7 +206,7 @@ Klíčovým prvkem je adresář \texttt{debian/}, který obsahuje:
 \end{itemize}
 
 \subsection{Ekosystém Red Hat a Fedora (.rpm)}
-Ecosystem založený na RPM (Red Hat Package Manager) je de facto standardem pro podnikovou sféru (RHEL) a komunitní distribuci Fedora. Standardy pro tuto rodinu definují Fedora Packaging Guidelines \cite{fedora_packaging}.
+Ekosystém založený na RPM (Red Hat Package Manager) je de facto standardem pro podnikovou sféru (RHEL) a komunitní distribuci Fedora. Standardy pro tuto rodinu definují Fedora Packaging Guidelines \cite{fedora_packaging}.
 
 Zatímco Debian využívá sadu souborů v adresáři \texttt{debian/}, RPM staví na konceptu jediného Spec souboru (\texttt{.spec}). Tento soubor je deklarativním popisem celého životního cyklu balíčku:
 \begin{itemize}

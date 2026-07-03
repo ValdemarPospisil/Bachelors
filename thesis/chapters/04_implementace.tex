@@ -25,7 +25,7 @@ Hlavní rozdělení kořenového adresáře odráží oddělení jednotlivých t
     \begin{itemize}
         \item \texttt{CLIService/} -- Zcela nově vytvořený projekt v rámci této práce. Funguje jako dedikovaná \textit{wrapper} služba (tzv. obálka) pro CLI klienta. Hlavním úkolem \texttt{CLIService} je naslouchat na IPC socketu (\texttt{SenderReader.cs}), přijímat požadavky od frontend klienta a směrovat je pomocí komponenty \texttt{CliMessenger.cs} k příslušným výkonným vrstvám.
         \item \texttt{GoodAccess.Shared/} -- Obsahuje sdílenou doménovou logiku, kterou využívají různé části backendu. Nachází se zde klientské třídy pro komunikaci s centrálním REST API (\texttt{ApiClient.cs}) a abstraktní implementace VPN protokolů (\texttt{ProtoService.cs}, \texttt{VpnManager.cs}).
-        \item \texttt{GoodAccessService/} -- Původní a hlavní jádro síťové infrastruktury (daemon). Využívá konfigurace z předchových vrstev k fyzickému sestavení a správě tunelů na daném operačním systému.
+        \item \texttt{GoodAccessService/} -- Původní a hlavní jádro síťové infrastruktury (daemon). Využívá konfigurace z předchozích vrstev k fyzickému sestavení a správě tunelů na daném operačním systému.
     \end{itemize}
 \end{itemize}
 
@@ -146,7 +146,7 @@ switch (command.ToLower())
 V raných fázích vývoje, kdy ještě nebyla zcela implementována veškerá produkční logika a klientská aplikace se teprve formovala, vracela metoda \texttt{CliMessenger} provizorní, pevně definované hodnoty (tzv. hardcoded data). Tento přístup umožnil paralelní vývoj -- uživatelské rozhraní se mohlo designovat a testovat proti konzistentnímu API bez čekání na dokončení komplexní aplikační logiky. Postupem času byly tyto provizorní odpovědi nahrazovány reálným napojením na síťové a autentizační subsystémy.
 
 \subsection{Životní cyklus a integrace se systemd}
-Pro zajištění běhu služby na pozadí a správnou instalaci na Linuxu byl využit modul \texttt{Microsoft.\allowbreak Extensions.\allowbreak Hosting.\allowbreak Systemd} (viz sekce~\ref{sec:technologie}). Díky tomuto modulu se celá aplikace může chovat jako nativní \texttt{systemd} služba. Definice \texttt{goodaccess-cli.service} zajižduje automatické spuštění po startu systému a \textit{graceful shutdown} proces pro bezpečné odpojení VPN před vypnutím. Následující ukázka kódu z konfigurační třídy \texttt{Program.cs} demonstruje inicializaci hostitele, kde metoda \texttt{UseSystemd()} registruje životní cyklus služby a zároveň probíhá konfigurace \texttt{DataProtection} API z předchozí podkapitoly a registrace hlavní pracovní třídy \texttt{Worker}, která obstarává chod aplikace v pozadí.
+Pro zajištění běhu služby na pozadí a správnou instalaci na Linuxu byl využit modul \texttt{Microsoft.\allowbreak Extensions.\allowbreak Hosting.\allowbreak Systemd} (viz sekce~\ref{sec:technologie}). Díky tomuto modulu se celá aplikace může chovat jako nativní \texttt{systemd} služba. Definice \texttt{goodaccess-cli.service} zajišťuje automatické spuštění po startu systému a \textit{graceful shutdown} proces pro bezpečné odpojení VPN před vypnutím. Následující ukázka kódu z konfigurační třídy \texttt{Program.cs} demonstruje inicializaci hostitele, kde metoda \texttt{UseSystemd()} registruje životní cyklus služby a zároveň probíhá konfigurace \texttt{DataProtection} API z předchozí podkapitoly a registrace hlavní pracovní třídy \texttt{Worker}, která obstarává chod aplikace v pozadí.
 
 \noindent\begin{minipage}{\linewidth}
 \begin{lstlisting}[language=CSharp, stringstyle=\itshape]

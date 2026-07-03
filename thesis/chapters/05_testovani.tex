@@ -49,7 +49,7 @@ Tento \texttt{MockClient} byl následně v testovacích scénářích (např. v 
 \subsection{Testování služby v .NET}
 Na straně systémové služby v .NET byly jednotkové testy implementovány s využitím frameworku xUnit (viz podkapitola \ref{sec:testovani_nastroje}). Návrh počítal s testováním jednotlivých tříd v izolaci, přičemž pro odstranění závislostí byl využit framework Moq. Příkladem může být testování třídy \texttt{CliStorage}, která zodpovídá za bezpečné ukládání dat.
 
-Následující ukázka kódu demonstruje testovací scénář pro třídu \texttt{CliStorage}, kde je pomocí mockování ověřeno, že jsou data před uložení správně šifrována.
+Následující ukázka kódu demonstruje testovací scénář pro třídu \texttt{CliStorage}, kde je pomocí mockování ověřeno, že jsou data před uložením správně šifrována.
 
 \noindent\begin{minipage}{\linewidth}
 \begin{lstlisting}[language=CSharp, stringstyle=\itshape, caption={Ukázka jednotkového testu v .NET pomocí xUnit a Moq}, label={lst:xunit_test}]
@@ -83,9 +83,9 @@ namespace GoodAccess.CLI.Tests
 
 Další testovací scénáře pro třídu \texttt{CliStorage} zahrnují:
 \begin{itemize}
-    \item \texttt{SavePreferences\_ShouldStoreCorrectData()}: Test ověří, že po zavolání metody \texttt{SavePreferences} je do souboru zapsán správně naformátovaný a zašifrovaný JSON objekt.
-    \item \texttt{GetRefreshToken\_ShouldThrowOnMissingToken()}: Test zajistí, že pokud se metoda pokusí přečíst neexistující token, je vyhozena očekávaná výjimka.
-    \item \texttt{SetRefreshToken\_ShouldUpdateSession()}: Ověří, že zavolání metody pro nastavení nového obnovovacího tokenu správně aktualizuje data v úložišti.
+    \item \texttt{SavePreferences\_\allowbreak{}ShouldStoreCorrectData()}: Test ověří, že po zavolání metody \texttt{SavePreferences} je do souboru zapsán správně naformátovaný a zašifrovaný JSON objekt.
+    \item \texttt{GetRefreshToken\_\allowbreak{}ShouldThrowOnMissingToken()}: Test zajistí, že pokud se metoda pokusí přečíst neexistující token, je vyhozena očekávaná výjimka.
+    \item \texttt{SetRefreshToken\_\allowbreak{}ShouldUpdateSession()}: Ověří, že zavolání metody pro nastavení nového obnovovacího tokenu správně aktualizuje data v úložišti.
 \end{itemize}
 
 \section{Akceptační testování}
