@@ -1,4 +1,5 @@
 \addchap{Úvod}
+\markboth{Úvod}{}
 \label{chap:uvod}
 
 V posledních letech došlo k zásadnímu posunu v organizaci práce a správě síťové infrastruktury. S masivním přechodem na práci na dálku a distribuované týmy se tradiční modely zabezpečení sítě ukazují jako nedostatečné. Organizace stále častěji adoptují architektury typu Zero Trust Network Access (ZTNA), kde je bezpečné VPN připojení klíčovým prvkem nejen pro koncové uživatele, ale i pro serverovou infrastrukturu.
@@ -6,3 +7,7 @@ V posledních letech došlo k zásadnímu posunu v organizaci práce a správě 
 Platforma GoodAccess v současné době nabízí řešení primárně prostřednictvím grafického uživatelského rozhraní (GUI). Toto řešení je vhodné pro běžné uživatele na osobních počítačích, avšak naráží na limity v prostředí serverů, automatizovaných systémů a DevOps pracovních postupů.
 
 V serverovém prostředí Linux, které je dominantní platformou pro cloudovou infrastrukturu, často není grafické rozhraní dostupné (tzv. headless servery). Administrátoři a DevOps inženýři vyžadují nástroje, které lze ovládat z příkazové řádky, snadno skriptovat a integrovat do CI/CD pipelin. Absence nativního CLI (Command Line Interface) klienta pro Linux představuje pro GoodAccess značné omezení v možnosti nasazení v těchto scénářích.
+
+Cílem této práce je navrhnout a implementovat funkční prototyp CLI aplikace pro správu GoodAccess VPN připojení na linuxových distribucích (Debian, Fedora/RHEL) s využitím protokolu WireGuard. Dílčími cíli je návrh a implementace autentizačního mechanismu, architektury aplikace s důrazem na bezpečnost a modularitu, bezpečného úložiště pro citlivá data (secure storage), funkcí pro správu VPN připojení (navazování, odpojování, monitoring stavu), systému aktualizací aplikace a přípravy distribučních balíčků pro cílové linuxové distribuce, to vše doplněné komplexní testovací sadou ověřující funkčnost a bezpečnost výsledného řešení.
+
+Práce je členěna do šesti kapitol. Kapitola~\ref{chap:teorie} shrnuje teoretická východiska v oblasti CLI aplikací, architektur VPN a Zero Trust, platformy .NET, agilního vývoje a distribuce softwaru v linuxovém ekosystému. Kapitola~\ref{chap:analyza} analyzuje zúčastněné strany, případy užití a funkční i nefunkční požadavky na výslednou aplikaci. Kapitola~\ref{chap:navrh} popisuje návrh architektury, komunikačního protokolu IPC, uživatelského rozhraní CLI a bezpečnostního modelu. Kapitola~\ref{chap:implementace} dokumentuje samotnou implementaci systémové služby i klientské aplikace. Kapitola~\ref{chap:testovani} popisuje zvolenou metodiku testování a její výsledky. Závěrečná kapitola~\ref{chap:zaver} shrnuje dosažené výsledky práce a nastiňuje možnosti jejího dalšího rozvoje.
