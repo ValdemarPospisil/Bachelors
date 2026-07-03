@@ -1,8 +1,0 @@
-{
-  "track_id": "thesis_ipc_refinement_20260308",
-  "type": "feature",
-  "status": "new",
-  "created_at": "2026-03-08T13:00:00Z",
-  "updated_at": "2026-03-08T13:00:00Z",
-  "description": "Refine the end of Chapter 2 (Analysis) and rewrite the beginning of Chapter 3 (Design) to transition smoothly. Add Section 3.2 'Návrh komunikace IPC' with references to theory, justify JSON choice, and include IPC sequence image and JSON code snippets for login request and response."
-}

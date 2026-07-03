@@ -1,8 +1,0 @@
-{
-  "track_id": "thesis_implementace_refactor_20260312",
-  "type": "refactor",
-  "status": "new",
-  "created_at": "2026-03-12T00:00:00Z",
-  "updated_at": "2026-03-12T00:00:00Z",
-  "description": "hello i would like to refactor, refine and enhance the 4th chapter Implementation. First of all I cant compile it, the problem probably is the code snippets i think you need to read the main tex file where it is defined how to use it @thesis/thesis.tex you can try to build it with latexmk or pdflatex. Next i added the code it self into @doc/code/ (not all code just a few files which i think are the most important) so go through them so you understand the project a little better and use some of the code to show in the thesis (I think you can just reference the file and the important lines). Next i would like to adhere more to the @doc/notes/implementace_plan.md which we defined before but i still i want the project structure first and dont really want the Úvod and Závěr what i want you to take from the plan is the images(screenshots, diagrams) which are now missing and more code snippets. But just write commneted placefolders for the images so it compiles i will then provide them after. And what i think is also missing is that it does not follow the principles and style of the previous chapters so try to change that. @thesis/chapters/04_implementace.tex"
-}

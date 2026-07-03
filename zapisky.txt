@@ -1,3 +1,0 @@
-- Kapitoly musí začínat na lichých stránkách
-- můžou být barvené nadpisy, jiné fonty...
-- měla by hezky vypadat

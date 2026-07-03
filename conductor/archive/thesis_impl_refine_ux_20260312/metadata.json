@@ -1,8 +1,0 @@
-{
-  "track_id": "thesis_impl_refine_ux_20260312",
-  "type": "refactor",
-  "status": "new",
-  "created_at": "2026-03-12T13:00:00Z",
-  "updated_at": "2026-03-12T13:00:00Z",
-  "description": "Refine the final subchapter in implementation chapter (Advanced features and UX), adding screenshots and a state management table."
-}
